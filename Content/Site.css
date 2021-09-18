@@ -1,11 +1,20 @@
 ﻿body {
     margin: 0px;
     background: #232834;
+    }
+.shadowBody {
+    background: rgba(20, 20, 21, 1);
 }
 .MainBody {
     height: 100vh;
     display: flex;
     justify-content: center;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none; 
+    -khtml-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none;
 }
 .FirstSettingDevice{
     position: relative;
@@ -123,6 +132,7 @@
     background-color: #212631;
     display: flex;
     justify-content: space-between;
+    padding-top: 4px;
 }
 .PassworWifiAreaBottomLine {
     background: #212631;
@@ -177,6 +187,12 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    font-family: NotoSans-Regular;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.406687px;
 }
 .InnerSensor {
     display: flex;
@@ -735,7 +751,7 @@ input[type=range]::-webkit-slider-thumb {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: Noto Sans;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
@@ -749,6 +765,11 @@ input[type=range]::-webkit-slider-thumb {
     text-align: center;
 }
 .LoaderHandler {
+    font-family: NotoSans-Regular;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
     display: none;
     position: absolute;
     top: 0;
@@ -799,6 +820,7 @@ input[type=range]::-webkit-slider-thumb {
 .InputBlock, #AddedTopic {
     padding: 0px 16px;
     background-color: #212631;
+    padding-bottom: 11px;
 }
 #AddedTopic {
     display: none;
@@ -865,7 +887,13 @@ input[type=range]::-webkit-slider-thumb {
     line-height: 18px;
     color: #FFFFFF;
     padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
     padding-bottom: 0px;
+}
+.BlockInformation svg{
+    padding-left: 5px;
+    align-self:flex-end
 }
 .ConnectWifi {
     height: 100%;
@@ -923,6 +951,7 @@ input[type=range]::-webkit-slider-thumb {
     box-sizing: border-box;
     border-radius: 15px;
     align-items: center;
+    background: #fff;
 }
 .QrcodeBlock {
     display: flex;
