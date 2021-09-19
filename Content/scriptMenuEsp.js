@@ -442,7 +442,7 @@ var ArraySocketItem = {
     type : null
 }
 ArraySocket.push(ArraySocketItem = {
-    Socket: new WebSocket("ws://192.168.1.34/ws"),
+    Socket: new WebSocket("ws://" + location.host + "/ws"),
     //id: "15299390",
     //type: "esp8266_thermostat",
     //type: "esp8266_air",
