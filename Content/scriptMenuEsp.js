@@ -1437,4 +1437,5 @@ function CopyBy(item) {
     document.body.append(CreateElemTextArea);
     CreateElemTextArea.select();
     document.execCommand("copy");
+    document.body.removeChild(CreateElemTextArea);
 }
