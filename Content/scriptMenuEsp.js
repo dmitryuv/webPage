@@ -1434,6 +1434,7 @@ function CopyBy(item) {
     var copyText = item.innerText;
     let CreateElemTextArea = document.createElement('textarea');
     CreateElemTextArea.innerText = copyText;
+    document.body.append(CreateElemTextArea);
     CreateElemTextArea.select();
     document.execCommand("copy");
 }
