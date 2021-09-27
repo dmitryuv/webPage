@@ -18,6 +18,7 @@ let SettingPage = document.querySelectorAll('.Tab');
 let BackToMainDisplay = document.querySelectorAll('.BackToMainDisplay');
 let MQTTReceivedInfo = document.getElementById('MQTTReceivedInfo');
 let ConnectMQTTBtn = document.getElementById('ConnectMQTTBtn');
+let DisconnectMQTTBtn = document.getElementById('DisconnectMQTTBtn');
 let ZigBeeSensors = document.getElementById('ZigBeeSensors');
 let DisconnectBtnZigBee = document.getElementById('DisconnectBtnZigBee');
 let MqttInputData = document.getElementById('MqttInputData');
@@ -55,6 +56,7 @@ let FanHandler = document.getElementById('FanHandler');
 let FanSpeedValue = document.getElementById('FanSpeedValue');
 
 var wifiBlocksFirstSetting = document.getElementsByClassName('WifiBlock');
+let AliceShowPass = document.getElementById('AliceShowPass');
 var ShowPassElem = document.getElementById('ShowPass');
 var ShowPassTrigger = true;
 var WifiSelected;
@@ -134,7 +136,6 @@ var configConditioner = {
         "homekit": ""
     }
 };
-console.log(getKeyByValue(SensorIdCollection, 5));
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
@@ -178,7 +179,11 @@ function FirstSettingsTools() {
             let InnerSensorBlock = document.getElementById('InnerSensorBlock');
             InnerSensorBlock.style.display = 'none';
         }
-        SelectResistance(TypeResistanceBlocks.find(item => item.id === SensorIdCollection[4]));
+        let ResistanceKey = getKeyByValue(SensorIdCollection, 4);
+        let ResistanceItem = SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, ResistanceKey);
+        if (ResistanceItem != null) {
+            SelectResistance(ResistanceItem);
+        }
     }   
     if (CurrentSocket.type === 'esp8266_thermostat') {
         TabloTempInitialization();
@@ -233,7 +238,6 @@ ShowPass.onclick = function () {
         NotShowIcon.style.display = 'block';
         ShowIcon.style.display = 'none';
     }
-
 }
 function SelectResistance(Item) {
     let checkedSelectedIcon = Item.children[1].style.display;
@@ -242,7 +246,6 @@ function SelectResistance(Item) {
             document.querySelectorAll('.SelectedIcon').forEach(item => item.id != 'InnerSensorIcon' ? item.style.display = 'none' : false);
             Item.children[1].style.display = 'block';
             configTermostat.config.sensor_model_id = SensorIdCollection[Item.id];
-            console.log(configTermostat.config.sensor_model_id);
             if (!FirstConfigurate) {
                 CurrentSocket.Socket.send(JSON.stringify({
                     "sensor_model_id": SensorIdCollection[Item.id]
@@ -455,16 +458,13 @@ ArraySocket.push(ArraySocketItem = {
 });
 let DeviceConfigArray = new Array();
 function WebSocketOpen(SocketItemDevice) {
-    console.log("Opening WebSocket..");
     SocketItemDevice.Socket.onopen = function (evt) {
-        console.log("WebSocket is open.");
     };
     SocketItemDevice.Socket.onerror = function (error) {
         console.log("Error " + error.message)
     };
     SocketItemDevice.Socket.close = function (event) {
         if (event.wasClean) {
-            console.log('Connection closed cleanly');
             wsOpen();
         } else {
             console.log('Connection failed'); // например, "убит" процесс сервера
@@ -473,7 +473,6 @@ function WebSocketOpen(SocketItemDevice) {
     };
     SocketItemDevice.Socket.onmessage = function (event) {
         var MessageJson = JSON.parse(event.data);
-        console.log(MessageJson);
         if ('ssdp' in MessageJson) {
             if (ArraySocket[0].Socket === this) {
                 for (let i = 0; MessageJson.ssdp.length > i; i++) {
@@ -840,6 +839,14 @@ function InsertMqtt() {
         else {
             GetMQTTData.style.display = 'none';
         }
+        if (CurrentSocket.config.mqtt_use === '1') {
+            ConnectMQTTBtn.style.display = 'none';
+            DisconnectMQTTBtn.style.display = 'block';
+        }
+        else {
+            ConnectMQTTBtn.style.display = 'block';
+            DisconnectMQTTBtn.style.display = 'none';
+        }
     }
     else {
         MqttInputData.style.display = 'none';
@@ -874,11 +881,17 @@ function InsertMqtt() {
                     }
                 }
             ));
+            SetLoader(5, function () { location.host = location.host; });
         }
+    }
+    DisconnectMQTTBtn.onclick = function () {
+        CurrentSocket.Socket.send(JSON.stringify({ "mqtt_disconnect": 1 }));
+        SetLoader(5, function () { location.host = location.host; });
     }
     GetMQTTData.onclick = function () {
         SwitchElem(MqttInputData, MQTTReceivedInfo);
         ConnectMQTTBtn.style.display = 'none';
+        DisconnectMQTTBtn.style.display = 'none';
     }
     if (CurrentSocket.config.mqtt_use === 'true') {
         document.getElementsByClassName('MqttConnect')[0].style.display = 'flex';
@@ -935,6 +948,7 @@ function PairHk() {
                 });
                 PairHomekit.style.display = 'block';
                 NotQrcode.style.display = 'none';
+                DispairHomekit.style.display = 'none';
             }
             else {
                 NotQrcode.style.display = 'block';
@@ -1074,7 +1088,8 @@ function SetLoader(time, func) {
     let TimeLoader = time;
     let TimerId = setInterval(function () {
         TimeLoader = TimeLoader - 1;
-        Loader.children[1].innerHTML = TimeLoader + ' сек';
+        if (time < 500)
+            Loader.children[1].innerHTML = TimeLoader + ' сек';
     }, 1000)
     if (func != null) {
         setTimeout(function () {
@@ -1288,13 +1303,11 @@ function ShowWifiList(WifiList) {
                 }
                 configTermostat.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
                 configConditioner.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
-                console.log(configTermostat.config.wifi_name);
             }
             else {
                 SwitchElem(OneStageSettingDissapearElem, ThreeStageSettingDissapearElem);
                 WifiSelected = this;
                 config.config.wifi_name = SelectedWifiName;
-                console.log(configTermostat.config.wifi_name);
             }
         }
     }
@@ -1302,8 +1315,13 @@ function ShowWifiList(WifiList) {
 function DetermineWifiSignal(WifiSignal) {
     let result;
     if (WifiSignal != -1) {
-        let determineResult = Math.floor(WifiSignal / 25);
-        result = determineResult === 4 ? 3 : determineResult;
+        if (WifiSignal > 100) {
+            result = 3;
+        } else {
+            let determineResult = Math.floor(WifiSignal / 25);
+            result = determineResult === 4 ? 3 : determineResult;
+        }
+        
     }
     else
         result = 4
@@ -1355,7 +1373,8 @@ function NavSettings() {
     let ComposedStyle = getComputedStyle(MQTTReceivedInfo);
     if (this.parentElement.parentElement.id === 'MQTTPage' & ComposedStyle.display != 'none') {
         SwitchElem(MQTTReceivedInfo, MqttInputData);
-        ConnectMQTTBtn.style.display = 'flex';
+        //ConnectMQTTBtn.style.display = 'flex';
+        DisconnectMQTTBtn.style.display = 'flex';
     }
     else
         SwitchElem(this.parentElement.parentElement, DeviceSettings);
@@ -1374,16 +1393,25 @@ function TogglePopUp(PopUpToggle) {
 
     let BodyTag = document.body;
     BodyTag.classList.toggle('shadowBody');
-    PopUpToggle.onclick = function () {
+    let TimeOutToggle = setTimeout(FadeOutPopUp, 3000);
+    function FadeOutPopUp() {
         PopUpToggle.classList.toggle("show");
         BodyTag.classList.toggle('shadowBody');
     }
+    PopUpToggle.onclick = function () {
+        clearTimeout(TimeOutToggle);
+        PopUpToggle.classList.toggle("show");
+        BodyTag.classList.toggle('shadowBody');
+    }
+    
 }
 function ShowInDevelop() {
     TogglePopUp(InDevelop);
 }
 function AliceSet() {
     let AliceLoginGroup = document.querySelectorAll('.AliceLoginGroup');
+    let AliceShowIcon = document.getElementById('AliceShowIcon');
+    AliceShowIcon.style.display = 'none';
     if (ArraySocket[0].config != null) {
         if (ArraySocket[0].config.mqtt_alice === '0' || ArraySocket[0].config.mqtt_alice === undefined) {
             AliceLoginGroup.forEach(item => item.style.display = 'flex');
@@ -1393,6 +1421,7 @@ function AliceSet() {
             let AliceAdded = document.getElementById('AliceAdded');
             AliceAdded.querySelector('.InputInfo').innerHTML = ArraySocket[0].config.alice_login;
             AliceLogOutGroup.forEach(item => item.style.display = 'block');
+            AliceLoginGroup.forEach(item => item.style.display = 'none');
         }
     }
     AliceLogIn.onclick = function () {
@@ -1413,9 +1442,18 @@ function AliceSet() {
 
         }
     }
+    if (ArraySocket[0].config != undefined) {
+        let AliceOnlyMqtt = document.getElementById('AliceOnlyMqtt');
+        if (ArraySocket[0].config.homekit === '0') {
+            AliceOnlyMqtt.style.display = 'block';
+            AliceLink.onclick = null;
+        } else {
+            AliceOnlyMqtt.style.display = 'none';
+        }
+    }
     AliceLogOut.onclick = function () {
         for (let i = 0; ArraySocket.length > i; i++) {
-            ArraySocket[i].Socket.send(JSON.stringify("aliceDisconnect"));
+            ArraySocket[i].Socket.send(JSON.stringify({ "alice_disconnect": 1 }));
         }
 
     };
@@ -1426,9 +1464,25 @@ function AliceSet() {
     CloseAliceInfo.onclick = function () {
         DropUpAliceInfo.style.display = 'none';
     }
+    AliceShowPass.onclick = function () {
+        let AliceShowIcon = document.getElementById('AliceShowIcon');
+        let AliceNotShowIcon = document.getElementById('AliceNotShowIcon');
+        let PasswordAlice = document.getElementById('PasswordAlice');
+        if (PasswordAlice.type === 'password') {
+            PasswordAlice.type = 'text';
+            AliceNotShowIcon.style.display = 'none';
+            AliceShowIcon.style.display = 'block';
+        } else {
+            PasswordAlice.type = 'password';
+            AliceNotShowIcon.style.display = 'block';
+            AliceShowIcon.style.display = 'none';
+        }
+    }
 }
 BlocksInfo.forEach(item => item.onclick = function () {
     CopyBy(this.getElementsByClassName('BlockInformation')[0]);
+    let BlockTouggle = document.getElementById('CopyMqttString');
+    TogglePopUp(BlockTouggle);
 });
 function CopyBy(item) {
     var copyText = item.innerText;
