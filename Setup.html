@@ -3,9 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="Content/favicon.png">
     <link href="Content/Site.css" rel="stylesheet" type="text/css" />
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="MainBody">
@@ -77,6 +76,16 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="SelectingBlock TypeResistanceBlock" id="Digital">
+                            <div class="TypeResistance">
+                                Digital
+                            </div>
+                            <div class="SelectedIcon">
+                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                </svg>
+                            </div>
+                        </div>
                         <div class="SelectingBlock TypeResistanceBlock" id="3.3_кОм">
                             <div class="TypeResistance">
                                 3.3 кОм
@@ -100,16 +109,6 @@
                         <div class="SelectingBlock TypeResistanceBlock" id="6.8_кОм">
                             <div class="TypeResistance">
                                 6.8 кОм
-                            </div>
-                            <div class="SelectedIcon">
-                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="SelectingBlock TypeResistanceBlock" id="Digital">
-                            <div class="TypeResistance">
-                                Digital
                             </div>
                             <div class="SelectedIcon">
                                 <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -310,7 +309,7 @@
                                     </svg>
                                 </div>
                                 <div class="ChangingTempTablo">
-                                    45
+                                    40
                                 </div>
                                 <div class="TempDown ArrowTemp">
                                     <svg width="14" height="6" viewBox="0 0 14 6" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -349,6 +348,10 @@
                         <button id="BackTermostat" class="BtnBlue" type="button" name="button">Назад</button>
                         <button id="CompleteSettingBtnTwo" class="BtnBlue" type="button" name="button">Готово</button>
                     </div>
+                </div>
+                <div class="LoaderHandler">
+                    <div class="Loader"></div>
+                    <div class="TimerLoader"></div>
                 </div>
             </div>
         </div>

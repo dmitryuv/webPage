@@ -1,24 +1,28 @@
 ﻿body {
     margin: 0px;
     background: #232834;
-    }
+}
+
 .shadowBody {
     background: #1d2026;
 }
+
 .MainBody {
     height: 100vh;
     display: flex;
     justify-content: center;
-    -webkit-touch-callout: none; 
-    -webkit-user-select: none; 
-    -khtml-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
-.FirstSettingDevice{
+
+.FirstSettingDevice {
     position: relative;
 }
+
 .MenuBody {
     max-width: 360px;
     max-height: 640px;
@@ -26,12 +30,14 @@
     width: 100%;
     background: #232834;
 }
+
 .ScrollingMenu {
     overflow: auto;
     overflow-x: hidden;
     height: 80%;
     width: 100%;
 }
+
     .ScrollingMenu::-webkit-scrollbar {
         width: 5px;
         background-color: #2C3041;
@@ -40,6 +46,7 @@
     .ScrollingMenu::-webkit-scrollbar-thumb {
         background-color: #ECECEC;
     }
+
 .SettingsInfoTitle {
     display: flex;
     height: 56px;
@@ -48,9 +55,10 @@
     width: 100%;
     box-sizing: border-box;
 }
+
     .SettingsInfoTitle span {
         display: flex;
-        font-family: Roboto;
+        font-family: NotoSans-Regular;
         font-style: normal;
         font-weight: 500;
         font-size: 18px;
@@ -58,6 +66,7 @@
         color: #FFFFFF;
         padding: 16px;
     }
+
 .Tab {
     display: flex;
     flex-direction: column;
@@ -68,6 +77,7 @@
     flex-wrap: nowrap;
     position: relative;
 }
+
 .SelectingBlock {
     height: 56px;
     margin: 10px;
@@ -81,9 +91,10 @@
     padding: 0px 10px;
     color: #FFFFFF;
 }
+
 .WifiBlock {
-    
 }
+
 .WifiName {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -92,6 +103,7 @@
     line-height: 22px;
     color: #FFFFFF;
 }
+
 .GuardTypeWifi {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -100,15 +112,19 @@
     line-height: 22px;
     color: #818288;
 }
+
 #OneStageSetting {
     display: flex;
 }
+
 #BackToOneStageSetting {
     padding: 0px 20px;
 }
+
 #TwoStageSetting {
     display: none;
 }
+
 .PassworWifiArea {
     display: flex;
     flex-direction: column;
@@ -117,8 +133,9 @@
     width: 100%;
     padding-top: 24px;
 }
+
     .PassworWifiArea input, .StandartInput {
-        font-family: "Roboto";
+        font-family: "NotoSans-Regular";
         color: #75809D;
         background-color: #212631;
         border: none;
@@ -129,18 +146,21 @@
         font-weight: normal;
         line-height: 18px;
     }
+
 .Password, .InputInfo {
     background-color: #212631;
     display: flex;
     justify-content: space-between;
     padding-top: 4px;
 }
+
 .PassworWifiAreaBottomLine {
     background: #212631;
     border-radius: 4px;
     border-bottom: 2px solid #2C98F0;
     height: 1px;
 }
+
 .PassworWifiArea label, .StandartInputLabel {
     margin: 0;
     font-size: 12px;
@@ -148,9 +168,11 @@
     padding-bottom: 3px;
     background-color: #212631;
 }
-#ShowIcon{
-    display:none;
+
+#ShowIcon {
+    display: none;
 }
+
 .BtnMenu {
     display: flex;
     flex-direction: row;
@@ -159,6 +181,7 @@
     width: 100%;
     height: 10%;
 }
+
 .BtnBlue {
     border-radius: 8px;
     color: #EAEAEB;
@@ -169,21 +192,24 @@
     align-items: center;
     margin: 3px;
     background: #035CD0;
-    
     border: 2px solid #035CD0;
     border-radius: 12px;
     width: 160px;
     height: 46px;
 }
+
 .BtnGrey {
-   background: #232834;
+    background: #232834;
 }
+
 .BtnDarkBlue {
     background: #1F3C62;
 }
+
 #ThreeStageSetting {
     display: none;
 }
+
 .TypeResistance, .BrandConditioner, .ZigBeeSensor {
     display: flex;
     width: 100%;
@@ -195,16 +221,19 @@
     line-height: 22px;
     letter-spacing: -0.406687px;
 }
+
 .InnerSensor {
     font-family: NotoSans-Regular;
     display: flex;
     width: 100%;
     justify-content: space-between;
 }
+
 .SelectedIcon {
     display: none;
 }
-#FourStageSetting{
+
+#FourStageSetting {
     display: none;
 }
 /*#FirstGisteresisSetting {
@@ -221,11 +250,13 @@
     line-height: 43px;
     color: #2C98F0;
 }
-.TabloTempTypeSettings{
-    display:flex;
+
+.TabloTempTypeSettings {
+    display: flex;
     flex-direction: column;
-    align-items:center;
+    align-items: center;
 }
+
 .TypeTabloTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -235,6 +266,7 @@
     text-align: center;
     color: #464E70;
 }
+
 .TabloTemp {
     display: flex;
     flex-direction: row;
@@ -242,6 +274,7 @@
     justify-content: space-around;
     padding-top: 20px;
 }
+
 .GisteresisInfo {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -251,9 +284,11 @@
     color: #FFFFFF;
     padding: 20px;
 }
+
 #GisteresisStageSetting {
     display: none;
 }
+
 #TempStageSetting {
     display: none;
 }
@@ -262,17 +297,20 @@
     /* display: none;*/
     display: flex;
 }
+
 .MainMenuTitle {
     display: flex;
     justify-content: space-between;
 }
+
 .MainDisplayIcon {
     display: flex;
     padding: 0px 20px;
     align-items: center;
 }
+
 .MainDisplayTitle {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
@@ -280,22 +318,25 @@
     color: #FFFFFF;
     padding-left: 32px;
 }
+
 .ElseSettingIcon {
     margin: 0px 8px;
 }
+
 .DefaultSettingBlock {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin: 16px 0px;
 }
+
 .DefaultSettingInfo {
     padding: 6px 12px;
     width: 127px;
     height: 36px;
     background: #2C3041;
     border-radius: 100px;
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -305,10 +346,12 @@
     align-items: center;
     color: #FFFFFF;
 }
+
 .SensorsLine {
     margin: 5px 8px;
     display: none;
 }
+
 .SensorsLineTitle, .StandartMenuTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -318,16 +361,19 @@
     color: #FFFFFF;
     text-transform: uppercase;
 }
+
 .SensorsBlock {
     width: 76px;
     height: 76px;
     background: #2C3041;
     border-radius: 12px;
 }
-.SensorIcon{
+
+.SensorIcon {
     padding: 8px 5px;
     padding-bottom: 0px;
 }
+
 .SensorValue {
     display: flex;
     justify-content: center;
@@ -338,11 +384,13 @@
     line-height: 32px;
     color: #FFFFFF;
 }
+
 .DeviceList {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
+
 .DeviceBlock {
     width: 160px;
     height: 160px;
@@ -354,6 +402,7 @@
     margin: 5px 8px;
     flex-wrap: wrap;
 }
+
 .DeviceBlockTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -363,6 +412,7 @@
     color: #2C98F0;
     text-align: center;
 }
+
 .DeviceBlockValue {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -372,10 +422,12 @@
     color: #FFFFFF;
     text-align: center;
 }
+
 .DeviceBlockControl {
     display: flex;
     justify-content: center;
 }
+
 .DeviceBlockControlTablo {
     width: 66px;
     height: 66px;
@@ -393,6 +445,7 @@
     font-size: 19.3875px;
     line-height: 26px;
 }
+
 .StandartMenu {
     overflow: auto;
     overflow-x: hidden;
@@ -403,13 +456,16 @@
     padding: 16px;
     box-sizing: border-box;
 }
+
 .StandartMenuTitle {
 }
+
 .MainMenuWidget {
     display: flex;
     align-items: center;
     flex-direction: column;
 }
+
 .MainMenuWidgetValue {
     width: 328px;
     height: 160px;
@@ -420,6 +476,7 @@
     padding-top: 10px;
     box-sizing: border-box;
 }
+
 .MainMenuWidgetValueTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -429,11 +486,13 @@
     text-align: center;
     color: #464E70;
 }
+
 .MainMenuWidgetValueInfo {
     display: flex;
     justify-content: space-around;
     padding-top: 10px;
 }
+
 .MainMenuWidgetValueTemp {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -442,6 +501,7 @@
     line-height: 79px;
     color: #FFFFFF;
 }
+
 .MainMenuTempValue {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -450,15 +510,18 @@
     line-height: 33px;
     color: #FFFFFF;
 }
+
 .MainMenuWidgetArrowDown {
     display: flex;
     align-items: center;
     width: 56px;
     justify-content: center;
 }
-.MainMenuWidgetArrowUp{
-    text-align:center;
+
+.MainMenuWidgetArrowUp {
+    text-align: center;
 }
+
 .MainMenuWidgetBtn {
     max-width: 344px;
     width: 100%;
@@ -470,6 +533,7 @@
     justify-content: center;
     align-items: center;
 }
+
 .MainMenuWidgetInfo {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -479,6 +543,7 @@
     color: #75809D;
     padding-bottom: 14px;
 }
+
 .MainMenuWidgetComeHome {
     height: 50%;
     display: flex;
@@ -486,6 +551,7 @@
     justify-content: flex-end;
     padding-bottom: 40px;
 }
+
 .MainMenuWidgetComeHomeBlock {
     max-width: 160px;
     width: 100%;
@@ -495,12 +561,14 @@
     display: flex;
     flex-direction: column;
 }
-.MainMenuWidgetComeHomeBlockIcons{
+
+.MainMenuWidgetComeHomeBlockIcons {
     display: flex;
     flex-direction: row;
 }
+
 .MainMenuWidgetComeHomeBlockTitle {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 10px;
@@ -508,23 +576,29 @@
     letter-spacing: 0.5px;
     color: #FFFFFF;
 }
+
 .IconStop, .IconEntry {
     padding: 6px;
 }
+
 .MainMenuWidgetComeHomeBlockTitle {
     padding: 0px 6px;
 }
+
 #MainDisplayTermostat {
     display: none;
 }
+
 .fanSpeedWidget {
     width: 100%;
     background: #2C3041;
     border-radius: 12px;
 }
+
 .FanIcon {
-    padding:7px 0px 0px 7px;
+    padding: 7px 0px 0px 7px;
 }
+
 #FanSpeedValue {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -535,6 +609,7 @@
     text-align: center;
     padding-bottom: 15px;
 }
+
 #FanHandler {
     -webkit-appearance: none;
     width: 100%;
@@ -544,12 +619,14 @@
     height: 11px;
     margin: 0px;
 }
+
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 14px;
     background: #FFFFFF;
     box-shadow: 0 3px 20px rgba(0,0,0,.55);
 }
+
 .FanSpeedInput input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     /*border: 1px solid #000000;*/
@@ -559,10 +636,12 @@ input[type=range]::-webkit-slider-thumb {
     /*inset 0px 0px 10px rgba(255, 255, 255, 0.25);*/
     cursor: pointer;
 }
-.MainMenuWidgetBtnConditioner{
+
+.MainMenuWidgetBtnConditioner {
     display: flex;
     width: 100%;
 }
+
 .ConditionerBtn {
     width: 76px;
     height: 76px;
@@ -574,6 +653,7 @@ input[type=range]::-webkit-slider-thumb {
     box-shadow: inset 0px 0px 10px rgba(255, 255, 255, 0.25);
     color: #FFFFFF;
 }
+
 .AutoTempHandler {
     background: #1F3C62;
     font-family: NotoSans-Regular;
@@ -582,17 +662,21 @@ input[type=range]::-webkit-slider-thumb {
     font-size: 22px;
     line-height: 30px;
 }
+
 #HeatingTempHandler {
     background: #035CD0;
 }
+
 #CoolTempHandler {
     background: #1F3C62;
 }
+
 #MainDisplayConditioner {
     display: none;
 }
+
 .TitleInputName {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
@@ -601,6 +685,7 @@ input[type=range]::-webkit-slider-thumb {
     opacity: 0.87;
     width: 100%;
 }
+
 #NameInput {
     width: 100%;
     border: none;
@@ -612,6 +697,7 @@ input[type=range]::-webkit-slider-thumb {
     outline: none;
     padding: 6px;
 }
+
 .AvailableUpdate, .MqttConnect, .WifiConnect, #OnlyMqtt {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -621,18 +707,23 @@ input[type=range]::-webkit-slider-thumb {
     color: #2C98F0;
     display: none;
 }
+
 #OnlyMqtt, #AliceOnlyMqtt {
     color: #464E70;
 }
+
 #AliceOnlyMqtt {
     display: none;
 }
+
 .WifiConnect {
     color: #464E70;
 }
+
 .AvialableNotification, #InnerSensorSetting {
     justify-content: space-between;
 }
+
 .SettingItem, .SettingItemAccount {
     background: rgba(0, 0, 0, 0.08);
     border-radius: 4px;
@@ -650,21 +741,27 @@ input[type=range]::-webkit-slider-thumb {
     padding: 16px;
     box-sizing: border-box;
 }
+
 #DeviceName {
     flex-direction: column;
     justify-content: flex-end;
 }
+
 #DeviceSettings {
     display: none;
 }
+
 #TypeSensorStageSetting {
     display: none;
 }
-#UpdateStageSetting{
+
+#UpdateStageSetting {
     display: none
 }
+
 .LytkoLogoUpdate {
 }
+
 .LytkoTitleUpdate {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -673,12 +770,14 @@ input[type=range]::-webkit-slider-thumb {
     line-height: 37px;
     color: #FFFFFF;
 }
+
 .LytkoUpdate {
     display: flex;
     align-items: center;
     flex-direction: column;
     padding: 30px;
 }
+
 .CurrentVersion {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -687,10 +786,12 @@ input[type=range]::-webkit-slider-thumb {
     line-height: 20px;
     color: #464E70;
 }
+
 .LytkoUpdateInformation {
     padding-left: 25px;
     padding-top: 30px;
 }
+
 .AccessVersion {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -699,30 +800,36 @@ input[type=range]::-webkit-slider-thumb {
     line-height: 20px;
     color: #FFFFFF;
 }
+
 .LutkoUpdateInformation {
     padding: 15px;
     padding-top: 50px;
     flex-direction: column;
 }
+
 .UpdateProgress input[type=range] {
     -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
     width: 100%; /* Specific width is required for Firefox. */
     background: transparent;
 }
-    
-.UpdateProgress input[type=range]:focus {
-    outline: none;
-}
+
+    .UpdateProgress input[type=range]:focus {
+        outline: none;
+    }
+
 #ZigBeePage {
     position: relative;
     display: none;
 }
-#ZigBeeSensors{
+
+#ZigBeeSensors {
     height: 100%;
 }
-#DisconnectBtnZigBee{
+
+#DisconnectBtnZigBee {
     display: none;
 }
+
 .LytkoUpdateBar {
     display: none;
     justify-content: center;
@@ -730,6 +837,7 @@ input[type=range]::-webkit-slider-thumb {
     flex-direction: column;
     align-items: center;
 }
+
 .LytkoUpdateBarTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -740,18 +848,21 @@ input[type=range]::-webkit-slider-thumb {
     color: #EAEAEB;
     padding: 35px;
 }
+
 .UpdateWay {
     width: 192px;
     height: 12px;
     background: #3B4159;
     border-radius: 8px;
 }
+
 #ProgressUpdate {
     width: 0%;
     height: 12px;
     background: #D6D7D9;
     border-radius: 8px;
 }
+
 .ZigBeeInfo, .HomekitInfo, .ChangeTempPositionInfo {
     display: flex;
     flex-direction: column;
@@ -766,9 +877,11 @@ input[type=range]::-webkit-slider-thumb {
     padding: 30px 20px;
     box-sizing: border-box;
 }
+
 .HomekitInfo {
     text-align: center;
 }
+
 .LoaderHandler {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -784,6 +897,7 @@ input[type=range]::-webkit-slider-thumb {
     z-index: 25;
     background-color: rgba(35, 40, 52, 0.95);
 }
+
 .Loader {
     border: 8px solid #f3f3f3;
     border-top: 8px solid #0455BF;
@@ -799,6 +913,7 @@ input[type=range]::-webkit-slider-thumb {
     margin-top: -50px;
     z-index: 10;
 }
+
 .TimerLoader {
     color: #FFFFFF;
     height: 100%;
@@ -806,41 +921,48 @@ input[type=range]::-webkit-slider-thumb {
     justify-content: center;
     align-items: center;
 }
-#WifiPage{
+
+#WifiPage {
     display: none;
 }
+
 .InputData {
     padding: 16px;
     display: flex;
     flex-direction: column;
 }
+
 .DataTab {
     padding: 11px 0px;
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 18px;
 }
+
 .InputBlock, #AddedTopic {
     padding: 0px 16px;
     background-color: #212631;
     padding-bottom: 11px;
 }
+
 #AddedTopic {
     display: none;
     flex-direction: column;
     padding: 11px 0px;
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 18px;
 }
+
 #MQTTReceivedInfo {
     display: none;
     flex-direction: column;
 }
+
 #GetMQTTData {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -855,9 +977,11 @@ input[type=range]::-webkit-slider-thumb {
     display: flex;
     align-items: center;
 }
-#MQTTPage{
+
+#MQTTPage {
     display: none;
 }
+
 .TitleMqtt {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -867,14 +991,16 @@ input[type=range]::-webkit-slider-thumb {
     color: #FFFFFF;
     padding: 32px;
 }
+
 .BlockInfo {
     background: rgba(0, 0, 0, 0.06);
     border-radius: 4px;
     border-bottom: solid 2px #2C3041;
     padding: 16px;
 }
+
 .BlockInfoTitle {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
@@ -884,8 +1010,9 @@ input[type=range]::-webkit-slider-thumb {
     padding: 0px 16px;
     display: block;
 }
+
 .BlockInformation {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
@@ -896,16 +1023,20 @@ input[type=range]::-webkit-slider-thumb {
     flex-direction: column;
     padding-bottom: 0px;
 }
-.BlockInformation svg{
-    padding-left: 5px;
-    align-self:flex-end
-}
+
+    .BlockInformation svg {
+        padding-left: 5px;
+        align-self: flex-end
+    }
+
 .ConnectWifi {
     height: 100%;
     display: flex;
     flex-direction: column;
     width: 100%;
+    overflow-x: scroll;
 }
+
 .InDevelopClass {
     position: absolute;
     z-index: 5;
@@ -918,6 +1049,7 @@ input[type=range]::-webkit-slider-thumb {
     align-items: center;
     background: rgba(25, 25, 25, .5);
 }
+
 #InDevelopBlock {
     width: 328px;
     height: 170px;
@@ -926,8 +1058,9 @@ input[type=range]::-webkit-slider-thumb {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content:space-around;
+    justify-content: space-around;
 }
+
 #InDevelopTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -936,17 +1069,21 @@ input[type=range]::-webkit-slider-thumb {
     line-height: 18px;
     color: #FFFFFF;
 }
+
 #InDevelopIcon {
 }
+
 .show {
-    display:flex;
+    display: flex;
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
 }
-.AutorizationtWifi{
-    display:none;
+
+.AutorizationtWifi {
+    display: none;
 }
+
 #qrcode {
     display: flex;
     justify-content: center;
@@ -958,23 +1095,29 @@ input[type=range]::-webkit-slider-thumb {
     align-items: center;
     background: #fff;
 }
+
 .QrcodeBlock {
     display: flex;
     justify-content: center;
 }
+
 #qrcode img {
     height: 220px;
     width: 220px;
 }
-#HomekitPage{
+
+#HomekitPage {
     display: none;
 }
-#PairHomekit{
+
+#PairHomekit {
     display: none;
 }
-#DispairHomekit{
+
+#DispairHomekit {
     display: none;
 }
+
 .DropUpWindowBasic {
     height: 100%;
     width: 100%;
@@ -984,6 +1127,7 @@ input[type=range]::-webkit-slider-thumb {
     bottom: 0px;
     align-items: flex-end;
 }
+
 .DropUpWindow {
     display: flex;
     flex-direction: column;
@@ -995,6 +1139,7 @@ input[type=range]::-webkit-slider-thumb {
     bottom: 0px;
     width: 100%;
 }
+
 .DropUpWindowTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -1006,6 +1151,7 @@ input[type=range]::-webkit-slider-thumb {
     text-align: center;
     color: #FFFFFF;
 }
+
 .DropUpWindowInfo {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -1017,43 +1163,57 @@ input[type=range]::-webkit-slider-thumb {
     text-align: center;
     color: #FFFFFF;
 }
+
 .DropUpAlice {
     height: 100%;
     padding: 0px 30px;
 }
+
 .AliceInfo {
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
 }
-.AliceInfo ul{
-    list-style: auto;
-    padding-left: 15px;
-}
-.AliceWidthInput{
+
+    .AliceInfo ul {
+        list-style: auto;
+        padding-left: 15px;
+    }
+
+.AliceWidthInput {
     width: 100%;
 }
+
+#LoginAliceBlock {
+    padding-top: 24px;
+}
+
 #InnerSensorPage {
     display: none;
 }
-.InnerSensorMenu{
+
+.InnerSensorMenu {
     padding: 0px 15px;
-    box-sizing:border-box;
+    box-sizing: border-box;
 }
+
 #NameAddedTopic {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 18px;
     color: #FFFFFF;
 }
-#AccountSettings{
-    display:none
+
+#AccountSettings {
+    display: none
 }
+
 #DisconnectInnerSensorBtn {
     display: none;
 }
+
 #LogOutAccount {
     background: rgba(44, 152, 240, 0.09);
     border-radius: 4px;
@@ -1065,6 +1225,7 @@ input[type=range]::-webkit-slider-thumb {
     padding: 0px 19px;
     box-sizing: border-box;
 }
+
 .LogOutAccountTitle {
     font-family: NotoSans-Regular;
     font-style: normal;
@@ -1073,30 +1234,36 @@ input[type=range]::-webkit-slider-thumb {
     line-height: 22px;
     color: #FFFFFF;
 }
+
 #AliceLink {
     display: flex;
     justify-content: space-between;
 }
-#AlicePage{
+
+#AlicePage {
     display: none;
 }
+
 #AliceLoginBlock {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 18px;
     color: #FFFFFF;
 }
+
 .PaddingForPage {
     padding: 0px 16px;
     box-sizing: border-box;
 }
+
 #LoginAliceBlock, #PasswordAliceBlock, #AliceAdded, #AliceLogIn, #AliceLogOut, .WifiMenuBlock, #ConnecthWifiMainMenu, #ConditionerBrand, #NotQrcode, #ModeWorkDevice {
     display: none;
 }
+
 #NotQrcode, #MqttSwitch {
-    font-family: Roboto;
+    font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
@@ -1105,18 +1272,23 @@ input[type=range]::-webkit-slider-thumb {
     text-align: center;
     margin-top: 50px;
 }
+
 #MqttSwitch {
     padding: 10px;
 }
+
 .SwitchInfo p {
     text-align: left;
 }
-.ShareIcon{
+
+.ShareIcon {
     padding-right: 15px;
 }
-#ModeWorkConditioner{
+
+#ModeWorkConditioner {
     display: none;
 }
+
 @-webkit-keyframes fadeIn {
     from {
         opacity: 0;
@@ -1136,6 +1308,7 @@ input[type=range]::-webkit-slider-thumb {
         opacity: 1;
     }
 }
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -1146,7 +1319,7 @@ input[type=range]::-webkit-slider-thumb {
     }
 }
 /*@font-face {
-    font-family: 'Roboto';
+    font-family: 'NotoSans-Regular';
 }*/
 @font-face {
     font-family: 'NotoSans-Regular';

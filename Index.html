@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="Content/Site.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="Content/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body class="">
@@ -652,7 +653,7 @@
                         <div class="WifiSelecting ScrollingMenu">
 
                         </div>
-                        <div class="PassworWifiArea ScrollingMenu WifiMenuBlock">
+                        <div class="PassworWifiArea ScrollingMenu WifiMenuBlock" id="PasswordBlockWifimenu">
                             <label>
                                 Пароль
                             </label>
@@ -693,6 +694,7 @@
                     <div class="SensorSelector ScrollingMenu">
                         <div id="PairHomekit">
                             <div class="HomekitInfo">
+                                <p>Экспериментальная версия прошивки HomeKit представлена для тестового ознакомления.</p>
                                 Отсканируйте QR-код, чтобы добавить устройство в приложение Дом
                             </div>
                             <div class="QrcodeBlock">
@@ -1018,9 +1020,10 @@
                             Регистрация
                         </div>
                         <div class="SettingItemAccount" id="AliceLink">
-                            <label>Яндекс.Алиса</label><div id="AliceOnlyMqtt">
-    Не доступно с MQTT
-</div>
+                            <label>Голосовые помощники</label>
+                            <div id="AliceOnlyMqtt">
+                                Не доступно с MQTT
+                            </div>
                             <div class="InfoIcon" id="AliceInfoPopUp">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="10" cy="10" r="10" fill="#035CD0" />
@@ -1098,7 +1101,7 @@
                                 </svg>
                             </div>
                             <div class="MainDisplayTitle">
-                                Яндекс Алиса
+                                Голосовые помощники
                             </div>
                         </div>
                     </div>
