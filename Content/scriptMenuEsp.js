@@ -1387,7 +1387,6 @@ function sendRefreshWifi() {
         }
     ));
 }
-setInterval(sendRefreshWifi, 10000);
 function NavigationDevice() {
     BackToSettings.forEach(item => item.onclick = NavSettings);
     SettingItems.forEach(item => item.id === 'DeviceName' ? false : item.onclick = NavItem);
