@@ -79,6 +79,7 @@
 }
 
 .SelectingBlock {
+    font-family: NotoSans-Regular;
     height: 56px;
     margin: 10px;
     max-height: 56px;
@@ -126,6 +127,7 @@
 }
 
 .PassworWifiArea {
+    font-family: NotoSans-Regular;
     display: flex;
     flex-direction: column;
     padding: 0 16px 12px 16px;
@@ -161,11 +163,15 @@
     height: 1px;
 }
 
+#PasswordFirstSetting {
+    margin-bottom: 11px;
+}
+
 .PassworWifiArea label, .StandartInputLabel {
     margin: 0;
     font-size: 12px;
     color: #2C98F0;
-    padding-bottom: 3px;
+    /*padding-bottom: 3px;*/
     background-color: #212631;
 }
 
@@ -1321,7 +1327,7 @@ input[type=range]::-webkit-slider-thumb {
 /*@font-face {
     font-family: 'NotoSans-Regular';
 }*/
-@font-face {
+/*@font-face {
     font-family: 'NotoSans-Regular';
     src: url('NotoSans.woff2') format('woff2');
-}
+}*/
