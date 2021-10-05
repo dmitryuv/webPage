@@ -78,6 +78,7 @@ var BackToFourStageFromGisteresis = document.getElementById('BackToFourStageFrom
 var BackToFourStageFromTemp = document.getElementById('BackToFourStageFromTemp');
 var CompleteSettingBtn = document.getElementById('CompleteSettingBtn');
 let ProgressUpdate = document.getElementById('ProgressUpdate');
+let SensorsLine = document.getElementsByClassName('SensorsLine')[0];
 let MaxTablo;
 let MinTablo;
 let GisteresisTablo;
@@ -468,7 +469,6 @@ function WebSocketOpen(SocketItemDevice) {
     };
     SocketItemDevice.Socket.close = function (event) {
         if (event.wasClean) {
-            console.log('Connection closed cleanly');
             wsOpen();
         } else {
             console.log('Connection failed'); // например, "убит" процесс сервера
@@ -585,6 +585,61 @@ function WebSocketOpen(SocketItemDevice) {
             else
                 SetLoader(1, null);
         }
+        if ('mqtt_data' in MessageJson) {
+            if (MessageJson.mqtt_data != undefined) {
+                SensorsLine.style.display = 'flex';
+                for (let i = 0; 4 > i; i++) {
+                    if (MessageJson.mqtt_data[i] != undefined) {
+                        let CurrentSensorArray = new Array;
+                        for (let index = 0; MessageJson.mqtt_data[i].type.length > index; index++) {
+                            CurrentSensorArray.push({
+                                type: MessageJson.mqtt_data[i].type[index],
+                                unit: MessageJson.mqtt_data[i].unit[index],
+                                data: MessageJson.mqtt_data[i].data[index],
+                                ShotAddr: MessageJson.mqtt_data[i].ShotAddr,
+                                id: MessageJson.mqtt_data[i].type + MessageJson.mqtt_data[i].ShotAddr + i
+                            });
+                        }
+                        for (let indexCurrentArray = 0; CurrentSensorArray.length > indexCurrentArray; indexCurrentArray++) {
+                            let CompleteChecked = CreateSensorBlockOrFalse(CurrentSensorArray[indexCurrentArray]);
+                            if (!CompleteChecked) {
+                                UpdateSensorValue(CurrentSensorArray[indexCurrentArray]);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}
+function CreateSensorBlockOrFalse(Sensor) {
+    let ExistSensorBlockCheck = document.getElementById(Sensor.id);
+    if (ExistSensorBlockCheck === null) {
+        let SensorBlock = document.createElement('div');
+        let SensorIcon = document.createElement('div');
+        let SensorValue = document.createElement('div');
+        let Icon = '<svg width="8" height="16" viewBox="0 0 8 16" fill="none"><path fill-rule="evenodd" clip - rule="evenodd" d = "M6.4 2.4V8.8C7.368 9.528 8 10.696 8 12C8 14.208 6.208 16 4 16C1.792 16 0 14.208 0 12C0 10.696 0.632002 9.528 1.6 8.8V2.4C1.6 1.072 2.672 0 4 0C5.328 0 6.4 1.072 6.4 2.4ZM4 1.6C3.56 1.6 3.2 1.96 3.2 2.4V9.82649C2.33468 10.139 1.71429 10.9868 1.71429 11.9837C1.71429 13.246 2.70921 14.2694 3.93651 14.2694C5.16381 14.2694 6.15873 13.246 6.15873 11.9837C6.15873 11.0363 5.59838 10.2236 4.8 9.87693V2.4C4.8 1.96 4.44 1.6 4 1.6Z" fill = "white" /></svg >';
+        let TypeTemp = Sensor.unit === 'Celsius' ? '°' : '%';
+        SensorBlock.className = 'SensorsBlock';
+        SensorBlock.id = Sensor.id;
+        SensorIcon.className = 'SensorIcon';
+        SensorValue.className = 'SensorValue';
+        SensorIcon.innerHTML = Icon;
+        SensorValue.innerHTML = Sensor.data + TypeTemp
+        SensorBlock.append(SensorIcon);
+        SensorBlock.append(SensorValue);
+        SensorsLine.append(SensorBlock);
+        return true;
+    } else
+        return false;
+}
+function UpdateSensorValue(Sensor) {
+    let GetSensorBlock = document.getElementById(Sensor.id);
+    if (GetSensorBlock != null) {
+        let ValueSensorBlock = GetSensorBlock.querySelector('.SensorValue');
+        let TypeTemp = Sensor.unit === 'Celsius' ? '°' : '%';
+        ValueSensorBlock.innerHTML = Sensor.data + TypeTemp;
     }
 }
 function SetMainDisplay(Socket) {
@@ -806,6 +861,7 @@ function ConnectInnerSensor() {
                 mqtt_external: "disconnect"
             }
         ));
+        SetLoader(5, function () { location.host = location.host });
     }
 }
 function ChangeTargetTemp() {

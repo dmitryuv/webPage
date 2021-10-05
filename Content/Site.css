@@ -356,6 +356,7 @@
 .SensorsLine {
     margin: 5px 8px;
     display: none;
+    flex-wrap: wrap;
 }
 
 .SensorsLineTitle, .StandartMenuTitle {
@@ -366,6 +367,7 @@
     line-height: 22px;
     color: #FFFFFF;
     text-transform: uppercase;
+    width: 100%;
 }
 
 .SensorsBlock {
@@ -373,6 +375,7 @@
     height: 76px;
     background: #2C3041;
     border-radius: 12px;
+    margin-right: 10px;
 }
 
 .SensorIcon {
