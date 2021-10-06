@@ -117,22 +117,22 @@ var SensorIdCollection = {
 }
 var configTermostat = {
     "config": {
-        "wifi_name": "markedWifiName",
-        "wifi_pass": "markedWifiPass",
+        "wifi_name": "",
+        "wifi_pass": "",
         "homekit": 0,
         "hysteresis": 1,
         "max_temp": 40,
         "min_temp": 15,
         "sensor_corr": 0,
         "sensor_model_id": null,
-        "sensor_internal_use": 1
+        "sensor_internal_use": 0
     }
 }
 var configConditioner = {
     "config":
     {
-        "wifi_name": "markedWifiName",
-        "wifi_pass": "markedWifiPass",
+        "wifi_name": "",
+        "wifi_pass": "",
         "air_brand": "daikin",
         "homekit": ""
     }
@@ -171,6 +171,8 @@ function FirstSettingsTools() {
         BackConditioner.onclick = function () {
             SwitchElem(ModeWorkDevice, ThreeStageSettingDissapearElem);
         }
+        let GetBrand = document.getElementById(configConditioner.config.air_brand);
+        GetBrand.querySelector('.SelectedIcon').style.display = 'block';
     }
     else if (CurrentSocket.type === 'esp8266_thermostat') {
         BackTermostat.onclick = function () {
@@ -179,6 +181,7 @@ function FirstSettingsTools() {
         if (CurrentSocket.config.sensor_internal_use === '255') {
             let InnerSensorBlock = document.getElementById('InnerSensorBlock');
             InnerSensorBlock.style.display = 'none';
+            configTermostat.config.sensor_internal_use = 255;
         }
         let ResistanceKey = getKeyByValue(SensorIdCollection, 4);
         let ResistanceItem = SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, ResistanceKey);
@@ -304,7 +307,7 @@ function InsertSensors() {
 let SelectedConditioner = document.querySelectorAll('.SelectedConditioner');
 SelectedConditioner.forEach(item => item != null ? item.onclick = function () { SelectConditionerBlock(this) } : false);
 function SelectConditionerBlock(Item) {
-    let checkedSelectedIcon = Item.children[1].style.display;
+    let checkedSelectedIcon = getComputedStyle(Item.children[1]).display;
     if (checkedSelectedIcon === 'none' || checkedSelectedIcon === '') {
         document.getElementsByClassName('ConditionerPage')[0].querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         Item.children[1].style.display = 'block';
@@ -450,10 +453,10 @@ window.onload = function () {
         mqtt_topics: null,
         wifi_networks: null,
         qr_hk: null,
-        ssdp: null
+        ssdp: null,
+        ip: null
     });
     ArraySocket.forEach(item => item != null ? WebSocketOpen(item) : false);
-    
 }
 var ArraySocket = new Array();
 var ArraySocketItem = {
@@ -461,6 +464,7 @@ var ArraySocketItem = {
     id: null,
     type: null
 }
+
 let DeviceConfigArray = new Array();
 function WebSocketOpen(SocketItemDevice) {
     SocketItemDevice.Socket.onopen = function (evt) {
@@ -470,6 +474,7 @@ function WebSocketOpen(SocketItemDevice) {
     };
     SocketItemDevice.Socket.close = function (event) {
         if (event.wasClean) {
+            console.log('Connection closed cleanly');
             wsOpen();
         } else {
             console.log('Connection failed'); // например, "убит" процесс сервера
@@ -485,12 +490,14 @@ function WebSocketOpen(SocketItemDevice) {
                         ArraySocket[i].ssdp = MessageJson.ssdp;
                         ArraySocket[i].type = MessageJson.ssdp[i].type;
                         ArraySocket[i].id = MessageJson.ssdp[i].id;
+                        ArraySocket[i].ip = MessageJson.ssdp[i].ip;
                     } else if (ArraySocket.find(item => item.id === MessageJson.ssdp[i].id) === undefined) {
                         ArraySocket.push(ArraySocketItem = {
                             Socket: new WebSocket("ws://" + MessageJson.ssdp[i].ip + "/ws"),
                             id: MessageJson.ssdp[i].id,
                             type: MessageJson.ssdp[i].type,
-                            ssdp: MessageJson.ssdp
+                            ssdp: MessageJson.ssdp,
+                            ip: MessageJson.ssdp[i].ip
                         });
                         WebSocketOpen(ArraySocket[i]);
                     }
@@ -521,7 +528,8 @@ function WebSocketOpen(SocketItemDevice) {
                         }
                     }
                     else {
-                        console.log('Первоначальная конфигурация пройдена');
+                        let FirstConfigurationComplete = document.getElementById('FirstConfigurationComplete');
+                        FirstConfigurationComplete.classList.add("show");
                     }
                 }
             }

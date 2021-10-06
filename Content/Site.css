@@ -1082,6 +1082,10 @@ input[type=range]::-webkit-slider-thumb {
 #InDevelopIcon {
 }
 
+.CompleteConfigTitle {
+    font-size: 15px !important;
+}
+
 .show {
     display: flex;
     visibility: visible;
@@ -1327,6 +1331,7 @@ input[type=range]::-webkit-slider-thumb {
         transform: rotate(360deg);
     }
 }
+
 /*@font-face {
     font-family: 'NotoSans-Regular';
 }*/
