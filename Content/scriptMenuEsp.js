@@ -440,7 +440,6 @@ function ChangeTempDynamic() {
     }
 }
 window.onload = function () {
-    ArraySocket.forEach(item => item != null ? WebSocketOpen(item) : false);
     ArraySocket.push(ArraySocketItem = {
         Socket: new WebSocket("ws://" + location.host + "/ws"),
         //id: "15299390",
@@ -453,6 +452,8 @@ window.onload = function () {
         qr_hk: null,
         ssdp: null
     });
+    ArraySocket.forEach(item => item != null ? WebSocketOpen(item) : false);
+    
 }
 var ArraySocket = new Array();
 var ArraySocketItem = {
@@ -510,7 +511,6 @@ function WebSocketOpen(SocketItemDevice) {
                         FirstSettingsTools();
                     }
                     else if (configActive === 0) {
-                        console.log(location.host);
                         let DeviceBlockCheck = document.getElementById(ArraySocket[i].id);
                         if (!DeviceBlockCheck)
                             CreateDeviceBlock(SocketItemDevice, ArraySocket[i].type);
