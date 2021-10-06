@@ -441,6 +441,18 @@ function ChangeTempDynamic() {
 }
 window.onload = function () {
     ArraySocket.forEach(item => item != null ? WebSocketOpen(item) : false);
+    ArraySocket.push(ArraySocketItem = {
+        Socket: new WebSocket("ws://" + location.host + "/ws"),
+        //id: "15299390",
+        //type: "esp8266_thermostat",
+        //type: "esp8266_air",
+        config: null,
+        update: null,
+        mqtt_topics: null,
+        wifi_networks: null,
+        qr_hk: null,
+        ssdp: null
+    });
 }
 var ArraySocket = new Array();
 var ArraySocketItem = {
@@ -448,18 +460,6 @@ var ArraySocketItem = {
     id: null,
     type: null
 }
-ArraySocket.push(ArraySocketItem = {
-    Socket: new WebSocket("ws://" + location.host + "/ws"),
-    //id: "15299390",
-    //type: "esp8266_thermostat",
-    //type: "esp8266_air",
-    config: null,
-    update: null,
-    mqtt_topics: null,
-    wifi_networks: null,
-    qr_hk: null,
-    ssdp: null
-});
 let DeviceConfigArray = new Array();
 function WebSocketOpen(SocketItemDevice) {
     SocketItemDevice.Socket.onopen = function (evt) {
@@ -509,7 +509,8 @@ function WebSocketOpen(SocketItemDevice) {
                         FirstConfigurate = true;
                         FirstSettingsTools();
                     }
-                    else {
+                    else if (configActive === 0) {
+                        console.log(location.host);
                         let DeviceBlockCheck = document.getElementById(ArraySocket[i].id);
                         if (!DeviceBlockCheck)
                             CreateDeviceBlock(SocketItemDevice, ArraySocket[i].type);
@@ -519,12 +520,15 @@ function WebSocketOpen(SocketItemDevice) {
                             InsertMqtt();
                         }
                     }
+                    else {
+                        console.log('Первоначальная конфигурация пройдена');
+                    }
                 }
             }
         }
         if ('update' in MessageJson) {
             for (let i = 0; ArraySocket.length > i; i++) {
-                if (!FirstConfigurate) {
+                if (configActive === 0 && !FirstConfigurate) {
                     if (ArraySocket[i].id === SocketItemDevice.id) {
                         ArraySocket[i].update = MessageJson.update;
                         SetMainDisplay(ArraySocket[i]);
@@ -819,7 +823,7 @@ function UpdateSet() {
         UpdateLytkoBtn.style.background = '#1F3C62';
     }
     ChooseUpdateFileBtn.onclick = function () {
-        window.location.href = "/manual_update";
+        window.location.href = "//" + CurrentSocket.ip + "/manual_update";
     }
     UpdateLytkoBtn.onclick = function () {
         let HideBtnGroup = document.querySelectorAll('.UpdateHideBtn');
