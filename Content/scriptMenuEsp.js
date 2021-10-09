@@ -716,7 +716,7 @@ function ShowMainMenuBySocket(Socket) {
     }
     DropSettings.onclick = function () {
         CurrentSocket.Socket.send(JSON.stringify("reset"));
-        SetLoader(5, function () { location.host = location.host; window.close(); })
+        SetLoader(5, function () { window.close(); })
     }
 }
 function ShowWifiConnectMarker() {
@@ -955,6 +955,7 @@ function InsertMqtt() {
         MqttSwitch.style.display = 'block';
         SwitchMQTTBtn.style.display = 'block';
         ConnectMQTTBtn.style.display = 'none';
+        DisconnectMQTTBtn.style.display = 'none';
     }
     SwitchMQTTBtn.onclick = function () {
         document.getElementById('DropUpSwitchMqtt').style.display = 'flex';
@@ -1542,6 +1543,7 @@ function AliceSet() {
     if (ArraySocket[0].config != null) {
         if (ArraySocket[0].config.mqtt_alice === '0' || ArraySocket[0].config.mqtt_alice === undefined) {
             AliceLoginGroup.forEach(item => item.style.display = 'flex');
+            AliceLogOutGroup.forEach(item => item.style.display = 'none');
         }
         else {
             let AliceLogOutGroup = document.querySelectorAll('.AliceLogOutGroup');
