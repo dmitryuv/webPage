@@ -1539,6 +1539,7 @@ function ShowInDevelop() {
 function AliceSet() {
     let AliceLoginGroup = document.querySelectorAll('.AliceLoginGroup');
     let AliceShowIcon = document.getElementById('AliceShowIcon');
+    let AliceLogOutGroup = document.querySelectorAll('.AliceLogOutGroup');
     AliceShowIcon.style.display = 'none';
     if (ArraySocket[0].config != null) {
         if (ArraySocket[0].config.mqtt_alice === '0' || ArraySocket[0].config.mqtt_alice === undefined) {
@@ -1546,7 +1547,7 @@ function AliceSet() {
             AliceLogOutGroup.forEach(item => item.style.display = 'none');
         }
         else {
-            let AliceLogOutGroup = document.querySelectorAll('.AliceLogOutGroup');
+            
             let AliceAdded = document.getElementById('AliceAdded');
             AliceAdded.querySelector('.InputInfo').innerHTML = ArraySocket[0].config.alice_login;
             AliceLogOutGroup.forEach(item => item.style.display = 'block');
