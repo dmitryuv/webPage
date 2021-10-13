@@ -916,7 +916,7 @@ function InsertMqtt() {
     let MqttSwitch = document.getElementById('MqttSwitch');
     let SwitchMQTTBtn = document.getElementById('SwitchMQTTBtn');
     let SwitchMqttComlete = document.getElementById('SwitchMqttComlete');
-    if (CurrentSocket.config.homekit === '0') {
+    if (CurrentSocket.config.homekit === '0' || CurrentSocket.config.homekit === undefined) {
         MqttSwitch.style.display = 'none';
         SwitchMQTTBtn.style.display = 'none';
         if (CurrentSocket.mqtt_topics != '{}' & CurrentSocket.mqtt_topics != null & CurrentSocket.config.mqtt_use != '0') {
