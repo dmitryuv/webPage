@@ -973,14 +973,14 @@ function InsertMqtt() {
         ));
     }
     ConnectMQTTBtn.onclick = function () {
-        if (AdressMqtt.value != '' & PortMqtt.value != '' & LoginMqtt.value != '' & PasswordMqtt.value != '') {
+        if (AdressMqtt.value != '' & PortMqtt.value != '') {
             CurrentSocket.Socket.send(JSON.stringify(
                 {
                     "mqtt_connect": {
-                        "mqtt_server": AdressMqtt.value,
-                        "mqtt_port": PortMqtt.value,
-                        "mqtt_login": LoginMqtt.value,
-                        "mqtt_password": PasswordMqtt.value
+                        "mqtt_server": AdressMqtt.value.trim(),
+                        "mqtt_port": PortMqtt.value.trim(),
+                        "mqtt_login": LoginMqtt.value.trim(),
+                        "mqtt_password": PasswordMqtt.value.trim()
                     }
                 }
             ));
