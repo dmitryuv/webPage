@@ -733,7 +733,7 @@ function SetUpdateInformation() {
     let IdDevice = LytkoUpdateInformation.querySelector('.IdDevice');
     CurrentVersion.innerHTML = 'Текущая версия ' + CurrentSocket.config.version;
     AccessVersion.innerHTML = 'Доступно обновление ' + CurrentSocket.config.version_new;
-    IdDevice.innerHTML = 'Имя устройства ' + CurrentSocket.config.name;
+    IdDevice.innerHTML = 'Id устройства ' + CurrentSocket.id;
 }
 function NavigationMainMenu() {
     AccountIcon.onclick = function () { SwitchElem(MainDisplay, AccountSettings); };
