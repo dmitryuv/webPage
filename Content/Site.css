@@ -801,7 +801,7 @@ input[type=range]::-webkit-slider-thumb {
     padding-top: 30px;
 }
 
-.AccessVersion {
+.AccessVersion, .IdDevice {
     font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
@@ -1299,6 +1299,10 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 #ModeWorkConditioner {
+    display: none;
+}
+
+#WifiPasswordPanel, #SelectChannel, #TypeResystancePanel, #TermostatTempSettingPanel, #MinMaxTemp, #Gisteresis {
     display: none;
 }
 

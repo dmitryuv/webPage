@@ -260,10 +260,6 @@ function SelectResistance(Item) {
                 SetLoader(10, function () { location.host = location.host; });
             }
         }
-        //else {
-        //    Item.children[1].style.display = 'none';
-        //    configTermostat.config.sensor_model_id = null;
-        //}
     }
     else {
         if (checkedSelectedIcon === 'none' || checkedSelectedIcon === '') {
@@ -445,6 +441,7 @@ function ChangeTempDynamic() {
 window.onload = function () {
     ArraySocket.push(ArraySocketItem = {
         Socket: new WebSocket("ws://" + location.host + "/ws"),
+        //Socket: new WebSocket("ws://192.168.1.35/ws"),
         //id: "15299390",
         //type: "esp8266_thermostat",
         //type: "esp8266_air",
@@ -512,7 +509,7 @@ function WebSocketOpen(SocketItemDevice) {
             for (let i = 0; ArraySocket.length > i; i++) {
                 if (ArraySocket[i].id === SocketItemDevice.id) {
                     ArraySocket[i].config = MessageJson.config;
-                    if (ArraySocket[0].config != null && ArraySocket[0].config.set === '0') {
+                    if (ArraySocket[0].config != null && configActive != '0') {
                         CurrentSocket = ArraySocket[0];
                         FirstConfigurate = true;
                         FirstSettingsTools();
@@ -733,8 +730,10 @@ function ShowWifiConnectMarker() {
 function SetUpdateInformation() {
     let CurrentVersion = LytkoUpdateInformation.querySelector('.CurrentVersion');
     let AccessVersion = LytkoUpdateInformation.querySelector('.AccessVersion');
+    let IdDevice = LytkoUpdateInformation.querySelector('.IdDevice');
     CurrentVersion.innerHTML = 'Текущая версия ' + CurrentSocket.config.version;
     AccessVersion.innerHTML = 'Доступно обновление ' + CurrentSocket.config.version_new;
+    IdDevice.innerHTML = 'Имя устройства ' + CurrentSocket.config.name;
 }
 function NavigationMainMenu() {
     AccountIcon.onclick = function () { SwitchElem(MainDisplay, AccountSettings); };
