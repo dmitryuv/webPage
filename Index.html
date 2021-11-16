@@ -42,16 +42,7 @@
                             <div class="SensorsLineTitle">
                                 Комната
                             </div>
-                            <!--<div class="SensorsBlock">
-                                <div class="SensorIcon">
-                                    <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 2.29256C4.27207 2.72351 4.57365 3.22459 4.87456 3.76937C5.86639 5.56497 6.71429 7.59677 6.71429 9.13396C6.71429 10.4178 6.38173 11.3173 5.9272 11.8702C5.49538 12.3955 4.87048 12.7143 4 12.7143C3.12952 12.7143 2.50462 12.3955 2.0728 11.8702C1.61827 11.3173 1.28571 10.4178 1.28571 9.13396C1.28571 7.59677 2.13361 5.56497 3.12544 3.76937C3.42636 3.22459 3.72792 2.72351 4 2.29256Z" stroke="white" stroke-width="2.57143" />
-                                    </svg>
-                                </div>
-                                <div class="SensorValue">
-                                    35%
-                                </div>
-                            </div>-->
+                            
                         </div>
                         <div class="DeviceList">
                         </div>
@@ -266,7 +257,14 @@
                             <div class="TitleInputName">
                                 Имя
                             </div>
-                            <input type="text" id="NameInput" />
+                            <div id="DeviceNameChangeBlock">
+                                <input type="text" id="NameInput"/>
+                                <div id="NameChangeIcon">
+                                    <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                         <div class="SettingItem AvialableNotification" id="UpdateSetting">
                             Обновление
@@ -423,7 +421,12 @@
                             </div>
                         </div>
                         <div class="ChangeTempPositionInfo">
-                            Для смены вывода текущей и целевой температуры нажмите кнопку ниже
+                            <p>
+                                Для смены вывода текущей и целевой температуры нажмите кнопку ниже
+                            </p>
+                            <p>
+                                Для изменения порогов температуры необходимо сбросить устройство и заново произвести первоначальную конфигурацию
+                            </p>
                         </div>
                         <div id="ChangeTempPositionPopUp" class="InDevelopClass">
                             <div id="InDevelopBlock">
@@ -611,8 +614,14 @@
                         </div>
                     </div>
                     <div class="BtnMenu UpdateHideBtn">
-                        <button id="ChooseUpdateFileBtn" class="BtnBlue BtnGrey" type="button" name="button">Выбрать файл</button>
-                        <button id="UpdateLytkoBtn" class="BtnBlue" type="button" name="button">Обновить</button>
+                        <div>
+                            <button id="ChooseUpdateFileBtn" class="BtnBlue BtnGrey" type="button" name="button">Выбрать файл</button>
+                            <button id="UpdateLytkoBtn" class="BtnBlue" type="button" name="button">Обновить</button>
+                        </div>
+                        <div id="UpdateDispleyBlock">
+                            <button id="UpdateDisplayBtn" class="BtnBlue" type="button" name="button">Обновить экран</button>
+                        </div>
+
                     </div>
                 </div>
                 <div id="ZigBeePage" class="Tab ZigBeeSetting">
@@ -628,13 +637,20 @@
                     </div>
                     <div class="SensorSelector ScrollingMenu">
                         <div class="ZigBeeInfo">
-                            Сопряжение с внешними датчиками ZigBee не
-                            установлено
+                            <p>
+                                Сопряжение с внешними датчиками ZigBee не
+                                установлено
+                            </p>
+                            <p>
+                                Максимально количество датчиков для сопряжения - 5 штук
+                            </p>
                         </div>
                         <div id="ZigBeeSensors">
+
                         </div>
                     </div>
                     <div class="BtnMenu">
+                        <button id="ClearZigBee" class="BtnBlue BtnGrey" type="button" name="button">Очистить ZigBee</button>
                         <button id="PairingBtnZigBee" class="BtnBlue" type="button" name="button">Сопряжение</button>
                         <button id="DisconnectBtnZigBee" class="BtnBlue" type="button" name="button">Отключить</button>
                     </div>
@@ -778,7 +794,7 @@
                                         Адрес
                                     </label>
                                     <div class="InputInfo">
-                                        <input class="StandartInput" type="text" id="AdressMqtt" placeholder="Введите адрес сервера" />
+                                        <input class="StandartInput" type="text" id="AdressMqtt" placeholder="Введите адрес сервера*" />
                                     </div>
                                 </div>
                                 <div class="PassworWifiAreaBottomLine"></div>
@@ -789,7 +805,7 @@
                                         Порт
                                     </label>
                                     <div class="InputInfo">
-                                        <input class="StandartInput" type="text" id="PortMqtt" placeholder="Введите порт" />
+                                        <input class="StandartInput" type="text" id="PortMqtt" placeholder="Введите порт*" />
                                     </div>
                                 </div>
                                 <div class="PassworWifiAreaBottomLine"></div>
@@ -1019,9 +1035,16 @@
                         </div>
                         <div class="SettingItemAccount" id="Registration">
                             Регистрация
+                            <div class="InfoIcon" id="RegistrationPopUp">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="10" cy="10" r="10" fill="#035CD0" />
+                                    <rect x="9" y="9" width="2" height="6" fill="white" />
+                                    <rect x="9" y="5" width="2" height="2" fill="white" />
+                                </svg>
+                            </div>
                         </div>
                         <div class="SettingItemAccount" id="AliceLink">
-                            <label>Голосовые помощники</label>
+                            <label>Голос. помощники</label>
                             <div id="AliceOnlyMqtt">
                                 Не доступно с MQTT
                             </div>
@@ -1079,6 +1102,38 @@
                             </div>
                             <div class="BtnMenu">
                                 <button id="CloseAliceInfo" class="BtnBlue" type="button" name="button">Готово</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="DropUpWindowBasic" id="DropUpRegistrationInfo">
+                        <div class="DropUpWindow DropUpAlice">
+                            <div class="DropUpWindowTitle">Регистрация</div>
+                            <div class="DropUpWindowInfo AliceInfo">
+                                <p>
+                                    Для того, чтобы подключить термостат к системе Яндекс.Алиса, понадобится зарегистрировать аккаунт на lytko.com. Для этого нажмите кнопку “Регистрация” и следуйте инструкциям
+                                </p>
+                                <p>
+                                    Также, данный аккаунт можно использовать для управления термостатом по MQTT. Для этого во вкладке “MQTT” введите следующие данные:
+                                </p>
+                                <p>
+                                    <ul>
+                                        <li>
+                                            Адрес - lytko.com
+                                        </li>
+                                        <li>
+                                            Порт - 1883
+                                        </li>
+                                        <li>
+                                            Логин - Ваш логин от учётной записи
+                                        </li>
+                                        <li>
+                                            Пароль - Ваш пароль от учётной записи
+                                        </li>
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="BtnMenu">
+                                <button id="CloseRegistrationInfo" class="BtnBlue" type="button" name="button">Готово</button>
                             </div>
                         </div>
                     </div>

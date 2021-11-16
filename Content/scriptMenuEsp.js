@@ -10,6 +10,8 @@ let ResetSettings = document.getElementById('ResetSettings');
 let DropHomekit = document.getElementById('DropHomekit');
 let BlocksInfo = document.querySelectorAll('.BlockInfo');
 let UpdateLytkoBtn = document.getElementById('UpdateLytkoBtn');
+let UpdateDispleyBlock = document.getElementById('UpdateDispleyBlock');
+let UpdateDisplayBtn = document.getElementById('UpdateDisplayBtn');
 let DropUpWindowClose = document.querySelectorAll('.DropUpWindowClose');
 let GetMQTTData = document.getElementById('GetMQTTData');
 let BackToSettings = document.querySelectorAll('.BackToSettings');
@@ -20,6 +22,7 @@ let MQTTReceivedInfo = document.getElementById('MQTTReceivedInfo');
 let ConnectMQTTBtn = document.getElementById('ConnectMQTTBtn');
 let DisconnectMQTTBtn = document.getElementById('DisconnectMQTTBtn');
 let ZigBeeSensors = document.getElementById('ZigBeeSensors');
+let ClearZigBee = document.getElementById('ClearZigBee');
 let DisconnectBtnZigBee = document.getElementById('DisconnectBtnZigBee');
 let MqttInputData = document.getElementById('MqttInputData');
 let ConnectInnerSensorBtn = document.getElementById('ConnectInnerSensorBtn');
@@ -44,17 +47,19 @@ let Registration = document.getElementById('Registration');
 let AliceLogIn = document.getElementById('AliceLogIn');
 let AliceLogOut = document.getElementById('AliceLogOut');
 let AliceInfoPopUp = document.getElementById('AliceInfoPopUp');
+let DropUpRegistrationInfo = document.getElementById('DropUpRegistrationInfo');
+let RegistrationPopUp = document.getElementById('RegistrationPopUp');
+let CloseRegistrationInfo = document.getElementById('CloseRegistrationInfo');
 let DropUpAliceInfo = document.getElementById('DropUpAliceInfo');
 let CloseAliceInfo = document.getElementById('CloseAliceInfo');
 let MainMenuWidgetArrowUp = document.querySelectorAll('.MainMenuWidgetArrowUp');
 let MainMenuWidgetArrowDown = document.querySelectorAll('.MainMenuWidgetArrowDown');
-//Conditioner Handlers
 let AutoTempHandler = document.querySelectorAll('.AutoTempHandler');
 let HeatingTempHandler = document.getElementById('HeatingTempHandler');
 let CoolTempHandler = document.getElementById('CoolTempHandler');
 let FanHandler = document.getElementById('FanHandler');
 let FanSpeedValue = document.getElementById('FanSpeedValue');
-
+let InputName = document.getElementById('InputName');
 var wifiBlocksFirstSetting = document.getElementsByClassName('WifiBlock');
 let AliceShowPass = document.getElementById('AliceShowPass');
 var ShowPassElem = document.getElementById('ShowPass');
@@ -79,6 +84,8 @@ var BackToFourStageFromTemp = document.getElementById('BackToFourStageFromTemp')
 var CompleteSettingBtn = document.getElementById('CompleteSettingBtn');
 let ProgressUpdate = document.getElementById('ProgressUpdate');
 let SensorsLine = document.getElementsByClassName('SensorsLine')[0];
+let SelectChannelBtnComplete = document.querySelector('.CompletePanelSetting');
+let SelectChannel = document.getElementById('SelectChannel');
 let MaxTablo;
 let MinTablo;
 let GisteresisTablo;
@@ -88,6 +95,9 @@ let HeatingTrigger = false;
 let CurrentSocket = null;
 let FirstConfigurate = false;
 let TypeFirstConfigurate = '';
+let FirstSettingChecker = true;
+let SelectingTypeChannel = document.querySelectorAll('.SelectingTypeChannel');
+let SelectingPowerChannel = document.querySelectorAll('.SelectingPowerChannel');
 var WifiIconArray = [
     '<svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d = "M0 5.00001L2 7.00001C6.97 2.03001 15.03 2.03001 20 7.00001L22 5.00001C15.93 -1.06999 6.08 -1.06999 0 5.00001ZM8 13L11 16L14 13C12.35 11.34 9.66 11.34 8 13ZM4 9.00001L6 11C8.76 8.24001 13.24 8.24001 16 11L18 9.00001C14.14 5.14001 7.87 5.14001 4 9.00001Z" fill = "#818288"/></svg >',
     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d = "M1 9.00001L3 11C7.97 6.03001 16.03 6.03001 21 11L23 9.00001C16.93 2.93001 7.08 2.93001 1 9.00001ZM9 17L12 20L15 17C13.35 15.34 10.66 15.34 9 17ZM5 13L7 15C9.76 12.24 14.24 12.24 17 15L19 13C15.14 9.14001 8.87 9.14001 5 13Z" fill = "#818288" /><path d="M9 17.0001L12 20.0001L15 17.0001C13.35 15.3401 10.66 15.3401 9 17.0001Z" fill="white" /></svg >',
@@ -101,6 +111,15 @@ var WifiDefCollection = {
     4: 'WPA2 / PSK',
     7: 'Открытая сеть',
     8: 'WPA / WPA2 / PSK'
+}
+var WifiDefCollectionPanel = {
+    0: 'Открытая сеть',
+    1: 'WEP',
+    2: 'WPA / PSK',
+    3: 'WPA2 / PSK',
+    4: 'WPA / WPA2 / PSK',
+    5: 'WPA2 / ENTERPRISE',
+    6: 'MAX'
 }
 var SensorIdCollection = {
     'Digital': 0,
@@ -137,6 +156,40 @@ var configConditioner = {
         "homekit": ""
     }
 };
+var configPanel = {
+    "config":
+    {
+        "wifi_name": "",
+        "wifi_pass": ""
+    }
+};
+var configPanelChannel = {
+    ConfCh1: {
+        "config_1ch":
+        {
+            "type": "thermostat",
+            "sensor_model_id": "4",
+            "sensor_corr": "0.00",
+            "hysteresis": "1.00",
+            "max_temp": "40",
+            "min_temp": "15",
+            "power": '8'
+        }
+    },
+    ConfCh2: {
+        "config_2ch":
+        {
+            "type": "thermostat",
+            "sensor_model_id": "4",
+            "sensor_corr": "0.00",
+            "hysteresis": "1.00",
+            "max_temp": "40",
+            "min_temp": "15",
+            "power": '8'
+        }
+    },
+}
+let TypeChannelSelect;
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
@@ -144,18 +197,67 @@ function SwitchElem(Disappear, Appear) {
     Disappear.style.display = 'none';
     Appear.style.display = 'flex';
 }
+let TitleChannelPanelSetting = document.getElementById('SelectChannel');
 function FirstSettingsTools() {
     let ModeOfWork = document.getElementById('ModeOfWork');
     let BackConditioner = document.getElementById('BackConditioner');
     let BackTermostat = document.getElementById('BackTermostat');
     let MqttModeWork = document.getElementById('MqttModeWork');
-    MqttModeWork.querySelector('.SelectedIcon').style.display = 'flex';
+    if (CurrentSocket.type != 'esp32_panel_4inch') {
+        MqttModeWork.querySelector('.SelectedIcon').style.display = 'flex';
+        ModeOfWork.onclick = function () {
+            let ModeWorkDevice = document.getElementById('ModeWorkDevice');
+            SwitchElem(this.parentElement.parentElement, ModeWorkDevice);
+        }
+        BackToOneStageSetting.onclick = function () {
+            SwitchElem(TwoStageSettingDissapearElem, OneStageSettingDissapearElem);
+        }
+        BackToWifiStage.onclick = function () {
+            if (WifiSelected.querySelectorAll('.GuardTypeWifi')[0].innerHTML === 'Открытая сеть') {
+                SwitchElem(ThreeStageSettingDissapearElem, OneStageSettingDissapearElem);
+            }
+            else {
+                SwitchElem(ThreeStageSettingDissapearElem, TwoStageSettingDissapearElem);
+            }
+        }
+        CompleteSettingBtn.onclick = function () {
+            if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus')
+                CurrentSocket.Socket.send(JSON.stringify(configTermostat));
+            else
+                CurrentSocket.Socket.send(JSON.stringify(configConditioner));
+            SetLoader(999, null);
+        }
+        CompleteSettingBtnTwo.onclick = function () {
+            if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus')
+                CurrentSocket.Socket.send(JSON.stringify(configTermostat));
+            else
+                CurrentSocket.Socket.send(JSON.stringify(configConditioner));
+            SetLoader(999, null);
+        }
+    } else if (CurrentSocket.type === 'esp32_panel_4inch') {
+        SelectTypePanelChannel(SelectingTypeChannel[0]);
+        SelectingTypeChannel.forEach(item => {
+            item.onclick = function () {
+                SelectTypePanelChannel(this);
+            }
+        });
+        SelectPowerChannel(SelectingPowerChannel[0]);
+        SelectingPowerChannel.forEach(item => {
+            item.onclick = function () {
+                SelectPowerChannel(this);
+            }
+        });
+        let ResistanceKey = getKeyByValue(SensorIdCollection, 4);
+        let ResistanceItem = SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, ResistanceKey);
+        if (ResistanceItem != null) {
+            SelectResistance(ResistanceItem);
+        }
+        TabloTempInitialization();
+        PanelSettingNav();
+    }
     configConditioner.config.homekit = 0;
     configTermostat.config.homekit = 0;
-    ModeOfWork.onclick = function () {
-        let ModeWorkDevice = document.getElementById('ModeWorkDevice');
-        SwitchElem(this.parentElement.parentElement, ModeWorkDevice);
-    }
+
     let SelectingModeWork = document.querySelectorAll('.SelectingModeWork');
     SelectingModeWork.forEach(item => item.onclick = function () {
         SelectingModeWork.forEach(item => item.querySelector('.SelectedIcon').style.display = 'none');
@@ -174,7 +276,7 @@ function FirstSettingsTools() {
         let GetBrand = document.getElementById(configConditioner.config.air_brand);
         GetBrand.querySelector('.SelectedIcon').style.display = 'block';
     }
-    else if (CurrentSocket.type === 'esp8266_thermostat') {
+    else if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus') {
         BackTermostat.onclick = function () {
             SwitchElem(ModeWorkDevice, FourStageSettingDissapearElem);
         }
@@ -189,7 +291,7 @@ function FirstSettingsTools() {
             SelectResistance(ResistanceItem);
         }
     }
-    if (CurrentSocket.type === 'esp8266_thermostat') {
+    if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus') {
         TabloTempInitialization();
         ResistanceBtnNext.onclick = function () {
             if (configTermostat.config.sensor_model_id != null)
@@ -201,33 +303,227 @@ function FirstSettingsTools() {
         FirstGisteresisSetting.onclick = function () { SwitchElem(FourStageSettingDissapearElem, GisteresisStageSetting); }
         FirstTempSetting.onclick = function () { SwitchElem(FourStageSettingDissapearElem, TempStageSetting); }
     }
-    BackToOneStageSetting.onclick = function () {
-        SwitchElem(TwoStageSettingDissapearElem, OneStageSettingDissapearElem);
-    }
-    BackToWifiStage.onclick = function () {
-        if (WifiSelected.querySelectorAll('.GuardTypeWifi')[0].innerHTML === 'Открытая сеть') {
-            SwitchElem(ThreeStageSettingDissapearElem, OneStageSettingDissapearElem);
+    InDevelopFunction.forEach(item => item.onclick = ShowInDevelop);
+}
+function SelectPowerChannel(item) {
+    SelectingPowerChannel.forEach(item => item.querySelector('.SelectedIcon').style.display = 'none');
+    item.querySelector('.SelectedIcon').style.display = 'block';
+    if (item.id === '16A') {
+        if (FirstChannelSelectChecker) {
+            configPanelChannel.ConfCh2.config_2ch.power = '16';
+        } else {
+            configPanelChannel.ConfCh1.config_1ch.power = '16';
         }
-        else {
-            SwitchElem(ThreeStageSettingDissapearElem, TwoStageSettingDissapearElem);
+    }
+    if (item.id === '8A') {
+        if (FirstChannelSelectChecker) {
+            configPanelChannel.ConfCh2.config_2ch.power = '8';
+        } else {
+            configPanelChannel.ConfCh1.config_1ch.power = '8';
         }
-    }
-    CompleteSettingBtn.onclick = function () {
-        if (CurrentSocket.type === 'esp8266_thermostat')
-            CurrentSocket.Socket.send(JSON.stringify(configTermostat));
-        else
-            CurrentSocket.Socket.send(JSON.stringify(configConditioner));
-        SetLoader(999, null);
-    }
-    CompleteSettingBtnTwo.onclick = function () {
-        if (CurrentSocket.type === 'esp8266_thermostat')
-            CurrentSocket.Socket.send(JSON.stringify(configTermostat));
-        else
-            CurrentSocket.Socket.send(JSON.stringify(configConditioner));
-        SetLoader(999, null);
     }
 }
+function SelectTypePanelChannel(item) {
+    SelectingTypeChannel.forEach(item => item.querySelector('.SelectedIcon').style.display = 'none');
+    item.querySelector('.SelectedIcon').style.display = 'block';
+    if (item.id === 'TermostatType') {
+        if (!FirstChannelSelectChecker) {
+            configPanelChannel.ConfCh1.config_1ch.type = 'thermostat';
+        } else {
+            configPanelChannel.ConfCh2.config_2ch.type = 'thermostat';
+            SelectChannelBtnComplete.style.display = 'none';
+            NextPanelSettingChannel.style.display = 'block';
+        }
+        TypeChannelSelect = 'thermostat';
+    } else if (item.id === 'light') {
+        if (!FirstChannelSelectChecker) {
+            if (CurrentSocket.config_2ch.type === 'none') {
+                SelectChannelBtnComplete.style.display = 'block';
+                NextPanelSettingChannel.style.display = 'none';
+            } else {
+                SelectChannelBtnComplete.style.display = 'none';
+                NextPanelSettingChannel.style.display = 'block';
+            }
+            configPanelChannel.ConfCh1.config_1ch.type = 'light';
+        } else {
+            configPanelChannel.ConfCh2.config_2ch.type = 'light';
+            if (FirstChannelSelectChecker) {
+                CompletePanelSettingChannel.style.display = 'block';
+                NextPanelSettingChannel.style.display = 'none';
+            }
+        }
+        TypeChannelSelect = 'light';
+    } else {
+        if (!FirstChannelSelectChecker) {
+            configPanelChannel.ConfCh1.config_1ch.type = 'none';
+        } else {
+            configPanelChannel.ConfCh2.config_2ch.type = 'none';
+            SelectChannelBtnComplete.style.display = 'block';
+            NextPanelSettingChannel.style.display = 'none';
+        }
+        TypeChannelSelect = 'none';
+    }
 
+}
+let FirstChannelSelectChecker = 0;
+let TermostatChannelChecker = 0;
+let NextGisterSetting = document.getElementById('NextGisterSetting');
+let GisterCompleteSettings = document.getElementById('GisterCompleteSettings');
+function PanelSettingNav() {
+    let NavElem = document.querySelectorAll('.NavElem');
+    let NavPage = document.querySelectorAll('.Tab');
+    NavElem.forEach(item => item.onclick = function () {
+        let ClassName = this.classList[0];
+        if (ClassName === 'CompletePanelSetting') {
+            let TypeLightDeviceCh1 = { "config_1ch": { "type": "" } };
+            let TypeLightDeviceCh2 = { "config_2ch": { "type": "" } };
+            let TypeNoneDeviceCh2 = { "config_2ch": { "type": "none" } };
+            if (configPanelChannel.ConfCh1.config_1ch.type === 'light') {
+                TypeLightDeviceCh1.config_1ch.type = configPanelChannel.ConfCh1.config_1ch.type;
+                CurrentSocket.Socket.send(JSON.stringify(TypeLightDeviceCh1));
+            } else {
+                CurrentSocket.Socket.send(JSON.stringify(configPanelChannel.ConfCh1));
+            }
+            if (configPanelChannel.ConfCh2.config_2ch.type === 'light') {
+                TypeLightDeviceCh2.config_2ch.type = configPanelChannel.ConfCh2.config_2ch.type;
+                CurrentSocket.Socket.send(JSON.stringify(TypeLightDeviceCh2));
+            } else if (configPanelChannel.ConfCh2.config_2ch.type === 'thermostat') {
+                CurrentSocket.Socket.send(JSON.stringify(configPanelChannel.ConfCh2));
+            } else if (configPanelChannel.ConfCh2.config_2ch.type === 'none') {
+                CurrentSocket.Socket.send(JSON.stringify(TypeNoneDeviceCh2));
+            }
+            CurrentSocket.Socket.send(JSON.stringify(configPanel));
+        }
+        if (this.id === 'NextPanelSettingChannel') {
+            if (TypeChannelSelect === 'light') {
+                ClassName = 'SelectChannel';
+                FirstChannelSelectChecker++;
+                DetermineChannle();
+                SelectTypePanelChannel(SelectingTypeChannel[0]);
+            } else {
+                //FirstChannelSelectChecker++
+                DetermineChannle();
+            }
+        }
+        if (this.id === 'BackFromChTypeResist') {
+            if (FirstChannelSelectChecker) {
+                DetermineChannle();
+            } else if (TermostatChannelChecker) {
+                DetermineChannle();
+            }
+
+        }
+        if (this.id === 'SelectChannelBackCh') {
+            if (FirstChannelSelectChecker) {
+                if (configPanelChannel.ConfCh1.config_1ch.type === 'light') {
+                    FirstChannelSelectChecker--;
+                    ClassName = 'SelectChannel';
+                } else if (configPanelChannel.ConfCh1.config_1ch.type === 'thermostat') {
+                    ClassName = 'TermostatTempSettingPanel';
+                    FirstChannelSelectChecker--;
+                }
+                DetermineChannle();
+            } else {
+                ClassName = 'WifiPasswordPanel';
+            }
+        }
+        if (ClassName === 'TypeResystancePanel' || ClassName === 'TermostatTempSettingPanel') {
+            if (!FirstChannelSelectChecker & ArraySocket[0].type_2ch != 'none') {
+                if (configPanelChannel.ConfCh1.config_1ch.power === '16') {
+                    NextGisterSetting.style.display = 'none';
+                    GisterCompleteSettings.style.display = 'block';
+                } else {
+                    NextGisterSetting.style.display = 'block';
+                    GisterCompleteSettings.style.display = 'none';
+                }
+
+            } else {
+                NextGisterSetting.style.display = 'none';
+                GisterCompleteSettings.style.display = 'block';
+            }
+        }
+        if (this.id === 'NextGisterSetting') {
+            FirstChannelSelectChecker++;
+            DetermineChannle();
+            SelectTypePanelChannel(SelectingTypeChannel[0]);
+        }
+        if (ClassName === 'TypeResystancePanel') {
+            let ResistanceKey;
+            let ResistanceItem;
+            if (!FirstChannelSelectChecker) {
+                ResistanceKey = getKeyByValue(SensorIdCollection, Number(configPanelChannel.ConfCh1.config_1ch.sensor_model_id));
+                ResistanceItem = SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, ResistanceKey);
+                if (ResistanceItem != null) {
+                    SelectResistance(ResistanceItem);
+                }
+            } else {
+                ResistanceKey = getKeyByValue(SensorIdCollection, Number(configPanelChannel.ConfCh2.config_2ch.sensor_model_id));
+                ResistanceItem = SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, ResistanceKey);
+                if (ResistanceItem != null) {
+                    SelectResistance(ResistanceItem);
+                }
+            }
+        }
+        if (ClassName === 'SelectPower') {
+            SelectPowerChannel(SelectingPowerChannel[0]);
+            SelectingPowerChannel.forEach(item => {
+                item.onclick = function () {
+                    SelectPowerChannel(this);
+                }
+            });
+            if (FirstChannelSelectChecker) {
+                SelectingPowerChannel[1].style.display = 'none';
+            } else {
+                SelectingPowerChannel[1].style.display = 'flex';
+            }
+        }
+        let TargetNavElem = this;
+
+
+        NavPage.forEach(item => {
+            item.style.display = 'none';
+            if (item.id === 'SelectChannelBack') {
+                if (configPanelChannel.ConfCh1.type != 'none') {
+                    FirstChannelSelectChecker--;
+                    DetermineChannle();
+                } else {
+                    NavPage.forEach(item => function () {
+                        if (this.id === 'TermostatTempSettingPanel')
+                            this.style.display = 'block';
+                    });
+                }
+            } else if (item.id === ClassName)
+                item.style.display = 'block';
+        });
+    });
+}
+function DetermineChannle() {
+    let title = TitleChannelPanelSetting.querySelector('.SettingsInfoTitle').querySelector('span');
+    let CompletePanelSettingChannel = document.getElementById('CompletePanelSettingChannel');
+    let NextPanelSettingChannel = document.getElementById('NextPanelSettingChannel');
+    let NoneType = document.getElementById('NoneType');
+    if (FirstChannelSelectChecker) {
+        title.innerHTML = '2 Канал';
+        NoneType.style.display = 'flex';
+        return true;
+    } else {
+        NoneType.style.display = 'none';
+        //if (CurrentSocket.config_1ch != null) {
+        //    if (CurrentSocket.config_2ch.type != 'none') {
+        //        CompletePanelSettingChannel.style.display = 'none';
+        //        NextPanelSettingChannel.style.display = 'block';
+        //    } else {
+        //        CompletePanelSettingChannel.style.display = 'none';
+        //        NextPanelSettingChannel.style.display = 'block';
+        //    }
+
+        //}
+        CompletePanelSettingChannel.style.display = 'none';
+        NextPanelSettingChannel.style.display = 'block';
+        title.innerHTML = '1 Канал';
+        return false;
+    }
+}
 ShowPass.onclick = function () {
     let ShowIcon = document.getElementById('ShowIcon');
     let NotShowIcon = document.getElementById('NotShowIcon');
@@ -253,10 +549,22 @@ function SelectResistance(Item) {
             SensorSelector.querySelectorAll('.SelectedIcon').forEach(item => item.id != 'InnerSensorIcon' ? item.style.display = 'none' : false);
             Item.children[1].style.display = 'block';
             configTermostat.config.sensor_model_id = SensorIdCollection[Item.id];
+            if (FirstChannelSelectChecker === 1) {
+                configPanelChannel.ConfCh2.config_2ch.sensor_model_id = SensorIdCollection[Item.id];
+            } else {
+                configPanelChannel.ConfCh1.config_1ch.sensor_model_id = SensorIdCollection[Item.id];
+            }
             if (!FirstConfigurate) {
-                CurrentSocket.Socket.send(JSON.stringify({
-                    "sensor_model_id": SensorIdCollection[Item.id]
-                }));
+                if (CurrentSocket.type === 'esp32_panel_4inch') {
+                    if (!CurrentSocket.channel_number)
+                        CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_model_id": SensorIdCollection[Item.id] } }));
+                    else {
+                        CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_model_id": SensorIdCollection[Item.id] } }));
+                        TermostatChannelChecker++;
+                    }
+
+                } else
+                    CurrentSocket.Socket.send(JSON.stringify({ "sensor_model_id": SensorIdCollection[Item.id] }));
                 SetLoader(10, function () { location.host = location.host; });
             }
         }
@@ -265,10 +573,12 @@ function SelectResistance(Item) {
         if (checkedSelectedIcon === 'none' || checkedSelectedIcon === '') {
             Item.children[1].style.display = 'block';
             configTermostat.config.sensor_internal_use = 1;
-            if (!FirstConfigurate)
+            if (!FirstConfigurate) {
                 CurrentSocket.Socket.send(JSON.stringify({
                     "sensor_internal_use": 1
                 }));
+            }
+
         }
         else {
             Item.children[1].style.display = 'none';
@@ -287,17 +597,37 @@ for (i = 0; TypeResistanceBlocks.length > i; i++) {
     }
 }
 function InsertSensors() {
-    if (CurrentSocket.config.sensor_model_id != '') {
+    let ChannlePanel = null;
+    let SensorModelId;
+    if (CurrentSocket.type === 'esp32_panel_4inch') {
+        ChannlePanel = CurrentSocket.active_channel === 0 ? CurrentSocket.config_1ch : CurrentSocket.config_2ch;
+        SensorModelId = ChannlePanel.sensor_model_id;
+    } else {
+        SensorModelId = CurrentSocket.config.sensor_model_id;
+    }
+    if (SensorModelId != '') {
         document.querySelectorAll('.TypeResistanceBlock').forEach(item => item.children[1].style.display = 'none');
-        let SensorType = getKeyByValue(SensorIdCollection, Number(CurrentSocket.config.sensor_model_id));
+        let SensorType = getKeyByValue(SensorIdCollection, Number(SensorModelId));
         SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, SensorType).querySelector('.SelectedIcon').style.display = 'block';
     }
     if (CurrentSocket.config.sensor_internal_use === '1') {
         SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, 'InnerSensorBlock').querySelector('.SelectedIcon').style.display = 'block';
     }
-    if (CurrentSocket.config.sensor_internal_use === '255') {
-        let InnerSensorBlock = document.getElementById('InnerSensorBlock');
+    let InnerSensorBlock = document.getElementById('InnerSensorBlock');
+    let Sensor47 = document.getElementById('47_кОм');
+    let Digital = document.getElementById('Digital');
+    if (CurrentSocket.config.sensor_internal_use === '255' || CurrentSocket.type === 'esp32_panel_4inch') {
         InnerSensorBlock.style.display = 'none';
+        Sensor47.style.display = 'none';
+        Digital.style.display = 'none';
+    }
+    else if (CurrentSocket.type === 'esp8266_thermostat_plus') {
+        InnerSensorBlock.style.display = 'none';
+        Sensor47.style.display = 'none';
+    } else {
+        InnerSensorBlock.style.display = 'flex';
+        Sensor47.style.display = 'flex';
+        Digital.style.display = 'flex';
     }
 }
 let SelectedConditioner = document.querySelectorAll('.SelectedConditioner');
@@ -338,7 +668,7 @@ let TypeChangingTempArray = {
 };
 let GisteresisInvertArray = { 1: '1.00', 2: '2.00', 3: '3.00', 4: '4.00', 5: '5.00' };
 let CorrectionInvertArray = {
-    '-5': '-5.00', '-4.5': '-4.50', '-4': '-4.00', '-3.5': '-3.50', '-3': '-3.00', '-2.5': '-2.50', '-2': '-2.00', '-1.5': '-1.50', '-1': '-1.00', '-0.5': '-0.50', '0': '0',
+    '-5': '-5.00', '-4.5': '-4.50', '-4': '-4.00', '-3.5': '-3.50', '-3': '-3.00', '-2.5': '-2.50', '-2': '-2.00', '-1.5': '-1.50', '-1': '-1.00', '-0.5': '-0.50', '0': '0.00',
     '5': '5.00', '4.5': '4.50', '4': '4.00', '3.5': '3.50', '3': '3.00', '2.5': '2.50', '2': '2.00', '1.5': '1.50', '1': '1.00', '0.5': '0.50'
 };
 function ChangeTempDynamic() {
@@ -372,17 +702,26 @@ function ChangeTempDynamic() {
             } else {
                 Sum = CurrentTemp + StepCountingTemp;
                 Tablo.innerHTML = Sum;
-                if (!FirstConfigurate) {
-                    if (TypeChangingTemp === 'TabloTempMin')
-                        CurrentSocket.Socket.send(JSON.stringify({
-                            "min_temp": Sum
-                        }));
-                    else
-                        CurrentSocket.Socket.send(JSON.stringify({
-                            "max_temp": Sum
-                        }));
+                if (!FirstConfigurate & !configActive) {
+                    if (TypeChangingTemp === 'TabloTempMin') {
+                        if (CurrentSocket.type === 'esp32_panel_4inch') {
+                            if (!CurrentSocket.channel_number)
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "min_temp": Sum } }));
+                            else
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "min_temp": Sum } }));
+                        } else
+                            CurrentSocket.Socket.send(JSON.stringify({ "min_temp": Sum }));
+                    }
+                    else {
+                        if (CurrentSocket.type === 'esp32_panel_4inch') {
+                            if (!CurrentSocket.channel_number)
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "max_temp": Sum } }));
+                            else
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "max_temp": Sum } }));
+                        } else
+                            CurrentSocket.Socket.send(JSON.stringify({ "max_temp": Sum }));
+                    }
                 }
-
             }
         }
         else if (!DirectionChangeTemp & CurrentTemp > RangeStart) {
@@ -391,24 +730,49 @@ function ChangeTempDynamic() {
             } else {
                 Sum = CurrentTemp - StepCountingTemp;
                 Tablo.innerHTML = Sum;
-                if (!FirstConfigurate) {
-                    if (TypeChangingTemp === 'TabloTempMin')
-                        CurrentSocket.Socket.send(JSON.stringify({
-                            "min_temp": Sum
-                        }));
-                    else
-                        CurrentSocket.Socket.send(JSON.stringify({
-                            "max_temp": Sum
-                        }));
+                if (!FirstConfigurate & !configActive) {
+                    if (TypeChangingTemp === 'TabloTempMin') {
+                        if (CurrentSocket.type === 'esp32_panel_4inch') {
+                            if (!CurrentSocket.channel_number)
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "min_temp": Sum } }));
+                            else
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "min_temp": Sum } }));
+                        } else
+                            CurrentSocket.Socket.send(JSON.stringify({ "min_temp": Sum }));
+                    }
+                    else {
+                        if (CurrentSocket.type === 'esp32_panel_4inch') {
+                            if (!CurrentSocket.channel_number)
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "max_temp": Sum } }));
+                            else
+                                CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "max_temp": Sum } }));
+                        } else
+                            CurrentSocket.Socket.send(JSON.stringify({ "max_temp": Sum }));
+                    }
                 }
             }
         }
         else
             Tablo.innerHTML = CurrentTemp;
-        if (TypeChangingTemp === 'TabloTempMin')
-            configTermostat.config.min_temp = Sum;
+        if (TypeChangingTemp === 'TabloTempMin') {
+            if (PanelMenu) {
+                if (FirstChannelSelectChecker === 1)
+                    configPanelChannel.ConfCh2.config_2ch.min_temp = Sum;
+                else
+                    configPanelChannel.ConfCh1.config_1ch.min_temp = Sum;
+            } else {
+                configTermostat.config.min_temp = Sum;
+            }
+        }
         if (TypeChangingTemp === 'TabloTempMax')
-            configTermostat.config.max_temp = Sum;
+            if (PanelMenu) {
+                if (FirstChannelSelectChecker === 1)
+                    configPanelChannel.ConfCh2.config_2ch.max_temp = Sum;
+                else
+                    configPanelChannel.ConfCh1.config_1ch.max_temp = Sum;
+            } else {
+                configTermostat.config.max_temp = Sum;
+            }
     } else {
         if (DirectionChangeTemp & CurrentTemp < RangeEnd) {
             Sum = CurrentTemp + StepCountingTemp;
@@ -421,37 +785,66 @@ function ChangeTempDynamic() {
         else
             Tablo.innerHTML = CurrentTemp;
         if (TypeChangingTemp === 'TabloTempGisteresis' & GisteresisInvertArray[Sum] != undefined) {
-            configTermostat.config.hysteresis = GisteresisInvertArray[Sum];
-            if (!FirstConfigurate)
-                CurrentSocket.Socket.send(JSON.stringify({
-                    "hysteresis": GisteresisInvertArray[Sum]
-                }));
-        }
+            if (PanelMenu) {
+                if (FirstChannelSelectChecker === 1)
+                    configPanelChannel.ConfCh2.config_2ch.hysteresis = GisteresisInvertArray[Sum];
+                else
+                    configPanelChannel.ConfCh1.config_1ch.hysteresis = GisteresisInvertArray[Sum];
+            } else {
+                configTermostat.config.hysteresis = GisteresisInvertArray[Sum];
+            }
+            if (!FirstConfigurate & !configActive) {
+                if (CurrentSocket.type === 'esp32_panel_4inch') {
+                    if (!CurrentSocket.channel_number)
+                        CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "hysteresis": GisteresisInvertArray[Sum] } }));
+                    else
+                        CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "hysteresis": GisteresisInvertArray[Sum] } }));
+                } else
+                    CurrentSocket.Socket.send(JSON.stringify({ "hysteresis": GisteresisInvertArray[Sum] }));
+            }
 
+        }
         if (TypeChangingTemp === 'TabloTempCorrection' & CorrectionInvertArray[Sum] != undefined) {
-            if (!FirstConfigurate)
-                CurrentSocket.Socket.send(JSON.stringify({
-                    "sensor_corr": CorrectionInvertArray[Sum]
-                }));
-            configTermostat.config.sensor_corr = Sum;
+            if (!FirstConfigurate & !configActive) {
+                if (CurrentSocket.type === 'esp32_panel_4inch') {
+                    if (!CurrentSocket.channel_number)
+                        CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_corr": CorrectionInvertArray[Sum] } }));
+                    else
+                        CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_corr": CorrectionInvertArray[Sum] } }));
+                } else
+                    CurrentSocket.Socket.send(JSON.stringify({ "sensor_corr": CorrectionInvertArray[Sum] }));
+            }
+            if (PanelMenu) {
+                if (FirstChannelSelectChecker === 1)
+                    configPanelChannel.ConfCh2.config_2ch.sensor_corr = Sum;
+                else
+                    configPanelChannel.ConfCh1.config_1ch.sensor_corr = Sum;
+            } else {
+                configTermostat.config.sensor_corr = Sum;
+            }
         }
-
     }
 }
 window.onload = function () {
     ArraySocket.push(ArraySocketItem = {
-        Socket: new WebSocket("ws://" + location.host + "/ws"),
-        //Socket: new WebSocket("ws://192.168.1.35/ws"),
-        //id: "15299390",
-        //type: "esp8266_thermostat",
-        //type: "esp8266_air",
+        Socket: new WebSocket("ws://"+ location.host +"/ws"),
         config: null,
+        config_1ch: null,
+        config_2ch: null,
+        type_1ch: null,
+        type_2ch: null,
         update: null,
         mqtt_topics: null,
         wifi_networks: null,
         qr_hk: null,
         ssdp: null,
-        ip: null
+        ip: null,
+        id_for_use_ch1: null,
+        id_for_use_ch2: null,
+        channel_number: null,
+        active_channel: null,
+        update_1ch: null,
+        update_2ch: null
     });
     ArraySocket.forEach(item => item != null ? WebSocketOpen(item) : false);
 }
@@ -461,7 +854,8 @@ var ArraySocketItem = {
     id: null,
     type: null
 }
-
+let swuthheat1 = true;
+let swuthheat = false;
 let DeviceConfigArray = new Array();
 function WebSocketOpen(SocketItemDevice) {
     SocketItemDevice.Socket.onopen = function (evt) {
@@ -474,7 +868,7 @@ function WebSocketOpen(SocketItemDevice) {
             console.log('Connection closed cleanly');
             wsOpen();
         } else {
-            console.log('Connection failed'); // например, "убит" процесс сервера
+            console.log('Connection failed');
         }
         console.log('Code: ' + event.code + ' reason: ' + event.reason);
     };
@@ -487,14 +881,20 @@ function WebSocketOpen(SocketItemDevice) {
                         ArraySocket[i].ssdp = MessageJson.ssdp;
                         ArraySocket[i].type = MessageJson.ssdp[i].type;
                         ArraySocket[i].id = MessageJson.ssdp[i].id;
+                        ArraySocket[i].id_for_use_ch1 = MessageJson.ssdp[i].id + 'type_1ch';
+                        ArraySocket[i].id_for_use_ch2 = MessageJson.ssdp[i].id + 'type_2ch';
                         ArraySocket[i].ip = MessageJson.ssdp[i].ip;
+                        ArraySocket[i].type_1ch = MessageJson.ssdp[i].type_1ch != undefined ? MessageJson.ssdp[i].type_1ch : null;
+                        ArraySocket[i].type_2ch = MessageJson.ssdp[i].type_2ch != undefined ? MessageJson.ssdp[i].type_2ch : null;
                     } else if (ArraySocket.find(item => item.id === MessageJson.ssdp[i].id) === undefined) {
                         ArraySocket.push(ArraySocketItem = {
                             Socket: new WebSocket("ws://" + MessageJson.ssdp[i].ip + "/ws"),
                             id: MessageJson.ssdp[i].id,
                             type: MessageJson.ssdp[i].type,
                             ssdp: MessageJson.ssdp,
-                            ip: MessageJson.ssdp[i].ip
+                            ip: MessageJson.ssdp[i].ip,
+                            type_1ch: MessageJson.ssdp[i].type_1ch != undefined ? MessageJson.ssdp[i].type_1ch : null,
+                            type_2ch: MessageJson.ssdp[i].type_2ch != undefined ? MessageJson.ssdp[i].type_2ch : null,
                         });
                         WebSocketOpen(ArraySocket[i]);
                     }
@@ -502,31 +902,61 @@ function WebSocketOpen(SocketItemDevice) {
             }
         }
         if (MessageJson.wifi_networks != null) {
-            ArraySocket[0].wifi_networks = MessageJson.wifi_networks;
-            ShowWifiList(ArraySocket[0].wifi_networks);
+            if (ArraySocket[0].Socket === this) {
+                ArraySocket[0].wifi_networks = MessageJson.wifi_networks;
+                ShowWifiList(ArraySocket[0].wifi_networks);
+            }
         }
         if ('config' in MessageJson) {
-            for (let i = 0; ArraySocket.length > i; i++) {
-                if (ArraySocket[i].id === SocketItemDevice.id) {
-                    ArraySocket[i].config = MessageJson.config;
-                    if (ArraySocket[0].config != null && configActive != '0') {
-                        CurrentSocket = ArraySocket[0];
-                        FirstConfigurate = true;
-                        FirstSettingsTools();
-                    }
-                    else if (configActive === 0) {
-                        let DeviceBlockCheck = document.getElementById(ArraySocket[i].id);
-                        if (!DeviceBlockCheck)
-                            CreateDeviceBlock(SocketItemDevice, ArraySocket[i].type);
-                        NavigationMainMenu();
-                        if (CurrentSocket) {
-                            ChangeTargetTemp();
-                            InsertMqtt();
+            if (MessageJson.config != '{}') {
+                for (let i = 0; ArraySocket.length > i; i++) {
+                    if (ArraySocket[i].id === SocketItemDevice.id) {
+                        ArraySocket[i].config = MessageJson.config;
+                        if (ArraySocket[0].config != null && configActive != '0') {
+                            CurrentSocket = ArraySocket[0];
+                            FirstConfigurate = true;
+                            if (FirstSettingChecker) {
+                                FirstSettingChecker = false;
+                                FirstSettingsTools();
+                            }
+                            if (ArraySocket[0].type === 'esp32_panel_4inch') {
+                                ArraySocket[0].type_1ch = 'thermostat';
+                                ArraySocket[0].type_2ch = 'thermostat';
+                                configPanelChannel.ConfCh1.config_1ch.type = ArraySocket[0].type_1ch;
+                                configPanelChannel.ConfCh2.config_2ch.type = ArraySocket[0].type_2ch;
+                            }
                         }
-                    }
-                    else {
-                        let FirstConfigurationComplete = document.getElementById('FirstConfigurationComplete');
-                        FirstConfigurationComplete.classList.add("show");
+                        else if (configActive === 0) {
+                            let DeviceBlockCheck = document.getElementById(ArraySocket[i].id);
+                            if (!DeviceBlockCheck && ArraySocket[i].type != 'esp32_panel_4inch') {
+                                CreateDeviceBlock(SocketItemDevice, ArraySocket[i].type);
+                            }
+                            else if (ArraySocket[i].type === 'esp32_panel_4inch') {
+                                let DeviceBlockCh1 = document.getElementById(ArraySocket[i].id_for_use_ch1);
+                                let DeviceBlockCh2 = document.getElementById(ArraySocket[i].id_for_use_ch2);
+                                if (DeviceBlockCh1) {
+                                    let NameBlockCh1 = DeviceBlockCh1.querySelector('.DeviceBlockTitle');
+                                    NameBlockCh1.innerHTML = ArraySocket[i].config.name;
+                                }
+                                if (DeviceBlockCh2) {
+                                    let NameBlockCh2 = DeviceBlockCh2.querySelector('.DeviceBlockTitle');
+                                    NameBlockCh2.innerHTML = ArraySocket[i].config.name;
+                                }
+
+                            } else if (DeviceBlockCheck) {
+                                let NameBlock = DeviceBlockCheck.querySelector('.DeviceBlockTitle');
+                                NameBlock.innerHTML = ArraySocket[i].config.name;
+                            }
+                            NavigationMainMenu();
+                            if (CurrentSocket) {
+                                ChangeTargetTemp();
+                                InsertMqtt();
+                            }
+                        }
+                        else {
+                            let FirstConfigurationComplete = document.getElementById('FirstConfigurationComplete');
+                            FirstConfigurationComplete.classList.add("show");
+                        }
                     }
                 }
             }
@@ -535,20 +965,22 @@ function WebSocketOpen(SocketItemDevice) {
             for (let i = 0; ArraySocket.length > i; i++) {
                 if (configActive === 0 && !FirstConfigurate) {
                     if (ArraySocket[i].id === SocketItemDevice.id) {
-                        ArraySocket[i].update = MessageJson.update;
-                        SetMainDisplay(ArraySocket[i]);
-                        if (ArraySocket[i].type === 'esp8266_thermostat') {
-                            let MaindisplayHeating = document.getElementById(ArraySocket[i].id).querySelector('.HeatingTermostatByID').style.background = ArraySocket[i].update.heating === 'off' ? '#1F3C62' : '#035CD0';
-                        }
-                        else {
-                            if (CurrentSocket != null && CurrentSocket.type === 'esp8266_air') {
-                                UpdateConditioner(CurrentSocket);
+                        if (ArraySocket[i].type != 'esp32_panel_4inch') {
+                            ArraySocket[i].update = MessageJson.update;
+                            SetMainDisplay(ArraySocket[i]);
+                            if (ArraySocket[i].type === 'esp8266_thermostat' || ArraySocket[i].type === 'esp8266_thermostat_plus') {
+                                let MaindisplayHeating = document.getElementById(ArraySocket[i].id).querySelector('.HeatingTermostatByID').style.background = ArraySocket[i].update.heating === 'off' ? '#1F3C62' : '#035CD0';
                             }
-                        }
-                        if (CurrentSocket != null) {
-                            ChangeTargetTemp();
-                            if (CurrentSocket.type === 'esp8266_thermostat') {
-                                HeatingRegulate();
+                            else {
+                                if (CurrentSocket != null && CurrentSocket.type === 'esp8266_air') {
+                                    UpdateConditioner(CurrentSocket);
+                                }
+                            }
+                            if (CurrentSocket != null) {
+                                ChangeTargetTemp();
+                                if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus') {
+                                    HeatingRegulate();
+                                }
                             }
                         }
                     }
@@ -575,7 +1007,27 @@ function WebSocketOpen(SocketItemDevice) {
                     ArraySocket[i].mqtt_topics = MessageJson.mqtt_topics;
                 }
             }
-
+        }
+        if ('mqtt_topics_1ch' in MessageJson) {
+            for (let i = 0; ArraySocket.length > i; i++) {
+                if (ArraySocket[i].id === SocketItemDevice.id) {
+                    ArraySocket[i].mqtt_topics_1ch = MessageJson.mqtt_topics_1ch;
+                }
+            }
+        }
+        if ('mqtt_topics_2ch' in MessageJson) {
+            for (let i = 0; ArraySocket.length > i; i++) {
+                if (ArraySocket[i].id === SocketItemDevice.id) {
+                    ArraySocket[i].mqtt_topics_2ch = MessageJson.mqtt_topics_2ch;
+                }
+            }
+        }
+        if ('zigbee' in MessageJson) {
+            for (let i = 0; ArraySocket.length > i; i++) {
+                if (ArraySocket[i].id === SocketItemDevice.id) {
+                    ArraySocket[i].zigbee = MessageJson.zigbee;
+                }
+            }
         }
         if ('qr_hk' in MessageJson) {
             for (let i = 0; ArraySocket.length > i; i++) {
@@ -587,6 +1039,76 @@ function WebSocketOpen(SocketItemDevice) {
         }
         if ('refresh' in MessageJson) {
             location.host = location.host;
+        }
+        if ('config_1ch' in MessageJson) {
+            for (let i = 0; ArraySocket.length > i; i++) {
+                ArraySocket[i].config_1ch = MessageJson.config_1ch;
+                if (ArraySocket[i].id === SocketItemDevice.id && !PanelMenu) {
+                    NavigationMainMenu();
+                    if (!configActive) {
+                        SocketItemDevice.channel_number = 0;
+                        let DeviceBlockCheck = document.getElementById(ArraySocket[i].id_for_use_ch1);
+                        if (!DeviceBlockCheck) {
+                            if (ArraySocket[i].type_1ch != 'none') {
+                                CreateDeviceBlock(SocketItemDevice, ArraySocket[i].type);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        if ('config_2ch' in MessageJson) {
+            for (let i = 0; ArraySocket.length > i; i++) {
+                ArraySocket[i].config_2ch = MessageJson.config_2ch;
+                if (ArraySocket[i].id === SocketItemDevice.id && !PanelMenu) {
+                    NavigationMainMenu();
+                    if (!configActive) {
+                        SocketItemDevice.channel_number = 1;
+                        let DeviceBlockCheck = document.getElementById(ArraySocket[i].id_for_use_ch2);
+                        if (!DeviceBlockCheck) {
+                            if (ArraySocket[i].type_2ch != 'none') {
+                                CreateDeviceBlock(SocketItemDevice, ArraySocket[i].type);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if ('update_1ch' in MessageJson) {
+            for (let i = 0; ArraySocket.length > i; i++) {
+                if (ArraySocket[i].id === SocketItemDevice.id & !configActive && SocketItemDevice.type === 'esp32_panel_4inch') {
+                    ArraySocket[i].update_1ch = MessageJson.update_1ch;
+                    ArraySocket[i].channel_number = 0;
+                    let MaindisplayHeating = document.getElementById(ArraySocket[i].id_for_use_ch1);
+                    if (MaindisplayHeating != null) {
+                        MaindisplayHeating.querySelector('.HeatingTermostatByID').style.background = ArraySocket[i].update_1ch.heating === 'heat' ? '#035CD0' : '#1F3C62';
+                    }
+                    SetMainDisplay(SocketItemDevice);
+                    if (CurrentSocket != null) {
+                        HeatingRegulate();
+                        ChangeTargetTemp();
+                    }
+                }
+            }
+        }
+        if ('update_2ch' in MessageJson) {
+            for (let i = 0; ArraySocket.length > i; i++) {
+                if (SocketItemDevice.type_2ch != 'none')
+                    if (ArraySocket[i].id === SocketItemDevice.id & !configActive && SocketItemDevice.type === 'esp32_panel_4inch') {
+                        ArraySocket[i].update_2ch = MessageJson.update_2ch;
+                        ArraySocket[i].channel_number = 1;
+                        let MaindisplayHeating = document.getElementById(ArraySocket[i].id_for_use_ch2);
+                        if (MaindisplayHeating != null) {
+                            MaindisplayHeating.querySelector('.HeatingTermostatByID').style.background = ArraySocket[i].update_2ch.heating === 'heat' ? '#035CD0' : '#1F3C62';
+                        }
+                        SetMainDisplay(SocketItemDevice);
+                        if (CurrentSocket != null) {
+                            HeatingRegulate();
+                            ChangeTargetTemp();
+                        }
+                    }
+            }
         }
         if ('loading' in MessageJson) {
             if (MessageJson.loading)
@@ -606,7 +1128,33 @@ function WebSocketOpen(SocketItemDevice) {
                                 unit: MessageJson.mqtt_data[i].unit[index],
                                 data: MessageJson.mqtt_data[i].data[index],
                                 ShotAddr: MessageJson.mqtt_data[i].ShotAddr,
-                                id: MessageJson.mqtt_data[i].type + MessageJson.mqtt_data[i].ShotAddr + i
+                                id: MessageJson.mqtt_data[i].type[index] + MessageJson.mqtt_data[i].ShotAddr + i
+                            });
+                        }
+                        for (let indexCurrentArray = 0; CurrentSensorArray.length > indexCurrentArray; indexCurrentArray++) {
+                            let CompleteChecked = CreateSensorBlockOrFalse(CurrentSensorArray[indexCurrentArray]);
+                            if (!CompleteChecked) {
+                                UpdateSensorValue(CurrentSensorArray[indexCurrentArray]);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        if ('zigbee_data' in MessageJson) {
+            if (MessageJson.zigbee_data != undefined & MessageJson.zigbee_data != '{}' & configActive === 0) {
+                SensorsLine.style.display = 'flex';
+                for (let i = 0; 5 > i; i++) {
+                    if (MessageJson.zigbee_data[i] != undefined) {
+                        let CurrentSensorArray = new Array;
+                        for (let index = 0; MessageJson.zigbee_data[i].type.length > index; index++) {
+                            CurrentSensorArray.push({
+                                type: MessageJson.zigbee_data[i].type[index],
+                                unit: MessageJson.zigbee_data[i].unit[index],
+                                data: MessageJson.zigbee_data[i].data[index],
+                                ShotAddr: MessageJson.zigbee_data[i].ShotAddr,
+                                id: MessageJson.zigbee_data[i].type[index] + MessageJson.zigbee_data[i].ShotAddr + i
                             });
                         }
                         for (let indexCurrentArray = 0; CurrentSensorArray.length > indexCurrentArray; indexCurrentArray++) {
@@ -622,13 +1170,17 @@ function WebSocketOpen(SocketItemDevice) {
         }
     }
 }
+var SensorIconArray = {
+    'sensor_temp': '<svg width="8" height="16" viewBox="0 0 8 16" fill="none"><path fill- rule="evenodd" clip - rule="evenodd" d = "M6.4 2.4V8.8C7.368 9.528 8 10.696 8 12C8 14.208 6.208 16 4 16C1.792 16 0 14.208 0 12C0 10.696 0.632002 9.528 1.6 8.8V2.4C1.6 1.072 2.672 0 4 0C5.328 0 6.4 1.072 6.4 2.4ZM4 1.6C3.56 1.6 3.2 1.96 3.2 2.4V9.82649C2.33468 10.139 1.71429 10.9868 1.71429 11.9837C1.71429 13.246 2.70921 14.2694 3.93651 14.2694C5.16381 14.2694 6.15873 13.246 6.15873 11.9837C6.15873 11.0363 5.59838 10.2236 4.8 9.87693V2.4C4.8 1.96 4.44 1.6 4 1.6Z" fill = "white" /></svg>',
+    'sensor_hum': '<svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M4 2.29256C4.27207 2.72351 4.57365 3.22459 4.87456 3.76937C5.86639 5.56497 6.71429 7.59677 6.71429 9.13396C6.71429 10.4178 6.38173 11.3173 5.9272 11.8702C5.49538 12.3955 4.87048 12.7143 4 12.7143C3.12952 12.7143 2.50462 12.3955 2.0728 11.8702C1.61827 11.3173 1.28571 10.4178 1.28571 9.13396C1.28571 7.59677 2.13361 5.56497 3.12544 3.76937C3.42636 3.22459 3.72792 2.72351 4 2.29256Z" stroke="white" stroke- width="2.57143" /></svg >'
+};
 function CreateSensorBlockOrFalse(Sensor) {
     let ExistSensorBlockCheck = document.getElementById(Sensor.id);
     if (ExistSensorBlockCheck === null) {
         let SensorBlock = document.createElement('div');
         let SensorIcon = document.createElement('div');
         let SensorValue = document.createElement('div');
-        let Icon = '<svg width="8" height="16" viewBox="0 0 8 16" fill="none"><path fill-rule="evenodd" clip - rule="evenodd" d = "M6.4 2.4V8.8C7.368 9.528 8 10.696 8 12C8 14.208 6.208 16 4 16C1.792 16 0 14.208 0 12C0 10.696 0.632002 9.528 1.6 8.8V2.4C1.6 1.072 2.672 0 4 0C5.328 0 6.4 1.072 6.4 2.4ZM4 1.6C3.56 1.6 3.2 1.96 3.2 2.4V9.82649C2.33468 10.139 1.71429 10.9868 1.71429 11.9837C1.71429 13.246 2.70921 14.2694 3.93651 14.2694C5.16381 14.2694 6.15873 13.246 6.15873 11.9837C6.15873 11.0363 5.59838 10.2236 4.8 9.87693V2.4C4.8 1.96 4.44 1.6 4 1.6Z" fill = "white" /></svg >';
+        let Icon = SensorIconArray[Sensor.type];
         let TypeTemp = Sensor.unit === 'Celsius' ? '°' : '%';
         SensorBlock.className = 'SensorsBlock';
         SensorBlock.id = Sensor.id;
@@ -652,9 +1204,14 @@ function UpdateSensorValue(Sensor) {
     }
 }
 function SetMainDisplay(Socket) {
-    let MainDisplayBlock = document.getElementById(Socket.id);
+    let BlockId = Socket.type === 'esp32_panel_4inch' ? Socket.channel_number === 0 ? Socket.id_for_use_ch1 : Socket.id_for_use_ch2 : Socket.id;
+    let MainDisplayBlock = document.getElementById(BlockId);
     let MainDisplayValue = MainDisplayBlock.querySelectorAll('.DeviceBlockValue')[0];
-    MainDisplayValue.innerHTML = Socket.update.temp + '°C';
+    if (Socket.type === 'esp32_panel_4inch') {
+        MainDisplayValue.innerHTML = Socket.channel_number === 0 ? Socket.update_1ch.temp + '°C' : Socket.update_2ch.temp + '°C';
+    }
+    else
+        MainDisplayValue.innerHTML = Socket.update.temp + '°C';
     let AutoHandlerConditioner = MainDisplayBlock.querySelector('.AutoConditionerMainDisplay');
     let FanHandlerMainDisplay = MainDisplayBlock.querySelector('.FanHandlerMainDisplay');
     if (AutoHandlerConditioner != null) {
@@ -696,7 +1253,6 @@ function ShowMainMenuBySocket(Socket) {
     ShowWifiConnectMarker()
     PairHk();
     UpdateSet();
-    ZigBeeSet();
     NavigationDevice();
     ConnectInnerSensor();
     InsertExternalInnerSensor();
@@ -707,14 +1263,34 @@ function ShowMainMenuBySocket(Socket) {
         UpdateConditioner(Socket);
         ConditionerHandlers();
         InsertConditionerBrand();
+        let Title = MainDisplayConditioner.querySelector('.StandartMenuTitle');
+        Title.innerHTML = Socket.config.name;
     }
-    if (Socket.type === 'esp8266_thermostat') {
+    if (Socket.type === 'esp8266_thermostat' || Socket.type === 'esp32_panel_4inch' || CurrentSocket.type === 'esp8266_thermostat_plus') {
+        let Title = MainDisplayTermostat.querySelector('.StandartMenuTitle');
+        Title.innerHTML = Socket.config.name;
         InsertSensors();
+        if (Socket.type === 'esp32_panel_4inch') {
+            ZigBeeSet();
+        }
     }
     DropSettings.onclick = function () {
         CurrentSocket.Socket.send(JSON.stringify("reset"));
         SetLoader(5, function () { window.close(); })
     }
+    let NameChangeIcon = document.getElementById('NameChangeIcon');
+    InputName.onclick = ShowIcon;
+    function ShowIcon() {
+        NameChangeIcon.style.display = 'block';
+    }
+    NameChangeIcon.onclick = function () {
+        NameChangeIcon.style.display = 'none';
+        CurrentSocket.Socket.send(JSON.stringify(
+            { "config": { "name": InputName.value } }
+        ));
+    }
+    let ArrowsTemp = TempStageSetting.querySelectorAll('.ArrowTemp');
+    ArrowsTemp.forEach(item => item.style.display = 'none');
 }
 function ShowWifiConnectMarker() {
     if (!FirstConfigurate) {
@@ -732,7 +1308,8 @@ function SetUpdateInformation() {
     let AccessVersion = LytkoUpdateInformation.querySelector('.AccessVersion');
     let IdDevice = LytkoUpdateInformation.querySelector('.IdDevice');
     CurrentVersion.innerHTML = 'Текущая версия ' + CurrentSocket.config.version;
-    AccessVersion.innerHTML = 'Доступно обновление ' + CurrentSocket.config.version_new;
+    if (CurrentSocket.config.link != '')
+        AccessVersion.innerHTML = 'Доступно обновление ' + CurrentSocket.config.version_new;
     IdDevice.innerHTML = 'Id устройства ' + CurrentSocket.id;
 }
 function NavigationMainMenu() {
@@ -747,10 +1324,22 @@ function NavigationMainMenu() {
 }
 function MainMenuWidgetBtn() {
     MainMenuWidgetArrowUp.forEach(item => item.onclick = function () {
-        CurrentSocket.Socket.send(JSON.stringify("tempUp"));
+        if (CurrentSocket.type === 'esp32_panel_4inch') {
+            if (!CurrentSocket.active_channel)
+                CurrentSocket.Socket.send(JSON.stringify({ "update_1ch": { "tempUp": 1 } }));
+            else
+                CurrentSocket.Socket.send(JSON.stringify({ "update_2ch": { "tempUp": 1 } }));
+        } else
+            CurrentSocket.Socket.send(JSON.stringify("tempUp"));
     });
     MainMenuWidgetArrowDown.forEach(item => item.onclick = function () {
-        CurrentSocket.Socket.send(JSON.stringify("tempDown"));
+        if (CurrentSocket.type === 'esp32_panel_4inch') {
+            if (!CurrentSocket.active_channel)
+                CurrentSocket.Socket.send(JSON.stringify({ "update_1ch": { "tempDown": 1 } }));
+            else
+                CurrentSocket.Socket.send(JSON.stringify({ "update_2ch": { "tempDown": 1 } }));
+        } else
+            CurrentSocket.Socket.send(JSON.stringify("tempDown"));
     });
 }
 function ConditionerHandlers() {
@@ -819,7 +1408,7 @@ function UpdateSet() {
         InputName = document.getElementById('NameInput');
         InputName.value = CurrentSocket.config.name;
     }
-    if (CurrentSocket.update.newfw != '0') {
+    if (CurrentSocket.config.link != '') {
         UpdateMarker.style.display = 'flex';
         UpdateLytkoBtn.removeAttribute('disabled');
         UpdateLytkoBtn.style.background = '#035CD0';
@@ -831,6 +1420,30 @@ function UpdateSet() {
     }
     ChooseUpdateFileBtn.onclick = function () {
         window.location.href = "//" + CurrentSocket.ip + "/manual_update";
+    }
+    let UpdateDisplayBtn = document.getElementById('UpdateDisplayBtn');
+    if (CurrentSocket.type === 'esp8266_thermostat_plus') {
+        if (CurrentSocket.config.dwin_link != undefined & CurrentSocket.config.dwin_link != null & CurrentSocket.config.dwin_link != '{}') {
+            UpdateDispleyBlock.style.display = 'block';
+            UpdateDisplayBtn.removeAttribute('disabled');
+            UpdateDisplayBtn.style.background = '#035CD0';
+        } else {
+            UpdateDispleyBlock.style.display = 'block';
+            UpdateDisplayBtn.setAttribute('disabled', 'disabled');
+            UpdateDisplayBtn.style.background = '#1F3C62';
+        }
+    } else {
+        UpdateDispleyBlock.style.display = 'none';
+    }
+    UpdateDisplayBtn.onclick = function () {
+        CurrentSocket.Socket.send(JSON.stringify(
+            {
+                "files": {
+                    "dwin_link": config.dwin_link
+                }
+
+            }
+        ));
     }
     UpdateLytkoBtn.onclick = function () {
         let HideBtnGroup = document.querySelectorAll('.UpdateHideBtn');
@@ -845,6 +1458,7 @@ function UpdateSet() {
         SwitchElem(LytkoUpdateInformation, LytkoUpdateBar);
     }
 }
+
 function ConnectInnerSensor() {
     ConnectInnerSensorBtn.onclick = function () {
         let InnerSensorTopic = document.getElementById('InnerSensorTopic');
@@ -876,17 +1490,40 @@ function ConnectInnerSensor() {
     }
 }
 function ChangeTargetTemp() {
-    let TypeWidgetTemp = CurrentSocket.type === 'esp8266_thermostat' ? document.getElementById('MainDisplayTermostat') : document.getElementById('MainDisplayConditioner');
+    let TypeWidgetTemp = CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp32_panel_4inch' ? document.getElementById('MainDisplayTermostat') : document.getElementById('MainDisplayConditioner');
     let MainMenuWidgetValueTemp = TypeWidgetTemp.getElementsByClassName('MainMenuWidgetValueTemp')[0];
     let MainMenuTempValue = TypeWidgetTemp.getElementsByClassName('MainMenuTempValue')[0];
-    if (Number(CurrentSocket.config.is_target_temp_first)) {
-        MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update.target_temp + '°';
-        MainMenuTempValue.innerHTML = CurrentSocket.update.temp + '°';
+    if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus') {
+        if (Number(CurrentSocket.config.is_target_temp_first)) {
+            MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update.target_temp + '°';
+            MainMenuTempValue.innerHTML = CurrentSocket.update.temp + '°';
+        }
+        else {
+            MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update.temp + '°';
+            MainMenuTempValue.innerHTML = CurrentSocket.update.target_temp + '°';
+        }
+    } else if (CurrentSocket.type === 'esp32_panel_4inch') {
+        if (Number(CurrentSocket.config.is_target_temp_first)) {
+            if (!CurrentSocket.active_channel) {
+                MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update_1ch.target_temp + '°';
+                MainMenuTempValue.innerHTML = CurrentSocket.update_1ch.temp + '°';
+            } else {
+                MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update_2ch.target_temp + '°';
+                MainMenuTempValue.innerHTML = CurrentSocket.update_2ch.temp + '°';
+            }
+
+        }
+        else {
+            if (!CurrentSocket.active_channel) {
+                MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update_1ch.target_temp + '°';
+                MainMenuTempValue.innerHTML = CurrentSocket.update_1ch.temp + '°';
+            } else {
+                MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update_2ch.target_temp + '°';
+                MainMenuTempValue.innerHTML = CurrentSocket.update_2ch.temp + '°';
+            }
+        }
     }
-    else {
-        MainMenuWidgetValueTemp.innerHTML = CurrentSocket.update.temp + '°';
-        MainMenuTempValue.innerHTML = CurrentSocket.update.target_temp + '°';
-    }
+
 
 }
 function InsertExternalInnerSensor() {
@@ -915,29 +1552,57 @@ function InsertMqtt() {
     let MqttSwitch = document.getElementById('MqttSwitch');
     let SwitchMQTTBtn = document.getElementById('SwitchMQTTBtn');
     let SwitchMqttComlete = document.getElementById('SwitchMqttComlete');
-    if (CurrentSocket.config.homekit === '0' || CurrentSocket.config.homekit === undefined) {
+    if (CurrentSocket.config.homekit === '0' || CurrentSocket.config.homekit === undefined || CurrentSocket.type === 'esp32_panel_4inch') {
         MqttSwitch.style.display = 'none';
         SwitchMQTTBtn.style.display = 'none';
-        if (CurrentSocket.mqtt_topics != '{}' & CurrentSocket.mqtt_topics != null & CurrentSocket.config.mqtt_use != '0') {
+        if ((CurrentSocket.mqtt_topics != '{}' || CurrentSocket.mqtt_topics_1ch != '{}' || CurrentSocket.mqtt_topics_2ch != '{}') & CurrentSocket.config.mqtt_use != '0') {
             var UpdateSocketBlock = document.getElementById('UpdateSocketBlock');
             var StateMqttTopic = document.getElementById('StateMqttTopic');
             var TargetTempMqttTopic = document.getElementById('TargetTempMqttTopic');
             var SetUpMqttTopic = document.getElementById('SetUpMqttTopic');
             var SetDownMqttTopic = document.getElementById('SetDownMqttTopic');
             var HeatingMqttTopic = document.getElementById('HeatingMqttTopic');
-            StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics.state + CopyIcon;
-            TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics.target_temp + CopyIcon;
-            SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_up + CopyIcon;
-            SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_down + CopyIcon;
-            HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics.heating + CopyIcon;
+            if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp8266_air') {
+                StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics.state + CopyIcon;
+                TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics.target_temp + CopyIcon;
+                SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_up + CopyIcon;
+                SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_down + CopyIcon;
+                HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics.heating + CopyIcon;
+            } else {
+                if (CurrentSocket.active_channel) {
+                    StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.state + CopyIcon;
+                    TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.target_temp + CopyIcon;
+                    SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.step_up + CopyIcon;
+                    SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.step_down + CopyIcon;
+                    HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.heating + CopyIcon;
+                } else {
+                    StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.state + CopyIcon;
+                    TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.target_temp + CopyIcon;
+                    SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.step_up + CopyIcon;
+                    SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.step_down + CopyIcon;
+                    HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.heating + CopyIcon;
+                }
+            }
             GetMQTTData.style.display = 'flex';
             AdressMqtt.value = CurrentSocket.config.mqtt_server;
             PortMqtt.value = CurrentSocket.config.mqtt_port;
             LoginMqtt.value = CurrentSocket.config.mqtt_login;
-            var updateString = '{<br />&nbsp;&nbsp;"update": {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "temp": ' + CurrentSocket.update.temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "target_temp": ' + CurrentSocket.update.target_temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "relay": ' + CurrentSocket.update.relay + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"heating": ' + CurrentSocket.update.heating + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "name": ' + CurrentSocket.update.name + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "unit": ' + CurrentSocket.update.unit + ' <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br />}';
+            var updateString;
+            if (CurrentSocket.type === 'esp32_panel_4inch') {
+                if (CurrentSocket.active_channel === 0) {
+                    updateString = '{<br />&nbsp;&nbsp;"update_1ch": {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "temp": ' + CurrentSocket.update_1ch.temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "target_temp": ' + CurrentSocket.update_1ch.target_temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "relay": ' + CurrentSocket.update_1ch.relay + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"heating": ' + CurrentSocket.update_1ch.heating + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "unit": ' + CurrentSocket.update_1ch.unit + ' <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br />}';
+                } else {
+                    updateString = '{<br />&nbsp;&nbsp;"update_2ch": {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "temp": ' + CurrentSocket.update_2ch.temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "target_temp": ' + CurrentSocket.update_2ch.target_temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "relay": ' + CurrentSocket.update_2ch.relay + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"heating": ' + CurrentSocket.update_2ch.heating + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "unit": ' + CurrentSocket.update_2ch.unit + ' <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br />}';
+                }
+            } else {
+                updateString = '{<br />&nbsp;&nbsp;"update": {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "temp": ' + CurrentSocket.update.temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "target_temp": ' + CurrentSocket.update.target_temp + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "relay": ' + CurrentSocket.update.relay + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"heating": ' + CurrentSocket.update.heating + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "name": ' + CurrentSocket.update.name + ', <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "unit": ' + CurrentSocket.update.unit + ' <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br />}';
+            }
             UpdateSocketBlock.innerHTML = updateString;
         }
         else {
+            AdressMqtt.value = '';
+            PortMqtt.value = '';
+            LoginMqtt.value = '';
             GetMQTTData.style.display = 'none';
         }
         if (CurrentSocket.config.mqtt_use === '1') {
@@ -972,19 +1637,23 @@ function InsertMqtt() {
         ));
     }
     ConnectMQTTBtn.onclick = function () {
-        if (AdressMqtt.value != '' & PortMqtt.value != '') {
-            CurrentSocket.Socket.send(JSON.stringify(
-                {
-                    "mqtt_connect": {
-                        "mqtt_server": AdressMqtt.value.trim(),
-                        "mqtt_port": PortMqtt.value.trim(),
-                        "mqtt_login": LoginMqtt.value.trim(),
-                        "mqtt_password": PasswordMqtt.value.trim()
+        let mqttConnectPopup = document.getElementById('MqttConnectPopup');
+        TogglePopUp(mqttConnectPopup);
+        setTimeout(function () {
+            if (AdressMqtt.value != '' & PortMqtt.value != '') {
+                CurrentSocket.Socket.send(JSON.stringify(
+                    {
+                        "mqtt_connect": {
+                            "mqtt_server": AdressMqtt.value.trim(),
+                            "mqtt_port": PortMqtt.value.trim(),
+                            "mqtt_login": LoginMqtt.value.trim(),
+                            "mqtt_password": PasswordMqtt.value.trim()
+                        }
                     }
-                }
-            ));
-            SetLoader(5, function () { location.host = location.host; });
-        }
+                ));
+                SetLoader(5, function () { location.host = location.host; });
+            }
+        }, 2000);
     }
     DisconnectMQTTBtn.onclick = function () {
         CurrentSocket.Socket.send(JSON.stringify({ "mqtt_disconnect": 1 }));
@@ -1002,6 +1671,9 @@ function InsertMqtt() {
         document.getElementsByClassName('MqttConnect')[0].style.display = 'none';
     }
 }
+function fff() {
+    ArraySocket[0].Socket.send(JSON.stringify("reset"));
+}
 function TabloTempInitialization() {
     MaxTablo = document.getElementById('TabloTempMax').querySelector('.ChangingTempTablo');
     MinTablo = document.getElementById('TabloTempMin').querySelector('.ChangingTempTablo');
@@ -1009,26 +1681,67 @@ function TabloTempInitialization() {
     CorrectionTablo = document.getElementById('TabloTempCorrection').querySelector('.ChangingTempTablo');
 }
 function InsertTemp() {
-    GisteresisTablo.innerHTML = getKeyByValue(GisteresisInvertArray, GisteresisInvertArray[Number(CurrentSocket.config.hysteresis)]);
-    let sensor_corr_invert = CorrectionInvertArray[CurrentSocket.config.sensor_corr];
+    let Correction;
+    let Gisteresis;
+    let MaxTemp;
+    let MinTemp;
+    if (CurrentSocket.type === 'esp32_panel_4inch') {
+        let ChannelData = CurrentSocket.active_channel === 0 ? CurrentSocket.config_1ch : CurrentSocket.config_2ch;
+        Correction = ChannelData.sensor_corr;
+        Gisteresis = ChannelData.hysteresis;
+        MaxTemp = ChannelData.max_temp;
+        MinTemp = ChannelData.min_temp;
+    } else {
+        Correction = CurrentSocket.config.sensor_corr;
+        Gisteresis = CurrentSocket.config.hysteresis;
+        MaxTemp = CurrentSocket.config.max_temp;
+        MinTemp = CurrentSocket.config.min_temp;
+    }
+    GisteresisTablo.innerHTML = getKeyByValue(GisteresisInvertArray, GisteresisInvertArray[Number(Gisteresis)]);
+    let sensor_corr_invert = CorrectionInvertArray[Correction];
     if (sensor_corr_invert != undefined)
         CorrectionTablo.innerHTML = sensor_corr_invert;
     else
-        CorrectionTablo.innerHTML = getKeyByValue(CorrectionInvertArray, CurrentSocket.config.sensor_corr);
-    MaxTablo.innerHTML = CurrentSocket.config.max_temp;
-    MinTablo.innerHTML = CurrentSocket.config.min_temp;
+        CorrectionTablo.innerHTML = getKeyByValue(CorrectionInvertArray, Correction);
+    MaxTablo.innerHTML = MaxTemp;
+    MinTablo.innerHTML = MinTemp;
     ChangeTempPositionBtn.onclick = function () {
         let ChangeTempPositionPopUp = document.getElementById('ChangeTempPositionPopUp');
+        let TagetTemp = CurrentSocket.type === 'esp32_panel_4inch' ? CurrentSocket.active_channel === 0 ? CurrentSocket.config_1ch.is_target_temp_first : CurrentSocket.config_2ch.is_target_temp_first : CurrentSocket.config.is_target_temp_first;
         TogglePopUp(ChangeTempPositionPopUp);
-        if (CurrentSocket.config.is_target_temp_first === '0') {
-            CurrentSocket.Socket.send(JSON.stringify(
-                { is_target_temp_first: 0 }
-            ));
+        if (TagetTemp === '0') {
+            if (CurrentSocket.type != 'esp32_panel_4inch')
+                CurrentSocket.Socket.send(JSON.stringify({ is_target_temp_first: 0 }));
+            else if (!CurrentSocket.active_channel) {
+                CurrentSocket.Socket.send(JSON.stringify({
+                    "config_1ch": {
+                        "is_target_temp_first": "0"
+                    }
+                }));
+            } else {
+                CurrentSocket.Socket.send(JSON.stringify({
+                    "config_2ch": {
+                        "is_target_temp_first": "0"
+                    }
+                }));
+            }
         }
         else {
-            CurrentSocket.Socket.send(JSON.stringify(
-                { is_target_temp_first: 1 }
-            ));
+            if (CurrentSocket.type != 'esp32_panel_4inch')
+                CurrentSocket.Socket.send(JSON.stringify({ is_target_temp_first: 1 }));
+            else if (!CurrentSocket.active_channel) {
+                CurrentSocket.Socket.send(JSON.stringify({
+                    "config_1ch": {
+                        "is_target_temp_first": "1"
+                    }
+                }));
+            } else {
+                CurrentSocket.Socket.send(JSON.stringify({
+                    "config_2ch": {
+                        "is_target_temp_first": "1"
+                    }
+                }));
+            }
         }
     }
 }
@@ -1040,7 +1753,7 @@ function PairHk() {
     let SwitchHomekitBtn = document.getElementById('SwitchHomekitBtn');
     let DispairHomekit = document.getElementById('DispairHomekit');
     let NotQrcode = document.getElementById('NotQrcode');
-    if (CurrentSocket.config.homekit === '1' || CurrentSocket.config.homekit === '2') {
+    if (CurrentSocket.config.homekit === '1' || CurrentSocket.config.homekit === '2' || CurrentSocket.type === 'esp32_panel_4inch') {
         if (CurrentSocket.config.pair_hk === '0') {
             if (CurrentSocket.qr_hk != undefined) {
                 Qrcode.innerHTML = '';
@@ -1112,72 +1825,20 @@ function PairHk() {
         SetLoader(5, function () { location.host = location.host; });
     }
 }
+let ZigBeeSensorIndexToDisconnect;
 function ZigBeeSet() {
-    let ZigBeeExemple = {
-        "id": "4294967293",
-        "ip": "192.168.x.x",
-        "type": "lytko_gateway",
-        zoneId: 0,
-        childrens: [
-            {
-                type: "mqtt",
-                sensors: [
-                    {
-                        data: "3",
-                        name: "0x021",
-                        unit: "<sensorUnit>"
-                    },
-                    {
-                        data: "4",
-                        name: "0x4566",
-                        unit: "<sensorUnit>"
-                    },
-                    {
-                        data: "5",
-                        name: "0x56282",
-                        unit: "<sensorUnit>"
-                    },
-                    {
-                        data: "6",
-                        name: "0x9654",
-                        unit: "<sensorUnit>"
-                    }
-                ]
-            }
-        ]
-    }
-    if (false) {
-        for (let i = 0; CurrentSocket.ssdp.length > i; i++) {
-            if (CurrentSocket.id === CurrentSocket.ssdp[i].id) {
-                if (CurrentSocket.ssdp[i].type != 'lytko_gateway') {
-                    for (let i = 0; ZigBeeExemple.childrens[0].sensors.length > i; i++) {
-                        let SelectingBlock = document.createElement('div');
-                        let ZigBeeSensor = document.createElement('div');
-                        let SelectedIcon = document.createElement('div');
-                        SelectingBlock.className = 'SelectingBlock';
-                        ZigBeeSensor.className = 'ZigBeeSensor';
-                        SelectedIcon.className = 'SelectedIcon';
-                        SelectedIcon.innerHTML = '<svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path d = "M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill = "#2C98F0" /></svg >';
-                        ZigBeeSensor.innerHTML = ZigBeeExemple.childrens[0].sensors[i].name;
-                        SelectingBlock.append(ZigBeeSensor);
-                        SelectingBlock.append(SelectedIcon);
-                        SelectingBlock.onclick = function () {
-                            SelectZigBeeSensor(this);
-                        }
-                        ZigBeeSensors.append(SelectingBlock);
-                    }
-                    let ZigBeeInfo = document.getElementsByClassName('ZigBeeInfo')[0];
-                    ZigBeeInfo.style.display = 'none';
-                    DisconnectBtnZigBee.onclick = function () {
-                        CurrentSocket.Socket.send(JSON.stringify(
-                            {
-                                "clear_zigbee": index // index - порядковый номер сенсора, начиная с нуля
-                            }
-                        ));
-                    }
-                }
+    let ZigBeeInfo = document.getElementsByClassName('ZigBeeInfo')[0];
+    if (CurrentSocket.zigbee != '{}') {
+        ZigBeeInfo.style.display = 'none';
+        ZigBeeSensors.style.display = 'block';
+        for (let i = 0; 5 > i; i++) {
+            if (CurrentSocket.zigbee[i] != null) {
+                CreateZigBeeBlock(CurrentSocket.zigbee[i], i);
             }
         }
+    } else {
+        ZigBeeInfo.style.display = 'block';
+        ZigBeeSensors.style.display = 'none';
     }
     PairingBtnZigBee.onclick = function () {
         CurrentSocket.Socket.send(JSON.stringify(
@@ -1186,6 +1847,52 @@ function ZigBeeSet() {
             }
         ));
         SetLoader(30, function () { location.host = location.host; });
+    }
+    ClearZigBee.onclick = function () {
+        CurrentSocket.Socket.send(JSON.stringify(
+            {
+                clear_zigbee_module: 1
+            }
+        ));
+        SetLoader(4, function () { location.host = location.host; });
+    }
+    if (CurrentSocket.zigbee != null & CurrentSocket.zigbee != undefined & CurrentSocket.zigbee != '{}') {
+        if (CurrentSocket.zigbee[4] === null || CurrentSocket.zigbee[4] === undefined) {
+            PairingBtnZigBee.removeAttribute('disabled');
+            PairingBtnZigBee.style.background = '#035CD0';
+        }
+        else {
+            PairingBtnZigBee.setAttribute('disabled', 'disabled');
+            PairingBtnZigBee.style.background = '#1F3C62';
+        }
+    }
+
+    DisconnectBtnZigBee.onclick = function () {
+        CurrentSocket.Socket.send(JSON.stringify(
+            {
+                "clear_zigbee": ZigBeeSensorIndexToDisconnect
+            }
+        ));
+        SetLoader(30, function () { location.host = location.host; });
+    }
+}
+
+function CreateZigBeeBlock(sensor, number) {
+    let SelectBlock = document.createElement('div');
+    let NameSensor = document.createElement('div');
+    let SelectedIcon = document.createElement('div');
+    SelectBlock.className = 'SelectingBlock ZigBeeSensorBlock';
+    SelectBlock.id = sensor.ShotAddr;
+    NameSensor.className = 'NameSensor';
+    NameSensor.innerHTML = sensor.ShotAddr;
+    NameSensor.id = number;
+    SelectedIcon.className = 'SelectedIcon';
+    SelectedIcon.innerHTML = '<svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path d = "M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill = "#2C98F0" /></svg >';
+    SelectBlock.append(NameSensor);
+    SelectBlock.append(SelectedIcon);
+    ZigBeeSensors.append(SelectBlock);
+    SelectBlock.onclick = function () {
+        SelectZigBeeSensor(this);
     }
 }
 function SetLoader(time, func) {
@@ -1215,9 +1922,15 @@ function SelectZigBeeSensor(item) {
     if (checkedSelectedIcon === 'none' || checkedSelectedIcon === '') {
         ZigBeeSensors.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         item.children[1].style.display = 'block';
+        ZigBeeSensorIndexToDisconnect = item.querySelector('.NameSensor').id;
+        DisconnectBtnZigBee.style.display = 'block';
+        PairingBtnZigBee.style.display = 'none';
     }
     else {
         item.children[1].style.display = 'none';
+        ZigBeeSensorIndexToDisconnect = null
+        DisconnectBtnZigBee.style.display = 'none';
+        PairingBtnZigBee.style.display = 'block';
     }
 }
 let HeatingIcon = '<svg width="16" height="20" viewBox="0 0 16 20" fill="none"><path d = "M14.86 10.2339C13.4205 6.38701 8.29518 6.17958 9.53296 0.588392C9.62465 0.173531 9.19372 -0.147043 8.8453 0.069816C5.51703 2.08755 3.12398 6.13244 5.13194 11.4313C5.29698 11.8651 4.80187 12.2705 4.44429 11.9876C2.78474 10.6959 2.61053 8.83846 2.75723 7.50902C2.81224 7.01873 2.18877 6.78302 1.92287 7.18845C1.29939 8.16903 0.666748 9.75304 0.666748 12.1385C1.01516 17.4185 5.352 19.0403 6.91069 19.2477C9.1387 19.54 11.5501 19.1157 13.283 17.4845C15.1901 15.6648 15.8869 12.7608 14.86 10.2339ZM6.35139 14.9765C7.6717 14.6465 8.35019 13.6659 8.53356 12.7985C8.83613 11.4502 7.65336 10.1302 8.45104 7.99931C8.75361 9.76247 11.4492 10.8656 11.4492 12.7891C11.5226 15.1745 9.01034 17.2205 6.35139 14.9765Z" fill = "white" /></svg >';
@@ -1235,20 +1948,28 @@ function CreateDeviceBlock(Socket, type) {
     DeviceBlockValue.className = 'DeviceBlockValue';
     DeviceBlockControl.className = 'DeviceBlockControl';
     DeviceBlockControlTablo.className = 'DeviceBlockControlTablo';
-    if (type === 'esp8266_thermostat') {
+    if (type === 'esp8266_thermostat' || type === 'esp8266_thermostat_plus' || type === 'esp32_panel_4inch') {
         DeviceBlockControlTablo.className = 'DeviceBlockControlTablo HeatingTermostatByID';
         DeviceBlockControlTablo.innerHTML = HeatingIcon;
         DeviceBlockControl.append(DeviceBlockControlTablo);
-        DeviceBlockTitle.innerHTML = 'Термостат';
-        DeviceBlock.id = Socket.id;
+        DeviceBlockTitle.innerHTML = Socket.config.name;
+        if (type === 'esp8266_thermostat' || type === 'esp8266_thermostat_plus') {
+            DeviceBlock.id = Socket.id;
+        } else if (type === 'esp32_panel_4inch') {
+            DeviceBlock.id = Socket.channel_number === 0 ? Socket.id_for_use_ch1 : Socket.id_for_use_ch2;
+        }
         DeviceBlock.append(DeviceBlockTitle);
         DeviceBlock.append(DeviceBlockValue);
         DeviceBlock.append(DeviceBlockControl);
         PlaceForDeviceBlock.append(DeviceBlock);
         DeviceBlock.onclick = function (event) {
             CurrentSocket = ArraySocket.find((item) => {
-                if (item.id === this.id)
+                let BlockId = this.id.includes('type_1ch') || this.id.includes('type_2ch') ? this.id.substr(0, this.id.length - 8) : this.id;
+                if (item.id === BlockId) {
+                    item.channel_number = this.id.includes('type_1ch') ? 0 : 1;
+                    item.active_channel = this.id.includes('type_1ch') ? 0 : 1;
                     return item;
+                }
             });
             ShowMainMenuBySocket(CurrentSocket);
             SwitchElem(MainDisplay, MainDisplayTermostat);
@@ -1256,14 +1977,25 @@ function CreateDeviceBlock(Socket, type) {
         DeviceBlockControlTablo.onclick = function (event) {
             event.stopPropagation();
             CurrentBlockID = this.parentElement.parentElement.id;
-            TargetSocket = ArraySocket.find(item => item.id === CurrentBlockID);
+            let ChannelPanel = CurrentBlockID.includes('type_1ch') ? 0 : 1;
+            let CheckedBlockId = CurrentBlockID.includes('type_1ch') || CurrentBlockID.includes('type_2ch') ? CurrentBlockID.substr(0, CurrentBlockID.length - 8) : CurrentBlockID;
+            TargetSocket = ArraySocket.find(item => item.id === CheckedBlockId);
             let Heating;
             if (TargetSocket != null) {
-                Heating = TargetSocket.update.heating === 'heat' ? 0 : 1;
+                let Update = TargetSocket.type === 'esp32_panel_4inch' ? ChannelPanel === 0 ? TargetSocket.update_1ch : TargetSocket.update_2ch : TargetSocket.update;
+                Heating = Update.heating === 'heat' ? 0 : 1;
                 this.style.background = Heating === 0 ? '#1F3C62' : '#035CD0';
-                TargetSocket.Socket.send(JSON.stringify({
-                    "heating": Heating
-                }));
+                if (TargetSocket.type === 'esp32_panel_4inch') {
+                    if (!ChannelPanel)
+                        TargetSocket.Socket.send(JSON.stringify({ "update_1ch": { "heating": Heating } }));
+                    else
+                        TargetSocket.Socket.send(JSON.stringify({ "update_2ch": { "heating": Heating } }));
+                } else {
+                    TargetSocket.Socket.send(JSON.stringify({
+                        "heating": Heating
+                    }));
+                }
+
             }
         };
     }
@@ -1273,7 +2005,7 @@ function CreateDeviceBlock(Socket, type) {
         DeviceBlockControlTablo.innerHTML = 'Auto';
         DeviceBlockControl.append(DeviceBlockControlTablo);
         DeviceBlockControl.append(DeviceBlockControlTabloFan);
-        DeviceBlockTitle.innerHTML = 'Кондиционер';
+        DeviceBlockTitle.innerHTML = Socket.config.name;
         DeviceBlock.id = Socket.id;
         DeviceBlock.append(DeviceBlockTitle);
         DeviceBlock.append(DeviceBlockValue);
@@ -1344,18 +2076,41 @@ function FanSetMainDisplay(Socket, Fan) {
     }
 }
 function HeatingRegulate() {
-    let Heating = CurrentSocket.update.heating === 'heat' ? 1 : 0;
+    let Heating = null;
+    if (CurrentSocket.type === 'esp32_panel_4inch') {
+        if (!CurrentSocket.active_channel)
+            Heating = CurrentSocket.update_1ch.heating === 'heat' ? 1 : 0;
+        else
+            Heating = CurrentSocket.update_2ch.heating === 'heat' ? 1 : 0;
+    } else
+        Heating = CurrentSocket.update.heating === 'heat' ? 1 : 0;
     HeatingTermostat.style.background = Heating === 0 ? '#1F3C62' : '#035CD0';
     HeatingTermostat.onclick = function () {
-        Heating = CurrentSocket.update.heating === 'heat' ? 0 : 1;
+        //let Update = CurrentSocket.type === 'esp32_panel_4inch' ? CurrentSocket.channel_number === 0 ? CurrentSocket.update_1ch : CurrentSocket.update_2ch : CurrentSocket.update;
+        let Heating = null;
+        if (CurrentSocket.type === 'esp32_panel_4inch') {
+            if (!CurrentSocket.active_channel)
+                Heating = CurrentSocket.update_1ch.heating === 'heat' ? 0 : 1;
+            else
+                Heating = CurrentSocket.update_2ch.heating === 'heat' ? 0 : 1;
+        } else
+            Heating = CurrentSocket.update.heating === 'heat' ? 0 : 1;
+        //Heating = Update.heating === 'heat' ? 0 : 1;
         this.style.background = Heating === 0 ? '#1F3C62' : '#035CD0';
-        CurrentSocket.Socket.send(JSON.stringify({
-            "heating": Heating
-        }));
+        if (CurrentSocket.type === 'esp32_panel_4inch') {
+            if (!CurrentSocket.active_channel)
+                CurrentSocket.Socket.send(JSON.stringify({ "update_1ch": { "heating": Heating } }));
+            else
+                CurrentSocket.Socket.send(JSON.stringify({ "update_2ch": { "heating": Heating } }));
+        } else
+            CurrentSocket.Socket.send(JSON.stringify({ "heating": Heating }));
     }
 }
 function ShowWifiList(WifiList) {
+    let WifiSettingPanel = document.getElementById('WifiSettingPanel');
+    let WifiPasswordPanel = document.getElementById('WifiPasswordPanel');
     var WifiListPlace = document.getElementsByClassName('WifiSelecting')[0];
+    let SelectChannel = document.getElementById('SelectChannel');
     document.querySelectorAll('.WifiBlock').forEach(e => e.remove());
     var WifiName;
     var GuardTypeWifi;
@@ -1373,9 +2128,12 @@ function ShowWifiList(WifiList) {
         GuardTypeWifi.className = 'GuardTypeWifi';
         WifiIcon.className = 'WifiIcon';
         InfoWifiBlock.className = 'InfoWifiBlock';
-        WifiBlock.className = 'WifiBlock SelectingBlock';
+        WifiBlock.className = 'WifiPasswordPanel WifiBlock SelectingBlock';
         WifiName.innerHTML = WifiList[k].ssid;
-        GuardTypeWifi.innerHTML = WifiDefCollection[WifiList[k].encryption];
+        if (ArraySocket[0].type === 'esp32_panel_4inch')
+            GuardTypeWifi.innerHTML = WifiDefCollectionPanel[WifiList[k].encryption];
+        else
+            GuardTypeWifi.innerHTML = WifiDefCollection[WifiList[k].encryption];
         if (WifiList[k].signal != undefined)
             WifiIcon.innerHTML = WifiIconArray[DetermineWifiSignal(WifiList[k].signal)];
         InfoWifiBlock.append(WifiName);
@@ -1388,14 +2146,24 @@ function ShowWifiList(WifiList) {
             let SelectedWifiName = this.querySelectorAll('.WifiName')[0].innerHTML;
             if (this.querySelectorAll('.GuardTypeWifi')[0].innerHTML != 'Открытая сеть') {
                 if (FirstConfigurate) {
-                    SwitchElem(OneStageSettingDissapearElem, TwoStageSettingDissapearElem);
+                    if (PanelMenu) {
+                        SwitchElem(WifiSettingPanel, WifiPasswordPanel);
+                    }
+                    else
+                        SwitchElem(OneStageSettingDissapearElem, TwoStageSettingDissapearElem);
                     WifiConnectBtn.onclick = function () {
                         let passwordCheck = document.getElementById('PasswordFirstSetting');
                         if (passwordCheck.value.length > 0) {
-                            SwitchElem(TwoStageSettingDissapearElem, ThreeStageSettingDissapearElem);
+                            if (PanelMenu) {
+                                SwitchElem(WifiPasswordPanel, SelectChannel);
+                                DetermineChannle();
+                            }
+                            else
+                                SwitchElem(TwoStageSettingDissapearElem, ThreeStageSettingDissapearElem);
                             WifiPassword = passwordCheck.value;
                             configTermostat.config.wifi_pass = WifiPassword;
                             configConditioner.config.wifi_pass = WifiPassword;
+                            configPanel.config.wifi_pass = WifiPassword;
                         }
                     }
                 }
@@ -1423,6 +2191,7 @@ function ShowWifiList(WifiList) {
                 }
                 configTermostat.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
                 configConditioner.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
+                configPanel.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
             }
             else {
                 SwitchElem(OneStageSettingDissapearElem, ThreeStageSettingDissapearElem);
@@ -1441,7 +2210,6 @@ function DetermineWifiSignal(WifiSignal) {
             let determineResult = Math.floor(WifiSignal / 25);
             result = determineResult === 4 ? 3 : determineResult;
         }
-
     }
     else
         result = 4
@@ -1462,11 +2230,17 @@ function NavigationDevice() {
         document.getElementById('DropUpMain').style.display = 'flex';
     }
     SettingIcon.forEach(item => item.onclick = function () {
-        if (CurrentSocket.type === 'esp8266_thermostat') {
+        if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp32_panel_4inch') {
             SwitchElem(MainDisplayTermostat, DeviceSettings);
             DeviceSettings.querySelector('#ConditionerSetting').style.display = 'none';
-            DeviceSettings.querySelector('#ZigBeeSetting').style.display = 'none';
-            DeviceSettings.querySelector('#InnerSensorSetting').style.display = 'flex';
+            if (CurrentSocket.type === 'esp32_panel_4inch') {
+                DeviceSettings.querySelector('#InnerSensorSetting').style.display = 'none';
+                DeviceSettings.querySelector('#ZigBeeSetting').style.display = 'flex';
+            }
+            else {
+                DeviceSettings.querySelector('#ZigBeeSetting').style.display = 'none';
+                DeviceSettings.querySelector('#InnerSensorSetting').style.display = 'flex';
+            }
             DeviceSettings.querySelector('#GisteresisSetting').style.display = 'flex';
             DeviceSettings.querySelector('#TypeSensorSetting').style.display = 'flex';
         }
@@ -1480,7 +2254,7 @@ function NavigationDevice() {
         }
     })
     BackToMainDevicePage.onclick = function () {
-        if (CurrentSocket.type === 'esp8266_thermostat') {
+        if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp32_panel_4inch') {
             SwitchElem(DeviceSettings, MainDisplayTermostat);
         }
         else {
@@ -1520,7 +2294,7 @@ function TogglePopUp(PopUpToggle) {
 
     let BodyTag = document.body;
     BodyTag.classList.toggle('shadowBody');
-    let TimeOutToggle = setTimeout(FadeOutPopUp, 3000);
+    let TimeOutToggle = setTimeout(FadeOutPopUp, 2000);
     function FadeOutPopUp() {
         PopUpToggle.classList.toggle("show");
         BodyTag.classList.toggle('shadowBody');
@@ -1537,8 +2311,8 @@ function ShowInDevelop() {
 }
 function AliceSet() {
     let AliceLoginGroup = document.querySelectorAll('.AliceLoginGroup');
-    let AliceShowIcon = document.getElementById('AliceShowIcon');
     let AliceLogOutGroup = document.querySelectorAll('.AliceLogOutGroup');
+    let AliceShowIcon = document.getElementById('AliceShowIcon');
     AliceShowIcon.style.display = 'none';
     if (ArraySocket[0].config != null) {
         if (ArraySocket[0].config.mqtt_alice === '0' || ArraySocket[0].config.mqtt_alice === undefined) {
@@ -1546,7 +2320,6 @@ function AliceSet() {
             AliceLogOutGroup.forEach(item => item.style.display = 'none');
         }
         else {
-            
             let AliceAdded = document.getElementById('AliceAdded');
             AliceAdded.querySelector('.InputInfo').innerHTML = ArraySocket[0].config.alice_login;
             AliceLogOutGroup.forEach(item => item.style.display = 'block');
@@ -1568,14 +2341,18 @@ function AliceSet() {
                     }
                 ));
             }
-
         }
     }
     if (ArraySocket[0].config != undefined) {
         let AliceOnlyMqtt = document.getElementById('AliceOnlyMqtt');
         if (ArraySocket[0].config.homekit === '0') {
-            AliceOnlyMqtt.style.display = 'block';
-            AliceLink.onclick = null;
+
+            if (ArraySocket[0].type === 'esp32_panel_4inch') {
+                AliceOnlyMqtt.style.display = 'none';
+            } else {
+                AliceOnlyMqtt.style.display = 'block';
+                AliceLink.onclick = null;
+            }
         } else {
             AliceOnlyMqtt.style.display = 'none';
         }
@@ -1592,6 +2369,13 @@ function AliceSet() {
     }
     CloseAliceInfo.onclick = function () {
         DropUpAliceInfo.style.display = 'none';
+    }
+    RegistrationPopUp.onclick = function (event) {
+        event.stopPropagation();
+        DropUpRegistrationInfo.style.display = 'flex';
+    }
+    CloseRegistrationInfo.onclick = function () {
+        DropUpRegistrationInfo.style.display = 'none';
     }
     AliceShowPass.onclick = function () {
         let AliceShowIcon = document.getElementById('AliceShowIcon');

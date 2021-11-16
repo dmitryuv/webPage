@@ -47,6 +47,10 @@
         background-color: #ECECEC;
     }
 
+.ArrowPanelMenu {
+    padding-left: 20px;
+}
+
 .SettingsInfoTitle {
     display: flex;
     height: 56px;
@@ -375,7 +379,7 @@
     height: 76px;
     background: #2C3041;
     border-radius: 12px;
-    margin-right: 10px;
+    margin-right: 8px;
 }
 
 .SensorIcon {
@@ -698,13 +702,22 @@ input[type=range]::-webkit-slider-thumb {
 #NameInput {
     width: 100%;
     border: none;
-    border-bottom: 2px solid #2C98F0;
     background: none;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
     color: #FFFFFF;
     outline: none;
     padding: 6px;
+}
+
+#NameChangeIcon {
+    display: none;
+}
+
+#DeviceNameChangeBlock {
+    border-bottom: 2px solid #2C98F0;
+    width: 100%;
+    display: flex;
 }
 
 .AvailableUpdate, .MqttConnect, .WifiConnect, #OnlyMqtt {
@@ -723,6 +736,7 @@ input[type=range]::-webkit-slider-thumb {
 
 #AliceOnlyMqtt {
     display: none;
+    font-size: 13px;
 }
 
 .WifiConnect {
@@ -785,6 +799,19 @@ input[type=range]::-webkit-slider-thumb {
     align-items: center;
     flex-direction: column;
     padding: 30px;
+}
+
+#UpdateDisplayBtn {
+    width: 100%;
+}
+
+.UpdateHideBtn {
+    flex-direction: column;
+}
+
+#UpdateDispleyBlock {
+    width: 93%;
+    display: none;
 }
 
 .CurrentVersion {
@@ -872,7 +899,7 @@ input[type=range]::-webkit-slider-thumb {
     border-radius: 8px;
 }
 
-.ZigBeeInfo, .HomekitInfo, .ChangeTempPositionInfo {
+.ZigBeeInfo, .HomekitInfo, .ChangeTempPositionInfo, .PanelInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -886,6 +913,13 @@ input[type=range]::-webkit-slider-thumb {
     padding: 30px 20px;
     box-sizing: border-box;
 }
+    /*#NoneType {
+    display: none;
+}*/
+
+    .ZigBeeInfo p {
+        text-align: center;
+    }
 
 .HomekitInfo {
     text-align: center;
@@ -1024,7 +1058,7 @@ input[type=range]::-webkit-slider-thumb {
     font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 18px;
     color: #FFFFFF;
     padding: 8px 16px;
@@ -1089,7 +1123,7 @@ input[type=range]::-webkit-slider-thumb {
 .show {
     display: flex;
     visibility: visible;
-    -webkit-animation: fadeIn 1s;
+    -webkit-animation: fadeIn 0.5s;
     animation: fadeIn 1s;
 }
 
@@ -1248,7 +1282,7 @@ input[type=range]::-webkit-slider-thumb {
     color: #FFFFFF;
 }
 
-#AliceLink {
+#AliceLink, #Registration {
     display: flex;
     justify-content: space-between;
 }
@@ -1302,7 +1336,7 @@ input[type=range]::-webkit-slider-thumb {
     display: none;
 }
 
-#WifiPasswordPanel, #SelectChannel, #TypeResystancePanel, #TermostatTempSettingPanel, #MinMaxTemp, #Gisteresis {
+#WifiPasswordPanel, #SelectChannel, #TypeResystancePanel, #TermostatTempSettingPanel, #MinMaxTemp, #Gisteresis, #SelectPower {
     display: none;
 }
 
@@ -1336,10 +1370,3 @@ input[type=range]::-webkit-slider-thumb {
     }
 }
 
-/*@font-face {
-    font-family: 'NotoSans-Regular';
-}*/
-/*@font-face {
-    font-family: 'NotoSans-Regular';
-    src: url('NotoSans.woff2') format('woff2');
-}*/

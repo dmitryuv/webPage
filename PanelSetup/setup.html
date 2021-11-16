@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -10,7 +10,7 @@
     <div class="MainBody">
         <div class="MenuBody">
             <div class="FirstSettingDevice">
-                <div class="OneStageSetting Tab" id="OneStageSetting">
+                <div class="Tab" id="WifiSettingPanel">
                     <div class="SettingsInfoTitle">
                         <span>
                             Подключение к Wi-Fi
@@ -35,9 +35,9 @@
                         </div>
                     </div>
                 </div>
-                <div id="TwoStageSetting" class="Tab">
-                    <div class="SettingsInfoTitle">
-                        <div id="BackToOneStageSetting">
+                <div id="WifiPasswordPanel" class="Tab">
+                    <div class="SettingsInfoTitle ArrowPanelMenu">
+                        <div class="WifiSettingPanel NavElem">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                             </svg>
@@ -71,7 +71,53 @@
                         <button id="WifiConnectBtn" class="BtnBlue" type="button" name="button">Подключить</button>
                     </div>
                 </div>
-                <div id="ThreeStageSetting" class="Tab">
+                <div class="Tab" id="SelectChannel">
+                    <div class="SettingsInfoTitle MainDisplayIcon">
+                        <span>
+
+                        </span>
+                    </div>
+                    <div class="ScrollingMenu" id="ChannelModeWork">
+                        <div class="SelectingBlock SelectingTypeChannel" id="TermostatType">
+                            Термостат
+                            <div class="SelectedIcon">
+                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="SelectingBlock SelectingTypeChannel InDevelopFunction" id="SwitchType">
+                            Выключатель
+                            <div class="SelectedIcon">
+                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="SelectingBlock SelectingTypeChannel" id="NoneType">
+                            Отсутствует
+                            <div class="SelectedIcon">
+                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="PanelInfo">
+                            <p>
+                                Пожалуйста, выберите данную опцию в зависимости от конфигурации Вашего устройства
+                            </p>
+                            <p>
+                                Если Вы приобрели Панель с поддержкой одного канала, второй канал функционировать не будет
+                            </p>
+                        </div>
+                    </div>
+                    <div class="BtnMenu">
+                        <button id="SelectChannelBackCh" class="WifiPasswordPanel NavElem BtnBlue" type="button" name="button">Назад</button>
+                        <button id="NextPanelSettingChannel" class="TypeResystancePanel NavElem BtnBlue" type="button" name="button">Далее</button>
+                        <button id="CompletePanelSettingChannel" class="CompletePanelSetting NavElem BtnBlue" type="button" name="button">Готово</button>
+                    </div>
+                </div>
+                <div id="TypeResystancePanel" class="Tab">
                     <div class="SettingsInfoTitle">
                         <span>
                             Тип датчика
@@ -188,48 +234,64 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="SelectingBlock TypeResistanceBlock" id="InnerSensorBlock">
-                            <div class="InnerSensor">
-                                Внутренний датчик
-                            </div>
-                            <div class="SelectedIcon" id="InnerSensorIcon">
-                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
-                                </svg>
-                            </div>
-                        </div>
                     </div>
-
                     <div class="BtnMenu">
-                        <button id="BackToWifiStage" class="BtnBlue" type="button" name="button">Назад</button>
-                        <button id="ResistanceBtnNext" class="BtnBlue" type="button" name="button">Далее</button>
+                        <button id="BackFromChTypeResist" class="SelectChannel NavElem BtnBlue" type="button" name="button">Назад</button>
+                        <button id="" class="SelectPower NavElem BtnBlue" type="button" name="button">Далее</button>
                     </div>
                 </div>
-                <div id="FourStageSetting" class="Tab">
+                <div id="TermostatTempSettingPanel" class="Tab">
                     <div class="SettingsInfoTitle">
                         <span>
                             Настройки
                         </span>
                     </div>
                     <div class="SettingsFinishFirstDevica ScrollingMenu">
-                        <div class="SelectingBlock" id="FirstGisteresisSetting">
+                        <div class="Gisteresis NavElem SelectingBlock" id="FirstGisteresisSetting">
                             Гистерезис
                         </div>
-                        <div class="SelectingBlock" id="FirstTempSetting">
+                        <div class="MinMaxTemp NavElem SelectingBlock" id="FirstTempSetting">
                             Температура
-                        </div>
-                        <div class="SelectingBlock" id="ModeOfWork">
-                            Режим работы
                         </div>
                     </div>
                     <div class="BtnMenu">
-                        <button id="ToResistanceTypeBtnBack" class="BtnBlue" type="button" name="button">Назад</button>
-                        <button id="CompleteSettingBtn" class="BtnBlue" type="button" name="button">Готово</button>
+                        <button id="" class="SelectPower NavElem BtnBlue" type="button" name="button">Назад</button>
+                        <button id="GisterCompleteSettings" class="CompletePanelSetting NavElem BtnBlue" type="button" name="button">Готово</button>
+                        <button id="NextGisterSetting" class="SelectChannel NavElem BtnBlue" type="button" name="button">Далее</button>
                     </div>
                 </div>
-                <div id="GisteresisStageSetting" class="Tab Gisteresis">
+                <div class="Tab" id="SelectPower">
                     <div class="SettingsInfoTitle MainDisplayIcon">
-                        <div class="ArrowBack" id="BackToFourStageFromGisteresis">
+                        <span>
+                            Мощность реле
+                        </span>
+                    </div>
+                    <div class="ScrollingMenu" id="PowerModeWork">
+                        <div class="SelectingBlock SelectingPowerChannel" id="8A">
+                            8 А
+                            <div class="SelectedIcon">
+                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="SelectingBlock SelectingPowerChannel" id="16A">
+                            16 А
+                            <div class="SelectedIcon">
+                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="BtnMenu">
+                        <button id="" class="TypeResystancePanel NavElem BtnBlue" type="button" name="button">Назад</button>
+                        <button id="" class="TermostatTempSettingPanel NavElem BtnBlue" type="button" name="button">Далее</button>
+                    </div>
+                </div>
+                <div id="Gisteresis" class="Tab">
+                    <div class="SettingsInfoTitle MainDisplayIcon">
+                        <div class="TermostatTempSettingPanel NavElem ArrowBack" id="">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                             </svg>
@@ -284,9 +346,9 @@
                         </div>
                     </div>
                 </div>
-                <div id="TempStageSetting" class="Tab Gisteresis">
+                <div id="MinMaxTemp" class="Tab">
                     <div class="SettingsInfoTitle MainDisplayIcon">
-                        <div class="ArrowBack" id="BackToFourStageFromTemp">
+                        <div class="TermostatTempSettingPanel NavElem ArrowBack" id="">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                             </svg>
@@ -332,53 +394,33 @@
                         </div>
                     </div>
                 </div>
-                <div class="Tab" id="ModeWorkDevice">
-                    <div class="SettingsInfoTitle MainDisplayIcon">
-                        <span>
-                            Режим работы
-                        </span>
-                    </div>
-                    <div class="SensorSelector ScrollingMenu" id="TeromstatModeWork">
-                        <div class="SelectingBlock SelectingModeWork" id="MqttModeWork">
-                            MQTT
-                            <div class="SelectedIcon">
-                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
-                                </svg>
-                            </div>
+                <div id="InDevelop" class="InDevelopClass">
+                    <div id="InDevelopBlock">
+                        <div id="InDevelopTitle">
+                            В разработке
                         </div>
-                        <div class="SelectingBlock SelectingModeWork" id="AliceModeWork">
-                            Яндекс.Алиса
-                            <div class="SelectedIcon">
-                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
-                                </svg>
-                            </div>
+                        <div id="InDevelopIcon">
+                            <svg width="59" height="44" viewBox="0 0 59 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.75 23.772L20.4405 43.5L58.25 5.72808L52.8218 0.375L20.4405 32.7186L6.103 18.3812L0.75 23.772Z" fill="#2C98F0" />
+                            </svg>
                         </div>
                     </div>
-                    <div class="BtnMenu">
-                        <button id="BackTermostat" class="BtnBlue" type="button" name="button">Назад</button>
-                        <button id="CompleteSettingBtnTwo" class="BtnBlue" type="button" name="button">Готово</button>
-                    </div>
-                </div>
-                <div class="LoaderHandler">
-                    <div class="Loader"></div>
-                    <div class="TimerLoader"></div>
                 </div>
             </div>
         </div>
     </div>
     <script>
-        window.PanelMenu = 0;
         window.configActive = 1;
+        window.PanelMenu = 1;
     </script>
     <script src="Content/scriptMenuEsp.js"></script>
     <style>
-        @font-face {
-            font-family: 'NotoSans-Regular';
-            src: url(Content/NotoSans.woff2) format('woff2');
+        @@font-face {
+            font-family: 'NotoSans-Regular'; 
+            src: url(Content/NotoSans.woff2) format('woff2'); 
         }
     </style>
 </body>
 </html>
+
 
