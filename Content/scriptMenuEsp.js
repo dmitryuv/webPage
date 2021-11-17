@@ -1854,7 +1854,7 @@ function ZigBeeSet() {
                 clear_zigbee_module: 1
             }
         ));
-        SetLoader(4, function () { location.host = location.host; });
+        SetLoader(15, function () { location.host = location.host; });
     }
     if (CurrentSocket.zigbee != null & CurrentSocket.zigbee != undefined & CurrentSocket.zigbee != '{}') {
         if (CurrentSocket.zigbee[4] === null || CurrentSocket.zigbee[4] === undefined) {
