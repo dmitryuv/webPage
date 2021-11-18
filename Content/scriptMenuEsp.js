@@ -1316,7 +1316,7 @@ function NavigationMainMenu() {
     AccountIcon.onclick = function () { SwitchElem(MainDisplay, AccountSettings); };
     AliceLink.onclick = function () { SwitchElem(AccountSettings, AlicePage); }
     RestorePass.onclick = function () { window.location.href = "https://lytko.com/registration/reset.html"; }
-    Registration.onclick = function () { window.location.href = "https://lytko.com/registration/regForm.html"; }
+    Registration.onclick = function () { window.location.href = " https://oauth.lytko.com/reg"; }
     BackToMainDisplay.forEach(item => item.onclick = NavMainDisplay);
     BackToAccountSetting.onclick = function () { SwitchElem(AlicePage, AccountSettings); }
     InDevelopFunction.forEach(item => item.onclick = ShowInDevelop);
