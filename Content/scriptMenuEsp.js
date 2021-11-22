@@ -605,7 +605,7 @@ function InsertSensors() {
     } else {
         SensorModelId = CurrentSocket.config.sensor_model_id;
     }
-    if (SensorModelId != '') {
+    if (SensorModelId != '' & SensorModelId != undefined & SensorModelId != null) {
         document.querySelectorAll('.TypeResistanceBlock').forEach(item => item.children[1].style.display = 'none');
         let SensorType = getKeyByValue(SensorIdCollection, Number(SensorModelId));
         SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, SensorType).querySelector('.SelectedIcon').style.display = 'block';
@@ -827,7 +827,7 @@ function ChangeTempDynamic() {
 }
 window.onload = function () {
     ArraySocket.push(ArraySocketItem = {
-        Socket: new WebSocket("ws://"+ location.host +"/ws"),
+        Socket: new WebSocket("ws://" + location.host + "/ws"),
         config: null,
         config_1ch: null,
         config_2ch: null,
@@ -936,16 +936,16 @@ function WebSocketOpen(SocketItemDevice) {
                                 let DeviceBlockCh2 = document.getElementById(ArraySocket[i].id_for_use_ch2);
                                 if (DeviceBlockCh1) {
                                     let NameBlockCh1 = DeviceBlockCh1.querySelector('.DeviceBlockTitle');
-                                    NameBlockCh1.innerHTML = ArraySocket[i].config.name;
+                                    NameBlockCh1.innerHTML = ArraySocket[i].config.name != null & ArraySocket[i].config.name != undefined ? ArraySocket[i].config.name : 'X';
                                 }
                                 if (DeviceBlockCh2) {
                                     let NameBlockCh2 = DeviceBlockCh2.querySelector('.DeviceBlockTitle');
-                                    NameBlockCh2.innerHTML = ArraySocket[i].config.name;
+                                    NameBlockCh2.innerHTML = ArraySocket[i].config.name != null & ArraySocket[i].config.name != undefined ? ArraySocket[i].config.name : 'X';
                                 }
 
                             } else if (DeviceBlockCheck) {
                                 let NameBlock = DeviceBlockCheck.querySelector('.DeviceBlockTitle');
-                                NameBlock.innerHTML = ArraySocket[i].config.name;
+                                NameBlock.innerHTML = ArraySocket[i].config.name != null & ArraySocket[i].config.name != undefined ? ArraySocket[i].config.name : 'X';
                             }
                             NavigationMainMenu();
                             if (CurrentSocket) {
@@ -1264,11 +1264,11 @@ function ShowMainMenuBySocket(Socket) {
         ConditionerHandlers();
         InsertConditionerBrand();
         let Title = MainDisplayConditioner.querySelector('.StandartMenuTitle');
-        Title.innerHTML = Socket.config.name;
+        Title.innerHTML = Socket.config.name != null & Socket.config.name != undefined ? Socket.config.name : 'X';
     }
     if (Socket.type === 'esp8266_thermostat' || Socket.type === 'esp32_panel_4inch' || CurrentSocket.type === 'esp8266_thermostat_plus') {
         let Title = MainDisplayTermostat.querySelector('.StandartMenuTitle');
-        Title.innerHTML = Socket.config.name;
+        Title.innerHTML = Socket.config.name != null & Socket.config.name != undefined ? Socket.config.name : 'X';
         InsertSensors();
         if (Socket.type === 'esp32_panel_4inch') {
             ZigBeeSet();
@@ -1406,7 +1406,7 @@ function UpdateSet() {
     let UpdateMarker = document.getElementsByClassName('AvailableUpdate')[0];
     if (CurrentSocket.config.name != '') {
         InputName = document.getElementById('NameInput');
-        InputName.value = CurrentSocket.config.name;
+        InputName.value = CurrentSocket.config.name != null & CurrentSocket.config.name != undefined ? CurrentSocket.config.name : 'X';;
     }
     if (CurrentSocket.config.link != '') {
         UpdateMarker.style.display = 'flex';
@@ -1685,24 +1685,24 @@ function InsertTemp() {
     let Gisteresis;
     let MaxTemp;
     let MinTemp;
+    let ChannelData = CurrentSocket.active_channel === 0 ? CurrentSocket.config_1ch : CurrentSocket.config_2ch;
     if (CurrentSocket.type === 'esp32_panel_4inch') {
-        let ChannelData = CurrentSocket.active_channel === 0 ? CurrentSocket.config_1ch : CurrentSocket.config_2ch;
-        Correction = ChannelData.sensor_corr;
-        Gisteresis = ChannelData.hysteresis;
-        MaxTemp = ChannelData.max_temp;
-        MinTemp = ChannelData.min_temp;
+        Correction = ChannelData.sensor_corr != undefined & ChannelData.sensor_corr != null ? ChannelData.sensor_corr : "X";
+        Gisteresis = ChannelData.hysteresis != undefined & ChannelData.hysteresis != null ? ChannelData.hysteresis : "X";
+        MaxTemp = ChannelData.max_temp != undefined & ChannelData.max_temp != null ? ChannelData.max_temp : "X";
+        MinTemp = ChannelData.min_temp != undefined & ChannelData.min_temp != null ? ChannelData.min_temp : "X";
     } else {
-        Correction = CurrentSocket.config.sensor_corr;
-        Gisteresis = CurrentSocket.config.hysteresis;
-        MaxTemp = CurrentSocket.config.max_temp;
-        MinTemp = CurrentSocket.config.min_temp;
+        Correction = CurrentSocket.config.sensor_corr != undefined & CurrentSocket.config.sensor_corr != null ? CurrentSocket.config.sensor_corr : "X";
+        Gisteresis = CurrentSocket.config.hysteresis != undefined & CurrentSocket.config.hysteresis != null ? CurrentSocket.config.hysteresis : "X";
+        MaxTemp = CurrentSocket.config.max_temp != undefined & CurrentSocket.config.max_temp != null ? CurrentSocket.config.max_temp : "X";
+        MinTemp = CurrentSocket.config.min_temp != undefined & CurrentSocket.config.min_temp != null ? CurrentSocket.config.min_temp : "X";
     }
-    GisteresisTablo.innerHTML = getKeyByValue(GisteresisInvertArray, GisteresisInvertArray[Number(Gisteresis)]);
+    GisteresisTablo.innerHTML = Gisteresis != 'X' ? getKeyByValue(GisteresisInvertArray, GisteresisInvertArray[Number(Gisteresis)]) : 'X';
     let sensor_corr_invert = CorrectionInvertArray[Correction];
     if (sensor_corr_invert != undefined)
         CorrectionTablo.innerHTML = sensor_corr_invert;
     else
-        CorrectionTablo.innerHTML = getKeyByValue(CorrectionInvertArray, Correction);
+        CorrectionTablo.innerHTML = Correction != 'X' ? getKeyByValue(CorrectionInvertArray, Correction) : 'X';
     MaxTablo.innerHTML = MaxTemp;
     MinTablo.innerHTML = MinTemp;
     ChangeTempPositionBtn.onclick = function () {
@@ -1854,7 +1854,7 @@ function ZigBeeSet() {
                 clear_zigbee_module: 1
             }
         ));
-        SetLoader(15, function () { location.host = location.host; });
+        SetLoader(4, function () { location.host = location.host; });
     }
     if (CurrentSocket.zigbee != null & CurrentSocket.zigbee != undefined & CurrentSocket.zigbee != '{}') {
         if (CurrentSocket.zigbee[4] === null || CurrentSocket.zigbee[4] === undefined) {
@@ -1952,7 +1952,7 @@ function CreateDeviceBlock(Socket, type) {
         DeviceBlockControlTablo.className = 'DeviceBlockControlTablo HeatingTermostatByID';
         DeviceBlockControlTablo.innerHTML = HeatingIcon;
         DeviceBlockControl.append(DeviceBlockControlTablo);
-        DeviceBlockTitle.innerHTML = Socket.config.name;
+        DeviceBlockTitle.innerHTML = Socket.config.name != null & Socket.config.name != undefined ? Socket.config.name : 'X';
         if (type === 'esp8266_thermostat' || type === 'esp8266_thermostat_plus') {
             DeviceBlock.id = Socket.id;
         } else if (type === 'esp32_panel_4inch') {
@@ -2005,7 +2005,7 @@ function CreateDeviceBlock(Socket, type) {
         DeviceBlockControlTablo.innerHTML = 'Auto';
         DeviceBlockControl.append(DeviceBlockControlTablo);
         DeviceBlockControl.append(DeviceBlockControlTabloFan);
-        DeviceBlockTitle.innerHTML = Socket.config.name;
+        DeviceBlockTitle.innerHTML = Socket.config.name != null & Socket.config.name != undefined ? Socket.config.name : 'X';
         DeviceBlock.id = Socket.id;
         DeviceBlock.append(DeviceBlockTitle);
         DeviceBlock.append(DeviceBlockValue);
