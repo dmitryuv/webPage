@@ -619,7 +619,6 @@ function InsertSensors() {
     if (CurrentSocket.config.sensor_internal_use === '255' || CurrentSocket.type === 'esp32_panel_4inch') {
         InnerSensorBlock.style.display = 'none';
         Sensor47.style.display = 'none';
-        Digital.style.display = 'none';
     }
     else if (CurrentSocket.type === 'esp8266_thermostat_plus') {
         InnerSensorBlock.style.display = 'none';
@@ -627,7 +626,11 @@ function InsertSensors() {
     } else {
         InnerSensorBlock.style.display = 'flex';
         Sensor47.style.display = 'flex';
+    }
+    if (CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp8266_thermostat') {
         Digital.style.display = 'flex';
+    } else {
+        Digital.style.display = 'none';
     }
 }
 let SelectedConditioner = document.querySelectorAll('.SelectedConditioner');
@@ -1314,8 +1317,8 @@ function SetUpdateInformation() {
 }
 function NavigationMainMenu() {
     AccountIcon.onclick = function () { SwitchElem(MainDisplay, AccountSettings); };
-    AliceLink.onclick = function () { SwitchElem(AccountSettings, AlicePage); }
-    RestorePass.onclick = function () { window.location.href = "https://lytko.com/registration/reset.html"; }
+    //AliceLink.onclick = function () { SwitchElem(AccountSettings, AlicePage); }
+    //RestorePass.onclick = function () { window.location.href = "https://lytko.com/registration/reset.html"; }
     Registration.onclick = function () { window.location.href = " https://oauth.lytko.com/reg"; }
     BackToMainDisplay.forEach(item => item.onclick = NavMainDisplay);
     BackToAccountSetting.onclick = function () { SwitchElem(AlicePage, AccountSettings); }
