@@ -898,6 +898,8 @@ function WebSocketOpen(SocketItemDevice) {
                             ip: MessageJson.ssdp[i].ip,
                             type_1ch: MessageJson.ssdp[i].type_1ch != undefined ? MessageJson.ssdp[i].type_1ch : null,
                             type_2ch: MessageJson.ssdp[i].type_2ch != undefined ? MessageJson.ssdp[i].type_2ch : null,
+                            id_for_use_ch1: MessageJson.ssdp[i].id + 'type_1ch',
+                            id_for_use_ch2: MessageJson.ssdp[i].id + 'type_2ch'
                         });
                         WebSocketOpen(ArraySocket[i]);
                     }
