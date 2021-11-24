@@ -310,6 +310,9 @@
                         <div class="SettingItem" id="ConditionerSetting">
                             Марка кондиционера
                         </div>
+                        <div class="SettingItem" id="DisplaySetting">
+                            Экран
+                        </div>
                     </div>
                     <div class="BtnMenu">
                         <button id="ResetSettings" class="BtnBlue BtnGrey" type="button" name="button">Сброс настроек</button>
@@ -1030,6 +1033,32 @@
                         </div>
                     </div>
                 </div>
+                <div id="DisplayPage" class="Tab Gisteresis DisplaySetting">
+                    <div class="SettingsInfoTitle MainDisplayIcon">
+                        <div class="ArrowBack BackToSettings" id="">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
+                            </svg>
+                        </div>
+                        <span>
+                            Экран
+                        </span>
+                    </div>
+                    <div class="ScrollingMenu">
+                        <div class="SensorSelector ScrollingMenu">
+                            <div class="SelectingBlock" id="DispleySelect">
+                                <div class="">
+                                    Отключать подсветку
+                                </div>
+                                <div class="SelectedIcon">
+                                    <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="AccountSettings" class="Tab">
                     <div class="SettingsInfoTitle MainMenuTitle">
                         <div class="AccountIcon MainDisplayIcon">
@@ -1045,7 +1074,7 @@
                         </div>
                     </div>
                     <div class="ScrollingMenu">
-                        <div class="SettingItemAccount InDevelopFunction" id="RestorePass">
+                        <div class="SettingItemAccount" id="RestorePass">
                             Восстановить пароль
                         </div>
                         <div class="SettingItemAccount" id="Registration">
@@ -1247,6 +1276,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="DropUpWindowBasic" id="DropUpMain">
                     <div class="DropUpWindow">
                         <div class="DropUpWindowTitle">Сброс устройства</div>
@@ -1259,6 +1289,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="LoaderHandler">
                     <div class="Loader"></div>
                     <div class="TimerLoader"></div>

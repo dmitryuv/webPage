@@ -63,6 +63,7 @@ let InputName = document.getElementById('InputName');
 var wifiBlocksFirstSetting = document.getElementsByClassName('WifiBlock');
 let AliceShowPass = document.getElementById('AliceShowPass');
 var ShowPassElem = document.getElementById('ShowPass');
+let DispleySelect = document.getElementById('DispleySelect');
 var ShowPassTrigger = true;
 var WifiSelected;
 var WifiPassword;
@@ -883,6 +884,7 @@ function WebSocketOpen(SocketItemDevice) {
                     if (ArraySocket[i] && ArraySocket[i].Socket === this) {
                         ArraySocket[i].ssdp = MessageJson.ssdp;
                         ArraySocket[i].type = MessageJson.ssdp[i].type;
+                        //ArraySocket[i].type = 'esp8266_thermostat_plus';
                         ArraySocket[i].id = MessageJson.ssdp[i].id;
                         ArraySocket[i].id_for_use_ch1 = MessageJson.ssdp[i].id + 'type_1ch';
                         ArraySocket[i].id_for_use_ch2 = MessageJson.ssdp[i].id + 'type_2ch';
@@ -956,6 +958,9 @@ function WebSocketOpen(SocketItemDevice) {
                             if (CurrentSocket) {
                                 ChangeTargetTemp();
                                 InsertMqtt();
+                                if (CurrentSocket.type === 'esp8266_thermostat') {
+                                    DispleyIconSwitch();
+                                }
                             }
                         }
                         else {
@@ -1097,7 +1102,7 @@ function WebSocketOpen(SocketItemDevice) {
                 }
             }
         }
-        if ('update_2ch' in MessageJson) {
+        if ('update_2ch' in MessageJson/* 'update' in MessageJson*/) {
             for (let i = 0; ArraySocket.length > i; i++) {
                 if (SocketItemDevice.type_2ch != 'none')
                     if (ArraySocket[i].id === SocketItemDevice.id & !configActive && SocketItemDevice.type === 'esp32_panel_4inch') {
@@ -1271,6 +1276,9 @@ function ShowMainMenuBySocket(Socket) {
         let Title = MainDisplayConditioner.querySelector('.StandartMenuTitle');
         Title.innerHTML = Socket.config.name != null & Socket.config.name != undefined ? Socket.config.name : 'X';
     }
+    if (Socket.type === 'esp8266_thermostat') {
+        DisplaySet();
+    }
     if (Socket.type === 'esp8266_thermostat' || Socket.type === 'esp32_panel_4inch' || CurrentSocket.type === 'esp8266_thermostat_plus') {
         let Title = MainDisplayTermostat.querySelector('.StandartMenuTitle');
         Title.innerHTML = Socket.config.name != null & Socket.config.name != undefined ? Socket.config.name : 'X';
@@ -1297,6 +1305,32 @@ function ShowMainMenuBySocket(Socket) {
     let ArrowsTemp = TempStageSetting.querySelectorAll('.ArrowTemp');
     ArrowsTemp.forEach(item => item.style.display = 'none');
 }
+function DisplaySet() {
+    DispleyIconSwitch();
+    DispleySelect.onclick = function () {
+        if (CurrentSocket.config.nex_bl != null & CurrentSocket.config.nex_bl != undefined) {
+            if (CurrentSocket.config.nex_bl === '0') {
+                CurrentSocket.Socket.send(JSON.stringify(
+                    { "config": { "nex_bl": 100 } }
+                ));
+            } else if (CurrentSocket.config.nex_bl === '100') {
+                CurrentSocket.Socket.send(JSON.stringify(
+                    { "config": { "nex_bl": 0 } }
+                ));
+            }
+        }
+    }
+}
+function DispleyIconSwitch() {
+    let DispleySelectIcon = DispleySelect.querySelector('.SelectedIcon');
+    if (CurrentSocket.config.nex_bl != null & CurrentSocket.config.nex_bl != undefined) {
+        if (CurrentSocket.config.nex_bl === '0') {
+            DispleySelectIcon.style.display = 'flex';
+        } else if (CurrentSocket.config.nex_bl === '100') {
+            DispleySelectIcon.style.display = 'none';
+        }
+    }
+}
 function ShowWifiConnectMarker() {
     if (!FirstConfigurate) {
         if (CurrentSocket.config.wifi_name != '') {
@@ -1320,7 +1354,7 @@ function SetUpdateInformation() {
 function NavigationMainMenu() {
     AccountIcon.onclick = function () { SwitchElem(MainDisplay, AccountSettings); };
     //AliceLink.onclick = function () { SwitchElem(AccountSettings, AlicePage); }
-    //RestorePass.onclick = function () { window.location.href = "https://lytko.com/registration/reset.html"; }
+    RestorePass.onclick = function () { window.location.href = "https://oauth.lytko.com/restore"; }
     Registration.onclick = function () { window.location.href = " https://oauth.lytko.com/reg"; }
     BackToMainDisplay.forEach(item => item.onclick = NavMainDisplay);
     BackToAccountSetting.onclick = function () { SwitchElem(AlicePage, AccountSettings); }
@@ -2091,7 +2125,6 @@ function HeatingRegulate() {
         Heating = CurrentSocket.update.heating === 'heat' ? 1 : 0;
     HeatingTermostat.style.background = Heating === 0 ? '#1F3C62' : '#035CD0';
     HeatingTermostat.onclick = function () {
-        //let Update = CurrentSocket.type === 'esp32_panel_4inch' ? CurrentSocket.channel_number === 0 ? CurrentSocket.update_1ch : CurrentSocket.update_2ch : CurrentSocket.update;
         let Heating = null;
         if (CurrentSocket.type === 'esp32_panel_4inch') {
             if (!CurrentSocket.active_channel)
@@ -2100,7 +2133,6 @@ function HeatingRegulate() {
                 Heating = CurrentSocket.update_2ch.heating === 'heat' ? 0 : 1;
         } else
             Heating = CurrentSocket.update.heating === 'heat' ? 0 : 1;
-        //Heating = Update.heating === 'heat' ? 0 : 1;
         this.style.background = Heating === 0 ? '#1F3C62' : '#035CD0';
         if (CurrentSocket.type === 'esp32_panel_4inch') {
             if (!CurrentSocket.active_channel)
@@ -2256,6 +2288,11 @@ function NavigationDevice() {
             DeviceSettings.querySelector('#GisteresisSetting').style.display = 'none';
             DeviceSettings.querySelector('#TypeSensorSetting').style.display = 'none';
             DeviceSettings.querySelector('#ConditionerSetting').style.display = 'flex';
+        }
+        if (CurrentSocket.type === 'esp8266_thermostat') {
+            DeviceSettings.querySelector('#DisplaySetting').style.display = 'flex';
+        } else {
+            DeviceSettings.querySelector('#DisplaySetting').style.display = 'none';
         }
     })
     BackToMainDevicePage.onclick = function () {
