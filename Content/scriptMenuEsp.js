@@ -1419,6 +1419,17 @@ function UpdateConditioner(Socket) {
         4: '80',
         5: '100'
     };
+    let ConditionerTempValueFirst = document.getElementById('ConditionerTempValueFirst');
+    let ConditionerTempValue = document.getElementById('ConditionerTempValue');
+    if (Socket.config.is_target_temp_first != null & Socket.config.is_target_temp_first != undefined) {
+        if (Socket.config.is_target_temp_first) {
+            ConditionerTempValueFirst.innerHTML = Socket.update.target_temp;
+            ConditionerTempValue.innerHTML = Socket.update.temp;
+        } else {
+            ConditionerTempValueFirst.innerHTML = Socket.update.temp;
+            ConditionerTempValue.innerHTML = Socket.update.target_temp;
+        }
+    }
     let DeviceBlockThisConditiner = document.getElementById(Socket.id);
     let AutoHeatingMainDisplay = DeviceBlockThisConditiner.querySelector('.AutoConditionerMainDisplay');
     switch (Socket.update.heating) {
@@ -1440,6 +1451,7 @@ function UpdateConditioner(Socket) {
     CoolTempHandler.style.background = Socket.update.heating === 'cool' ? CoolTempHandler.style.background = '#035CD0' : CoolTempHandler.style.background = '#1F3C62';
     FanHandler.value = FanSpeedArray[Socket.update.fan_speed];
     FanSpeedValue.innerHTML = FanHandler.value + '%';
+
 }
 function UpdateSet() {
     let UpdateMarker = document.getElementsByClassName('AvailableUpdate')[0];
