@@ -2024,14 +2024,17 @@ function SelectSensorTemp(item) {
         } else {
             CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": IdSensorTemp } }));
         }
-
-        /*ZigBeeSensorIndexToDisconnect = item.querySelector('.NameSensor').id;*/
     }
     else {
         item.children[1].style.display = 'none';
         TabloSensorTemp.style.display = 'none';
         SelectSensorTempInfo.style.display = 'none';
         NoneSelectSensorTempInfo.style.display = 'block';
+        if (!CurrentSocket.active_channel) {
+            CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": 'none' } }));
+        } else {
+            CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": 'none' } }));
+        }
     }
 }
 function SetLoader(time, func) {
