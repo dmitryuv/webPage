@@ -688,7 +688,7 @@ function ChangeTempDynamic() {
     let RangeStart;
     let RangeEnd;
     if (TypeChangingTempArray[TypeChangingTemp] === 'Standart') {
-        RangeStart = 7;
+        RangeStart = 1;
         RangeEnd = 75;
     } else if (TypeChangingTempArray[TypeChangingTemp] === 'Gisteresis') {
         RangeStart = 1;
@@ -861,8 +861,6 @@ var ArraySocketItem = {
     id: null,
     type: null
 }
-let swuthheat1 = true;
-let swuthheat = false;
 let DeviceConfigArray = new Array();
 function WebSocketOpen(SocketItemDevice) {
     SocketItemDevice.Socket.onopen = function (evt) {
@@ -1104,7 +1102,7 @@ function WebSocketOpen(SocketItemDevice) {
                 }
             }
         }
-        if ('update_2ch' in MessageJson) {
+        if ('update_2ch' in MessageJson/* 'update' in MessageJson*/) {
             for (let i = 0; ArraySocket.length > i; i++) {
                 if (SocketItemDevice.type_2ch != 'none')
                     if (ArraySocket[i].id === SocketItemDevice.id & !configActive && SocketItemDevice.type === 'esp32_panel_4inch') {
@@ -1158,6 +1156,7 @@ function WebSocketOpen(SocketItemDevice) {
             if (MessageJson.zigbee_data != undefined & MessageJson.zigbee_data != '{}' & configActive === 0) {
                 let ZigBeeSensor;
                 SensorsLine.style.display = 'flex';
+                let NumberSensor = 1;
                 for (let i = 0; 5 > i; i++) {
                     if (MessageJson.zigbee_data[i] != undefined) {
                         let CurrentSensorArray = new Array;
@@ -1171,7 +1170,8 @@ function WebSocketOpen(SocketItemDevice) {
                             };
                             CurrentSensorArray.push(ZigBeeSensor);
                             if (ZigBeeSensor.type === 'sensor_temp') {
-                                CreateZigBeeBlockSensorTemp(ZigBeeSensor);
+                                CreateZigBeeBlockSensorTemp(ZigBeeSensor, NumberSensor);
+                                NumberSensor++;
                             }
                         }
                         for (let indexCurrentArray = 0; CurrentSensorArray.length > indexCurrentArray; indexCurrentArray++) {
@@ -1180,7 +1180,6 @@ function WebSocketOpen(SocketItemDevice) {
                                 UpdateSensorValue(CurrentSensorArray[indexCurrentArray]);
                             }
                         }
-
                     }
                 }
             }
@@ -1360,7 +1359,7 @@ function SetUpdateInformation() {
 }
 function NavigationMainMenu() {
     AccountIcon.onclick = function () { SwitchElem(MainDisplay, AccountSettings); };
-    //AliceLink.onclick = function () { SwitchElem(AccountSettings, AlicePage); }
+    AliceLink.onclick = function () { SwitchElem(AccountSettings, AlicePage); }
     RestorePass.onclick = function () { window.location.href = "https://oauth.lytko.com/restore"; }
     Registration.onclick = function () { window.location.href = " https://oauth.lytko.com/reg"; }
     BackToMainDisplay.forEach(item => item.onclick = NavMainDisplay);
@@ -1940,14 +1939,16 @@ function ZigBeeSet() {
         ChangingTempTabloSensor.innerHTML = CurrentSocket.config_2ch.temp_limit != undefined & CurrentSocket.config_2ch.temp_limit != null & CurrentSocket.config_2ch.temp_limit != '' ? CurrentSocket.config_2ch.temp_limit : '28';
     }
     let GetSensor;
-    if (!CurrentSocket.active_channel & CurrentSocket.config_1ch.sensor_zigbee != undefined & CurrentSocket.config_1ch.sensor_zigbee != null & CurrentSocket.config_1ch.sensor_zigbee != '') {
+    if (!CurrentSocket.active_channel & CurrentSocket.config_1ch.sensor_zigbee != undefined & CurrentSocket.config_1ch.sensor_zigbee != null & CurrentSocket.config_1ch.sensor_zigbee != '' & CurrentSocket.config_1ch.sensor_zigbee != 'none') {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         GetSensor = document.getElementById(CurrentSocket.config_1ch.sensor_zigbee + "sensortemp");
         SelectSensorTemp(GetSensor);
-    } else if (CurrentSocket.config_2ch.sensor_zigbee != undefined & CurrentSocket.config_2ch.sensor_zigbee != null & CurrentSocket.config_2ch.sensor_zigbee != '') {
+    } else if (CurrentSocket.config_2ch.sensor_zigbee != undefined & CurrentSocket.config_2ch.sensor_zigbee != null & CurrentSocket.config_2ch.sensor_zigbee != '' & CurrentSocket.config_2ch.sensor_zigbee != 'none') {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         GetSensor = document.getElementById(CurrentSocket.config_2ch.sensor_zigbee + "sensortemp");
         SelectSensorTemp(GetSensor);
+    } else {
+        ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
     }
     SensorTempArrowUp[0].onclick = function () {
         let ValueTemp = Number(ChangingTempTabloSensor.innerHTML);
@@ -1989,14 +1990,14 @@ function CreateZigBeeBlock(sensor, number) {
         SelectZigBeeSensor(this);
     }
 }
-function CreateZigBeeBlockSensorTemp(Sensor) {
+function CreateZigBeeBlockSensorTemp(Sensor, number) {
     let SelectBlock = document.createElement('div');
     let NameSensor = document.createElement('div');
     let SelectedIcon = document.createElement('div');
     SelectBlock.className = 'SelectingBlock SensorTempBlock';
     SelectBlock.id = Sensor.ShotAddr + "sensortemp";
     NameSensor.className = 'NameSensor';
-    NameSensor.innerHTML = 'Aqara 1';
+    NameSensor.innerHTML = 'Aqara ' + number;
     NameSensor.id = Sensor.id + 'sensortemp';
     SelectedIcon.className = 'SelectedIcon';
     SelectedIcon.innerHTML = '<svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path d = "M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill = "#2C98F0" /></svg>';
