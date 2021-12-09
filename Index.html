@@ -14,14 +14,17 @@
                 <div id="MainDisplay" class="Tab">
                     <div class="SettingsInfoTitle MainMenuTitle">
                         <div class="MainDisplayIcon" id="AccountIcon">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
-                                    <path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 3C11.66 3 13 4.34 13 6C13 7.66 11.66 9 10 9C8.34 9 7 7.66 7 6C7 4.34 8.34 3 10 3ZM10 17.2C7.5 17.2 5.29 15.92 4 13.98C4.03 11.99 8 10.9 10 10.9C11.99 10.9 15.97 11.99 16 13.98C14.71 15.92 12.5 17.2 10 17.2Z" fill="white" />
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M-2 -2H22V22H-2V-2Z" fill="#2C98F0" />
-                                </g>
-                            </svg>
+                            <div class="ArrowBack">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
+                                        <path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 3C11.66 3 13 4.34 13 6C13 7.66 11.66 9 10 9C8.34 9 7 7.66 7 6C7 4.34 8.34 3 10 3ZM10 17.2C7.5 17.2 5.29 15.92 4 13.98C4.03 11.99 8 10.9 10 10.9C11.99 10.9 15.97 11.99 16 13.98C14.71 15.92 12.5 17.2 10 17.2Z" fill="white" />
+                                    </mask>
+                                    <g mask="url(#mask0)">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M-2 -2H22V22H-2V-2Z" fill="#2C98F0" />
+                                    </g>
+                                </svg>
+                            </div>
+
                             <div class="MainDisplayTitle">
                                 Квартира
                             </div>
@@ -50,12 +53,11 @@
                 <div id="MainDisplayTermostat" class="Tab">
                     <div class="SettingsInfoTitle MainMenuTitle">
                         <div class="AccountIcon MainDisplayIcon">
-                            <div class="BackToMainDisplay">
+                            <div class="ArrowBack BackToMainDisplay">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                                 </svg>
                             </div>
-
                             <div class="MainDisplayTitle">
                                 Устройство
                             </div>
@@ -135,7 +137,7 @@
                 <div id="MainDisplayConditioner" class="Tab">
                     <div class="SettingsInfoTitle MainMenuTitle">
                         <div class="AccountIcon MainDisplayIcon">
-                            <div class="BackToMainDisplay">
+                            <div class="ArrowBack BackToMainDisplay">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                                 </svg>
@@ -241,7 +243,7 @@
                 <div id="DeviceSettings" class="Tab">
                     <div class="SettingsInfoTitle MainMenuTitle">
                         <div class="AccountIcon MainDisplayIcon">
-                            <div id="BackToMainDevicePage">
+                            <div class="ArrowBack" id="BackToMainDevicePage">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                                 </svg>
@@ -555,16 +557,6 @@
                         <div class="SelectingBlock TypeResistanceBlock" id="33_кОм">
                             <div class="TypeResistance">
                                 33 кОм
-                            </div>
-                            <div class="SelectedIcon">
-                                <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill="#2C98F0" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="SelectingBlock TypeResistanceBlock" id="47_кОм">
-                            <div class="TypeResistance">
-                                47 кОм
                             </div>
                             <div class="SelectedIcon">
                                 <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1065,7 +1057,7 @@
                 <div id="AccountSettings" class="Tab">
                     <div class="SettingsInfoTitle MainMenuTitle">
                         <div class="AccountIcon MainDisplayIcon">
-                            <div class="BackToMainDisplay">
+                            <div class="ArrowBack BackToMainDisplay">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                                 </svg>
@@ -1205,7 +1197,7 @@
                 <div id="AlicePage" class="Tab">
                     <div class="SettingsInfoTitle MainMenuTitle">
                         <div class="AccountIcon MainDisplayIcon">
-                            <div class="BackToAccountSetting">
+                            <div class="ArrowBack BackToAccountSetting">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.791 7.00499H3.621L8.501 2.12499C8.891 1.73499 8.891 1.09499 8.501 0.704994C8.314 0.517994 8.061 0.412994 7.796 0.412994C7.532 0.412994 7.278 0.517994 7.091 0.704994L0.501 7.29499C0.111 7.68499 0.111 8.31499 0.501 8.70499L7.091 15.295C7.481 15.685 8.111 15.685 8.501 15.295C8.891 14.905 8.891 14.275 8.501 13.885L3.621 9.00499H14.791C15.341 9.00499 15.791 8.55499 15.791 8.00499C15.791 7.45499 15.341 7.00499 14.791 7.00499Z" fill="#3A83F1" />
                                 </svg>
