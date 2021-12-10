@@ -618,18 +618,14 @@ function InsertSensors() {
         SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, 'InnerSensorBlock').querySelector('.SelectedIcon').style.display = 'block';
     }
     let InnerSensorBlock = document.getElementById('InnerSensorBlock');
-    let Sensor47 = document.getElementById('47_кОм');
     let Digital = document.getElementById('Digital');
     if (CurrentSocket.config.sensor_internal_use === '255' || CurrentSocket.type === 'esp32_panel_4inch') {
         InnerSensorBlock.style.display = 'none';
-        Sensor47.style.display = 'none';
     }
     else if (CurrentSocket.type === 'esp8266_thermostat_plus') {
         InnerSensorBlock.style.display = 'none';
-        Sensor47.style.display = 'none';
     } else {
         InnerSensorBlock.style.display = 'flex';
-        Sensor47.style.display = 'flex';
     }
     if (CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp8266_thermostat') {
         Digital.style.display = 'flex';
@@ -1153,7 +1149,7 @@ function WebSocketOpen(SocketItemDevice) {
             }
         }
         if ('zigbee_data' in MessageJson) {
-            if (MessageJson.zigbee_data != undefined & MessageJson.zigbee_data != '{}' & configActive === 0) {
+            if (MessageJson.zigbee_data != undefined & MessageJson.zigbee_data != '{}' & MessageJson.zigbee_data != '' & configActive === 0) {
                 let ZigBeeSensor;
                 SensorsLine.style.display = 'flex';
                 let NumberSensor = 1;
@@ -1939,17 +1935,21 @@ function ZigBeeSet() {
         ChangingTempTabloSensor.innerHTML = CurrentSocket.config_2ch.temp_limit != undefined & CurrentSocket.config_2ch.temp_limit != null & CurrentSocket.config_2ch.temp_limit != '' ? CurrentSocket.config_2ch.temp_limit : '28';
     }
     let GetSensor;
-    if (!CurrentSocket.active_channel & CurrentSocket.config_1ch.sensor_zigbee != undefined & CurrentSocket.config_1ch.sensor_zigbee != null & CurrentSocket.config_1ch.sensor_zigbee != '' & CurrentSocket.config_1ch.sensor_zigbee != 'none') {
-        ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
-        GetSensor = document.getElementById(CurrentSocket.config_1ch.sensor_zigbee + "sensortemp");
-        SelectSensorTemp(GetSensor);
-    } else if (CurrentSocket.config_2ch.sensor_zigbee != undefined & CurrentSocket.config_2ch.sensor_zigbee != null & CurrentSocket.config_2ch.sensor_zigbee != '' & CurrentSocket.config_2ch.sensor_zigbee != 'none') {
-        ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
-        GetSensor = document.getElementById(CurrentSocket.config_2ch.sensor_zigbee + "sensortemp");
-        SelectSensorTemp(GetSensor);
-    } else {
-        ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
+    if (CurrentSocket.zigbee_data != '' & CurrentSocket.zigbee_data != undefined & CurrentSocket.zigbee_data != '{}' & CurrentSocket.zigbee_data != null) {
+        if (!CurrentSocket.active_channel & CurrentSocket.config_1ch.sensor_zigbee != undefined & CurrentSocket.config_1ch.sensor_zigbee != null & CurrentSocket.config_1ch.sensor_zigbee != '' & CurrentSocket.config_1ch.sensor_zigbee != 'none') {
+            ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
+            GetSensor = document.getElementById(CurrentSocket.config_1ch.sensor_zigbee + "sensortemp");
+            SelectSensorTemp(GetSensor);
+        } else if (CurrentSocket.config_2ch.sensor_zigbee != undefined & CurrentSocket.config_2ch.sensor_zigbee != null & CurrentSocket.config_2ch.sensor_zigbee != '' & CurrentSocket.config_2ch.sensor_zigbee != 'none') {
+            ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
+            GetSensor = document.getElementById(CurrentSocket.config_2ch.sensor_zigbee + "sensortemp");
+            SelectSensorTemp(GetSensor);
+        } else {
+            ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
+        }
     }
+
+
     SensorTempArrowUp[0].onclick = function () {
         let ValueTemp = Number(ChangingTempTabloSensor.innerHTML);
         let ResultValueTemp = ValueTemp >= 15 & ValueTemp < 45 ? ValueTemp + 1 : ValueTemp;

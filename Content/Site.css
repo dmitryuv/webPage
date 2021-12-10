@@ -319,7 +319,6 @@
 
 .MainDisplayIcon {
     display: flex;
-    padding-left: 20px;
     align-items: center;
 }
 
@@ -335,6 +334,10 @@
 
 .ElseSettingIcon {
     margin: 0px 8px;
+}
+
+.SettingIcon {
+    padding-right: 20px;
 }
 
 .DefaultSettingBlock {
@@ -1085,7 +1088,7 @@ input[type=range]::-webkit-slider-thumb {
     display: flex;
     flex-direction: column;
     width: 100%;
-    overflow-x: scroll;
+    /* overflow-x: scroll;*/
 }
 
 .InDevelopClass {
