@@ -135,8 +135,7 @@ var SensorIdCollection = {
     '14.8_кОм': 6,
     '15_кОм': 7,
     '20_кОм': 8,
-    '33_кОм': 9,
-    '47_кОм': 10,
+    '33_кОм': 9
 }
 var configTermostat = {
     "config": {
@@ -612,7 +611,9 @@ function InsertSensors() {
     if (SensorModelId != '' & SensorModelId != undefined & SensorModelId != null) {
         document.querySelectorAll('.TypeResistanceBlock').forEach(item => item.children[1].style.display = 'none');
         let SensorType = getKeyByValue(SensorIdCollection, Number(SensorModelId));
-        SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, SensorType).querySelector('.SelectedIcon').style.display = 'block';
+        if (SensorType != undefined) {
+            SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, SensorType).querySelector('.SelectedIcon').style.display = 'block';
+        }
     }
     if (CurrentSocket.config.sensor_internal_use === '1') {
         SearchByHtmlCollectionByIdOrNull(TypeResistanceBlocks, 'InnerSensorBlock').querySelector('.SelectedIcon').style.display = 'block';
