@@ -1492,7 +1492,7 @@ function UpdateSet() {
         CurrentSocket.Socket.send(JSON.stringify(
             {
                 "files": {
-                    "dwin_link": config.dwin_link
+                    "dwin_link": CurrentSocket.config.dwin_link
                 }
 
             }
