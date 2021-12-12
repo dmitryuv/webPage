@@ -825,7 +825,7 @@ input[type=range]::-webkit-slider-thumb {
     display: none;
 }
 
-.CurrentVersion {
+.CurrentVersion, #CurrentVersionDisplay {
     font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
@@ -839,7 +839,7 @@ input[type=range]::-webkit-slider-thumb {
     padding-top: 30px;
 }
 
-.AccessVersion, .IdDevice {
+.AccessVersion, .IdDevice, #AccessVersionDisplay, #IdDeviceDisplay {
     font-family: NotoSans-Regular;
     font-style: normal;
     font-weight: normal;
@@ -1386,6 +1386,10 @@ input[type=range]::-webkit-slider-thumb {
     display: none;
 }
 
+#CountFilesUpdate {
+    display: none;
+}
+
 @-webkit-keyframes fadeIn {
     from {
         opacity: 0;
@@ -1402,6 +1406,26 @@ input[type=range]::-webkit-slider-thumb {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#UpdateStatusInfo {
+    display: none;
+    font-family: NotoSans-Regular;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    color: #EAEAEB;
+    padding: 35px;
+}
+
+#DownloadInfoUpdate {
+    display: none;
+}
+
+#UploadInfoUpdate {
+    display: none;
 }
 
 @keyframes fadeIn {
