@@ -422,7 +422,6 @@ function PanelSettingNav() {
                 DetermineChannle();
                 SelectTypePanelChannel(SelectingTypeChannel[0]);
             } else {
-                //FirstChannelSelectChecker++
                 DetermineChannle();
             }
         }
@@ -499,8 +498,6 @@ function PanelSettingNav() {
             }
         }
         let TargetNavElem = this;
-
-
         NavPage.forEach(item => {
             item.style.display = 'none';
             if (item.id === 'SelectChannelBack') {
@@ -529,22 +526,13 @@ function DetermineChannle() {
         return true;
     } else {
         NoneType.style.display = 'none';
-        //if (CurrentSocket.config_1ch != null) {
-        //    if (CurrentSocket.config_2ch.type != 'none') {
-        //        CompletePanelSettingChannel.style.display = 'none';
-        //        NextPanelSettingChannel.style.display = 'block';
-        //    } else {
-        //        CompletePanelSettingChannel.style.display = 'none';
-        //        NextPanelSettingChannel.style.display = 'block';
-        //    }
-
-        //}
         CompletePanelSettingChannel.style.display = 'none';
         NextPanelSettingChannel.style.display = 'block';
         title.innerHTML = '1 Канал';
         return false;
     }
 }
+
 ShowPass.onclick = function () {
     let ShowIcon = document.getElementById('ShowIcon');
     let NotShowIcon = document.getElementById('NotShowIcon');
@@ -1087,6 +1075,7 @@ function WebSocketOpen(SocketItemDevice) {
                     ArraySocket[i].qr_hk = MessageJson.qr_hk;
                 }
             }
+
         }
         if ('refresh' in MessageJson) {
             location.host = location.host;
@@ -1097,6 +1086,12 @@ function WebSocketOpen(SocketItemDevice) {
                 if (ArraySocket[i].id === SocketItemDevice.id && !PanelMenu) {
                     NavigationMainMenu();
                     if (!configActive) {
+                        if (ArraySocket[i].config_1ch.sensor_zigbee) {
+                            let SensorTemp = document.getElementById(ArraySocket[i].config_1ch.sensor_zigbee + 'sensortemp');
+                            if (SensorTemp != undefined & SensorTemp != null & !SocketItemDevice.active_channel) {
+                                SelectSensorTemp(SensorTemp);
+                            }
+                        }
                         SocketItemDevice.channel_number = 0;
                         let DeviceBlockCheck = document.getElementById(ArraySocket[i].id_for_use_ch1);
                         if (!DeviceBlockCheck) {
@@ -1105,7 +1100,6 @@ function WebSocketOpen(SocketItemDevice) {
                             }
                         }
                     }
-
                 }
             }
         }
@@ -1115,6 +1109,12 @@ function WebSocketOpen(SocketItemDevice) {
                 if (ArraySocket[i].id === SocketItemDevice.id && !PanelMenu) {
                     NavigationMainMenu();
                     if (!configActive) {
+                        if (ArraySocket[i].config_2ch.sensor_zigbee) {
+                            let SensorTemp = document.getElementById(ArraySocket[i].config_2ch.sensor_zigbee + 'sensortemp');
+                            if (SensorTemp != undefined & SensorTemp != null & SocketItemDevice.active_channel) {
+                                SelectSensorTemp(SensorTemp);
+                            }
+                        }
                         SocketItemDevice.channel_number = 1;
                         let DeviceBlockCheck = document.getElementById(ArraySocket[i].id_for_use_ch2);
                         if (!DeviceBlockCheck) {
@@ -1188,7 +1188,6 @@ function WebSocketOpen(SocketItemDevice) {
                                 UpdateSensorValue(CurrentSensorArray[indexCurrentArray]);
                             }
                         }
-
                     }
                 }
             }
@@ -1394,7 +1393,7 @@ function SetUpdateInformation() {
     let AccessVersion = LytkoUpdateInformation.querySelector('.AccessVersion');
     let IdDevice = LytkoUpdateInformation.querySelector('.IdDevice');
     CurrentVersion.innerHTML = 'Текущая версия ' + CurrentSocket.config.version;
-    if (CurrentSocket.config.link != '')
+    if (CurrentSocket.config.link != '' & CurrentSocket.config.link != undefined & CurrentSocket.config.link != null)
         AccessVersion.innerHTML = 'Доступно обновление ' + CurrentSocket.config.version_new;
     IdDevice.innerHTML = 'Id устройства ' + CurrentSocket.id;
 }
@@ -1505,7 +1504,7 @@ function UpdateSet() {
         InputName = document.getElementById('NameInput');
         InputName.value = CurrentSocket.config.name != null & CurrentSocket.config.name != undefined ? CurrentSocket.config.name : 'X';;
     }
-    if (CurrentSocket.config.link != '') {
+    if (CurrentSocket.config.link != '' & CurrentSocket.config.link != undefined & CurrentSocket.config.link != null) {
         UpdateMarker.style.display = 'flex';
         UpdateLytkoBtn.removeAttribute('disabled');
         UpdateLytkoBtn.style.background = '#035CD0';
@@ -2055,22 +2054,31 @@ function CreateZigBeeBlock(sensor, number) {
     }
 }
 function CreateZigBeeBlockSensorTemp(Sensor, number) {
-    let SelectBlock = document.createElement('div');
-    let NameSensor = document.createElement('div');
-    let SelectedIcon = document.createElement('div');
-    SelectBlock.className = 'SelectingBlock SensorTempBlock';
-    SelectBlock.id = Sensor.ShotAddr + "sensortemp";
-    NameSensor.className = 'NameSensor';
-    NameSensor.innerHTML = 'Aqara ' + number;
-    NameSensor.id = Sensor.id + 'sensortemp';
-    SelectedIcon.className = 'SelectedIcon';
-    SelectedIcon.innerHTML = '<svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path d = "M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill = "#2C98F0" /></svg>';
-    SelectBlock.append(NameSensor);
-    SelectBlock.append(SelectedIcon);
-    ScrollingMenuSensorTemp.append(SelectBlock);
-    SelectBlock.onclick = function () {
-        SelectSensorTemp(this);
+    let blockCheck = document.getElementById(Sensor.id + 'sensortemp');
+    if (!blockCheck) {
+        let SelectBlock = document.createElement('div');
+        let NameSensor = document.createElement('div');
+        let SelectedIcon = document.createElement('div');
+        SelectBlock.className = 'SelectingBlock SensorTempBlock';
+        SelectBlock.id = Sensor.ShotAddr + "sensortemp";
+        NameSensor.className = 'NameSensor';
+        NameSensor.innerHTML = 'Aqara ' + number;
+        NameSensor.id = Sensor.id + 'sensortemp';
+        SelectedIcon.className = 'SelectedIcon';
+        SelectedIcon.innerHTML = '<svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path d = "M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill = "#2C98F0" /></svg>';
+        SelectBlock.append(NameSensor);
+        SelectBlock.append(SelectedIcon);
+        ScrollingMenuSensorTemp.append(SelectBlock);
+        SelectBlock.onclick = function () {
+            let IdSensorTemp = this.id.replace('sensortemp', '');
+            if (!CurrentSocket.active_channel) {
+                CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": IdSensorTemp } }));
+            } else {
+                CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": IdSensorTemp } }));
+            }
+        }
     }
+
 }
 let SelectSensorTempInfo = document.getElementById('SelectSensorTempInfo');
 let NoneSelectSensorTempInfo = document.getElementById('NoneSelectSensorTempInfo');
@@ -2083,12 +2091,12 @@ function SelectSensorTemp(item) {
         TabloSensorTemp.style.display = 'flex';
         SelectSensorTempInfo.style.display = 'block';
         NoneSelectSensorTempInfo.style.display = 'none';
-        let IdSensorTemp = item.id.replace('sensortemp', '');
-        if (!CurrentSocket.active_channel) {
-            CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": IdSensorTemp } }));
-        } else {
-            CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": IdSensorTemp } }));
-        }
+        //let IdSensorTemp = item.id.replace('sensortemp','');
+        //if (!CurrentSocket.active_channel) {
+        //    CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": IdSensorTemp } }));
+        //} else {
+        //    CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": IdSensorTemp } }));
+        //}
     }
     else {
         item.children[1].style.display = 'none';
