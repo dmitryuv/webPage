@@ -2330,89 +2330,90 @@ function ShowWifiList(WifiList) {
     var WifiIcon;
     var InfoWifiBlock;
     var WifiBlock;
-    for (var k = 0; WifiList.length > k; k++) {
-        WifiName = document.createElement('div');
-        GuardTypeWifi = document.createElement('div');
-        WifiIcon = document.createElement('div');
-        InfoWifiBlock = document.createElement('div');
-        WifiBlock = document.createElement('div');
+    if (WifiList != undefined & WifiList != null & WifiList != '{}' & WifiList != '')
+        for (var k = 0; WifiList.length > k; k++) {
+            WifiName = document.createElement('div');
+            GuardTypeWifi = document.createElement('div');
+            WifiIcon = document.createElement('div');
+            InfoWifiBlock = document.createElement('div');
+            WifiBlock = document.createElement('div');
 
-        WifiName.className = 'WifiName';
-        GuardTypeWifi.className = 'GuardTypeWifi';
-        WifiIcon.className = 'WifiIcon';
-        InfoWifiBlock.className = 'InfoWifiBlock';
-        WifiBlock.className = 'WifiPasswordPanel WifiBlock SelectingBlock';
-        WifiName.innerHTML = WifiList[k].ssid;
-        if (ArraySocket[0].type === 'esp32_panel_4inch')
-            GuardTypeWifi.innerHTML = WifiDefCollectionPanel[WifiList[k].encryption];
-        else
-            GuardTypeWifi.innerHTML = WifiDefCollection[WifiList[k].encryption];
-        if (WifiList[k].signal != undefined)
-            WifiIcon.innerHTML = WifiIconArray[DetermineWifiSignal(WifiList[k].signal)];
-        InfoWifiBlock.append(WifiName);
-        InfoWifiBlock.append(GuardTypeWifi);
-        WifiBlock.append(InfoWifiBlock);
-        WifiBlock.append(WifiIcon);
-        WifiListPlace.append(WifiBlock);
-        WifiBlock.onclick = function () {
-            WifiSelected = this;
-            let SelectedWifiName = this.querySelectorAll('.WifiName')[0].innerHTML;
-            if (this.querySelectorAll('.GuardTypeWifi')[0].innerHTML != 'Открытая сеть') {
-                if (FirstConfigurate) {
-                    if (PanelMenu) {
-                        SwitchElem(WifiSettingPanel, WifiPasswordPanel);
-                    }
-                    else
-                        SwitchElem(OneStageSettingDissapearElem, TwoStageSettingDissapearElem);
-                    WifiConnectBtn.onclick = function () {
-                        let passwordCheck = document.getElementById('PasswordFirstSetting');
-                        if (passwordCheck.value.length > 0) {
-                            if (PanelMenu) {
-                                SwitchElem(WifiPasswordPanel, SelectChannel);
-                                DetermineChannle();
+            WifiName.className = 'WifiName';
+            GuardTypeWifi.className = 'GuardTypeWifi';
+            WifiIcon.className = 'WifiIcon';
+            InfoWifiBlock.className = 'InfoWifiBlock';
+            WifiBlock.className = 'WifiPasswordPanel WifiBlock SelectingBlock';
+            WifiName.innerHTML = WifiList[k].ssid;
+            if (ArraySocket[0].type === 'esp32_panel_4inch')
+                GuardTypeWifi.innerHTML = WifiDefCollectionPanel[WifiList[k].encryption];
+            else
+                GuardTypeWifi.innerHTML = WifiDefCollection[WifiList[k].encryption];
+            if (WifiList[k].signal != undefined)
+                WifiIcon.innerHTML = WifiIconArray[DetermineWifiSignal(WifiList[k].signal)];
+            InfoWifiBlock.append(WifiName);
+            InfoWifiBlock.append(GuardTypeWifi);
+            WifiBlock.append(InfoWifiBlock);
+            WifiBlock.append(WifiIcon);
+            WifiListPlace.append(WifiBlock);
+            WifiBlock.onclick = function () {
+                WifiSelected = this;
+                let SelectedWifiName = this.querySelectorAll('.WifiName')[0].innerHTML;
+                if (this.querySelectorAll('.GuardTypeWifi')[0].innerHTML != 'Открытая сеть') {
+                    if (FirstConfigurate) {
+                        if (PanelMenu) {
+                            SwitchElem(WifiSettingPanel, WifiPasswordPanel);
+                        }
+                        else
+                            SwitchElem(OneStageSettingDissapearElem, TwoStageSettingDissapearElem);
+                        WifiConnectBtn.onclick = function () {
+                            let passwordCheck = document.getElementById('PasswordFirstSetting');
+                            if (passwordCheck.value.length > 0) {
+                                if (PanelMenu) {
+                                    SwitchElem(WifiPasswordPanel, SelectChannel);
+                                    DetermineChannle();
+                                }
+                                else
+                                    SwitchElem(TwoStageSettingDissapearElem, ThreeStageSettingDissapearElem);
+                                WifiPassword = passwordCheck.value;
+                                configTermostat.config.wifi_pass = WifiPassword;
+                                configConditioner.config.wifi_pass = WifiPassword;
+                                configPanel.config.wifi_pass = WifiPassword;
                             }
-                            else
-                                SwitchElem(TwoStageSettingDissapearElem, ThreeStageSettingDissapearElem);
-                            WifiPassword = passwordCheck.value;
-                            configTermostat.config.wifi_pass = WifiPassword;
-                            configConditioner.config.wifi_pass = WifiPassword;
-                            configPanel.config.wifi_pass = WifiPassword;
                         }
                     }
+                    else {
+                        let WifiSelectingList = document.getElementsByClassName('WifiSelecting')[0];
+                        let WifiMenuBlock = document.getElementsByClassName('WifiMenuBlock')[0];
+                        let ConnecthWifiMainMenu = document.getElementById('ConnecthWifiMainMenu');
+                        let RefreshWifiList = document.getElementById('RefreshWifiList');
+                        SwitchElem(WifiSelectingList, WifiMenuBlock);
+                        SwitchElem(RefreshWifiList, ConnecthWifiMainMenu);
+                        ConnecthWifiMainMenu.onclick = function () {
+                            let passwordCheck = document.getElementById('PasswordFirstSetting');
+                            if (passwordCheck.value.length > 0) {
+                                CurrentSocket.Socket.send(JSON.stringify(
+                                    {
+                                        wifi_connect:
+                                        {
+                                            ssid: SelectedWifiName,
+                                            password: passwordCheck.value
+                                        }
+                                    }
+                                ));
+                            }
+                        }
+                    }
+                    configTermostat.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
+                    configConditioner.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
+                    configPanel.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
                 }
                 else {
-                    let WifiSelectingList = document.getElementsByClassName('WifiSelecting')[0];
-                    let WifiMenuBlock = document.getElementsByClassName('WifiMenuBlock')[0];
-                    let ConnecthWifiMainMenu = document.getElementById('ConnecthWifiMainMenu');
-                    let RefreshWifiList = document.getElementById('RefreshWifiList');
-                    SwitchElem(WifiSelectingList, WifiMenuBlock);
-                    SwitchElem(RefreshWifiList, ConnecthWifiMainMenu);
-                    ConnecthWifiMainMenu.onclick = function () {
-                        let passwordCheck = document.getElementById('PasswordFirstSetting');
-                        if (passwordCheck.value.length > 0) {
-                            CurrentSocket.Socket.send(JSON.stringify(
-                                {
-                                    wifi_connect:
-                                    {
-                                        ssid: SelectedWifiName,
-                                        password: passwordCheck.value
-                                    }
-                                }
-                            ));
-                        }
-                    }
+                    SwitchElem(OneStageSettingDissapearElem, ThreeStageSettingDissapearElem);
+                    WifiSelected = this;
+                    config.config.wifi_name = SelectedWifiName;
                 }
-                configTermostat.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
-                configConditioner.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
-                configPanel.config.wifi_name = this.querySelectorAll('.WifiName')[0].innerHTML;
-            }
-            else {
-                SwitchElem(OneStageSettingDissapearElem, ThreeStageSettingDissapearElem);
-                WifiSelected = this;
-                config.config.wifi_name = SelectedWifiName;
             }
         }
-    }
 }
 function DetermineWifiSignal(WifiSignal) {
     let result;
