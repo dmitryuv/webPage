@@ -499,8 +499,6 @@ function PanelSettingNav() {
             }
         }
         let TargetNavElem = this;
-
-
         NavPage.forEach(item => {
             item.style.display = 'none';
             if (item.id === 'SelectChannelBack') {
@@ -529,16 +527,6 @@ function DetermineChannle() {
         return true;
     } else {
         NoneType.style.display = 'none';
-        //if (CurrentSocket.config_1ch != null) {
-        //    if (CurrentSocket.config_2ch.type != 'none') {
-        //        CompletePanelSettingChannel.style.display = 'none';
-        //        NextPanelSettingChannel.style.display = 'block';
-        //    } else {
-        //        CompletePanelSettingChannel.style.display = 'none';
-        //        NextPanelSettingChannel.style.display = 'block';
-        //    }
-
-        //}
         CompletePanelSettingChannel.style.display = 'none';
         NextPanelSettingChannel.style.display = 'block';
         title.innerHTML = '1 Канал';
@@ -600,7 +588,6 @@ function SelectResistance(Item) {
                     "sensor_internal_use": 1
                 }));
             }
-
         }
         else {
             Item.children[1].style.display = 'none';
@@ -869,7 +856,7 @@ window.onload = function () {
         update_1ch: null,
         update_2ch: null
     });
-    ArraySocket.forEach(item => item != null ? WebSocketOpen(item) : false);
+    WebSocketOpen(ArraySocket[0]);
 }
 var ArraySocket = new Array();
 var ArraySocketItem = {
@@ -950,7 +937,6 @@ function WebSocketOpen(SocketItemDevice) {
                             }
                         }
                         else if (configActive === 0) {
-                            console.log(location.host);
                             let DeviceBlockCheck = document.getElementById(ArraySocket[i].id);
                             if (!DeviceBlockCheck && ArraySocket[i].type != 'esp32_panel_4inch') {
                                 CreateDeviceBlock(SocketItemDevice, ArraySocket[i].type);
@@ -1103,9 +1089,10 @@ function WebSocketOpen(SocketItemDevice) {
                         if (ArraySocket[i].config_1ch.sensor_zigbee) {
                             let SensorTemp = document.getElementById(ArraySocket[i].config_1ch.sensor_zigbee + 'sensortemp');
                             if (SensorTemp != undefined & SensorTemp != null & !SocketItemDevice.active_channel) {
-                                SelectSensorTemp(SensorTemp);
+                                SelectSensorTemp(SensorTemp, true);
                             }
                         }
+
                         SocketItemDevice.channel_number = 0;
                         let DeviceBlockCheck = document.getElementById(ArraySocket[i].id_for_use_ch1);
                         if (!DeviceBlockCheck) {
@@ -1126,9 +1113,10 @@ function WebSocketOpen(SocketItemDevice) {
                         if (ArraySocket[i].config_2ch.sensor_zigbee) {
                             let SensorTemp = document.getElementById(ArraySocket[i].config_2ch.sensor_zigbee + 'sensortemp');
                             if (SensorTemp != undefined & SensorTemp != null & SocketItemDevice.active_channel) {
-                                SelectSensorTemp(SensorTemp);
+                                SelectSensorTemp(SensorTemp, true);
                             }
                         }
+
                         SocketItemDevice.channel_number = 1;
                         let DeviceBlockCheck = document.getElementById(ArraySocket[i].id_for_use_ch2);
                         if (!DeviceBlockCheck) {
@@ -1157,7 +1145,7 @@ function WebSocketOpen(SocketItemDevice) {
                 }
             }
         }
-        if ('update_2ch' in MessageJson/* 'update' in MessageJson*/) {
+        if ('update_2ch' in MessageJson) {
             for (let i = 0; ArraySocket.length > i; i++) {
                 if (SocketItemDevice.type_2ch != 'none')
                     if (ArraySocket[i].id === SocketItemDevice.id & !configActive && SocketItemDevice.type === 'esp32_panel_4inch') {
@@ -1349,7 +1337,10 @@ function ShowMainMenuBySocket(Socket) {
     }
     DropSettings.onclick = function () {
         CurrentSocket.Socket.send(JSON.stringify("reset"));
-        SetLoader(5, function () { window.close(); })
+        SetLoader(10, function () {
+            let WifiConnectPopup = document.getElementById('WifiConnectPopup');
+            WifiConnectPopup.classList.toggle("show");
+        })
     }
     let NameChangeIcon = document.getElementById('NameChangeIcon');
     InputName.onclick = ShowIcon;
@@ -1393,7 +1384,7 @@ function DispleyIconSwitch() {
 }
 function ShowWifiConnectMarker() {
     if (!FirstConfigurate) {
-        if (CurrentSocket.config.wifi_name != '') {
+        if (CurrentSocket.config.wifi_name != '' & CurrentSocket.config.wifi_name != undefined & CurrentSocket.config.wifi_name != null) {
             document.getElementsByClassName('WifiConnect')[0].innerHTML = CurrentSocket.config.wifi_name;
             document.getElementsByClassName('WifiConnect')[0].style.display = 'flex';
         }
@@ -1406,10 +1397,12 @@ function SetUpdateInformation() {
     let CurrentVersion = LytkoUpdateInformation.querySelector('.CurrentVersion');
     let AccessVersion = LytkoUpdateInformation.querySelector('.AccessVersion');
     let IdDevice = LytkoUpdateInformation.querySelector('.IdDevice');
-    CurrentVersion.innerHTML = 'Текущая версия ' + CurrentSocket.config.version;
+    if (CurrentSocket.config.version != '' & CurrentSocket.config.version != undefined & CurrentSocket.config.version != null)
+        CurrentVersion.innerHTML = 'Текущая версия ' + CurrentSocket.config.version;
     if (CurrentSocket.config.link != '' & CurrentSocket.config.link != undefined & CurrentSocket.config.link != null)
         AccessVersion.innerHTML = 'Доступно обновление ' + CurrentSocket.config.version_new;
-    IdDevice.innerHTML = 'Id устройства ' + CurrentSocket.id;
+    if (CurrentSocket.id != '' & CurrentSocket.id != undefined & CurrentSocket.id != null)
+        IdDevice.innerHTML = 'Id устройства ' + CurrentSocket.id;
 }
 function NavigationMainMenu() {
     AccountIcon.onclick = function () { SwitchElem(MainDisplay, AccountSettings); };
@@ -1537,7 +1530,7 @@ function UpdateSet() {
         window.location.href = "//" + CurrentSocket.ip + "/manual_update";
     }
     let UpdateDisplayBtn = document.getElementById('UpdateDisplayBtn');
-    if (CurrentSocket.type === 'esp8266_thermostat_plus') {
+    if (CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp32_panel_4inch') {
         if (CurrentSocket.config.dwin_link != undefined & CurrentSocket.config.dwin_link != null & CurrentSocket.config.dwin_link != '{}' & CurrentSocket.config.dwin_link != '') {
             UpdateDispleyBlock.style.display = 'block';
             UpdateDisplayBtn.removeAttribute('disabled');
@@ -1657,8 +1650,6 @@ function ChangeTargetTemp() {
             }
         }
     }
-
-
 }
 function InsertExternalInnerSensor() {
     if (CurrentSocket.config.mqtt_external_topic != '' && CurrentSocket.config.mqtt_external_topic != null) {
@@ -1697,30 +1688,27 @@ function InsertMqtt() {
             var SetDownMqttTopic = document.getElementById('SetDownMqttTopic');
             var HeatingMqttTopic = document.getElementById('HeatingMqttTopic');
             if (CurrentSocket.type === 'esp8266_thermostat' || CurrentSocket.type === 'esp8266_thermostat_plus' || CurrentSocket.type === 'esp8266_air') {
-                StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics.state + CopyIcon;
-                TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics.target_temp + CopyIcon;
-                SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_up + CopyIcon;
-                SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_down + CopyIcon;
-                HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics.heating + CopyIcon;
+                StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics.state != undefined & CurrentSocket.mqtt_topics.state != null & CurrentSocket.mqtt_topics.state != '' ? CurrentSocket.mqtt_topics.state + CopyIcon : '';
+                TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics.target_temp != undefined & CurrentSocket.mqtt_topics.target_temp != null & CurrentSocket.mqtt_topics.target_temp != '' ? CurrentSocket.mqtt_topics.target_temp + CopyIcon : '';
+                SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_up != undefined & CurrentSocket.mqtt_topics.step_up != null & CurrentSocket.mqtt_topics.step_up != '' ? CurrentSocket.mqtt_topics.step_up + CopyIcon : '';
+                SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics.step_down != undefined & CurrentSocket.mqtt_topics.step_down != null & CurrentSocket.mqtt_topics.step_down != '' ? CurrentSocket.mqtt_topics.step_down + CopyIcon : '';
+                HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics.heating != undefined & CurrentSocket.mqtt_topics.heating != null & CurrentSocket.mqtt_topics.heating != '' ? CurrentSocket.mqtt_topics.heating + CopyIcon : '';
             } else {
                 if (CurrentSocket.active_channel) {
-                    StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.state + CopyIcon;
-                    TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.target_temp + CopyIcon;
-                    SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.step_up + CopyIcon;
-                    SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.step_down + CopyIcon;
-                    HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.heating + CopyIcon;
+                    StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.state != undefined & CurrentSocket.mqtt_topics_2ch.state != null & CurrentSocket.mqtt_topics_2ch.state != '' ? CurrentSocket.mqtt_topics_2ch.state + CopyIcon : '';
+                    TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.target_temp != undefined & CurrentSocket.mqtt_topics_2ch.target_temp != null & CurrentSocket.mqtt_topics_2ch.target_temp != '' ? CurrentSocket.mqtt_topics_2ch.target_temp + CopyIcon : '';
+                    SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.step_up != undefined & CurrentSocket.mqtt_topics_2ch.step_up != null & CurrentSocket.mqtt_topics_2ch.step_up != '' ? CurrentSocket.mqtt_topics_2ch.step_up + CopyIcon : '';
+                    SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.step_down != undefined & CurrentSocket.mqtt_topics_2ch.step_down != null & CurrentSocket.mqtt_topics_2ch.step_down != '' ? CurrentSocket.mqtt_topics_2ch.step_down + CopyIcon : '';
+                    HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics_2ch.heating != undefined & CurrentSocket.mqtt_topics_2ch.heating != null & CurrentSocket.mqtt_topics_2ch.heating != '' ? CurrentSocket.mqtt_topics_2ch.heating + CopyIcon : '';
                 } else {
-                    StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.state + CopyIcon;
-                    TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.target_temp + CopyIcon;
-                    SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.step_up + CopyIcon;
-                    SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.step_down + CopyIcon;
-                    HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.heating + CopyIcon;
+                    StateMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.state != undefined & CurrentSocket.mqtt_topics_1ch.state != null & CurrentSocket.mqtt_topics_1ch.state != '' ? CurrentSocket.mqtt_topics_1ch.state + CopyIcon : '';
+                    TargetTempMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.target_temp != undefined & CurrentSocket.mqtt_topics_1ch.target_temp != null & CurrentSocket.mqtt_topics_1ch.target_temp != '' ? CurrentSocket.mqtt_topics_1ch.target_temp + CopyIcon : '';
+                    SetUpMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.step_up != undefined & CurrentSocket.mqtt_topics_1ch.step_up != null & CurrentSocket.mqtt_topics_1ch.step_up != '' ? CurrentSocket.mqtt_topics_1ch.step_up + CopyIcon : '';
+                    SetDownMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.step_down != undefined & CurrentSocket.mqtt_topics_1ch.step_down != null & CurrentSocket.mqtt_topics_1ch.step_down != '' ? CurrentSocket.mqtt_topics_1ch.step_down + CopyIcon : '';
+                    HeatingMqttTopic.innerHTML = CurrentSocket.mqtt_topics_1ch.heating != undefined & CurrentSocket.mqtt_topics_1ch.heating != null & CurrentSocket.mqtt_topics_1ch.heating != '' ? CurrentSocket.mqtt_topics_1ch.heating + CopyIcon : '';
                 }
             }
             GetMQTTData.style.display = 'flex';
-            AdressMqtt.value = CurrentSocket.config.mqtt_server;
-            PortMqtt.value = CurrentSocket.config.mqtt_port;
-            LoginMqtt.value = CurrentSocket.config.mqtt_login;
             var updateString;
             if (CurrentSocket.type === 'esp32_panel_4inch') {
                 if (CurrentSocket.active_channel === 0) {
@@ -1754,6 +1742,15 @@ function InsertMqtt() {
         SwitchMQTTBtn.style.display = 'block';
         ConnectMQTTBtn.style.display = 'none';
         DisconnectMQTTBtn.style.display = 'none';
+    }
+    if (CurrentSocket.config.mqtt_server != undefined & CurrentSocket.config.mqtt_server != null & CurrentSocket.config.mqtt_server != '') {
+        AdressMqtt.value = CurrentSocket.config.mqtt_server;
+    }
+    if (CurrentSocket.config.mqtt_port != undefined & CurrentSocket.config.mqtt_port != null & CurrentSocket.config.mqtt_port != '') {
+        PortMqtt.value = CurrentSocket.config.mqtt_port;
+    }
+    if (CurrentSocket.config.mqtt_login != undefined & CurrentSocket.config.mqtt_login != null & CurrentSocket.config.mqtt_login != '') {
+        LoginMqtt.value = CurrentSocket.config.mqtt_login;
     }
     SwitchMQTTBtn.onclick = function () {
         document.getElementById('DropUpSwitchMqtt').style.display = 'flex';
@@ -2017,18 +2014,26 @@ function ZigBeeSet() {
         ChangingTempTabloSensor.innerHTML = CurrentSocket.config_2ch.temp_limit != undefined & CurrentSocket.config_2ch.temp_limit != null & CurrentSocket.config_2ch.temp_limit != '' ? CurrentSocket.config_2ch.temp_limit : '28';
     }
     let GetSensor;
-    if (CurrentSocket.zigbee_data != '' & CurrentSocket.zigbee_data != undefined & CurrentSocket.zigbee_data != '{}' & CurrentSocket.zigbee_data != null) {
-
-    }
-
     if (!CurrentSocket.active_channel & CurrentSocket.config_1ch.sensor_zigbee != undefined & CurrentSocket.config_1ch.sensor_zigbee != null & CurrentSocket.config_1ch.sensor_zigbee != '' & CurrentSocket.config_1ch.sensor_zigbee != 'none') {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         GetSensor = document.getElementById(CurrentSocket.config_1ch.sensor_zigbee + "sensortemp");
-        SelectSensorTemp(GetSensor);
+        if (GetSensor != undefined & GetSensor != null) {
+            if (CurrentSocket.config_1ch.sensor_zigbee != 'none')
+                SelectSensorTemp(GetSensor, true);
+            else
+                SelectSensorTemp(GetSensor, false);
+        }
+        
     } else if (CurrentSocket.config_2ch.sensor_zigbee != undefined & CurrentSocket.config_2ch.sensor_zigbee != null & CurrentSocket.config_2ch.sensor_zigbee != '' & CurrentSocket.config_2ch.sensor_zigbee != 'none') {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         GetSensor = document.getElementById(CurrentSocket.config_2ch.sensor_zigbee + "sensortemp");
-        SelectSensorTemp(GetSensor);
+        if (GetSensor != undefined & GetSensor != null) {
+            if (CurrentSocket.config_2ch.sensor_zigbee != 'none')
+                SelectSensorTemp(GetSensor, true);
+            else
+                SelectSensorTemp(GetSensor, false);
+        }
+        
     } else {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
     }
@@ -2094,43 +2099,46 @@ function CreateZigBeeBlockSensorTemp(Sensor, number) {
         ScrollingMenuSensorTemp.append(SelectBlock);
         SelectBlock.onclick = function () {
             let IdSensorTemp = this.id.replace('sensortemp', '');
-            if (!CurrentSocket.active_channel) {
-                CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": IdSensorTemp } }));
-            } else {
-                CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": IdSensorTemp } }));
+            let ComposedStyleSensorTemp = getComputedStyle(this.children[1]);
+            let checkedSelectedIcon = ComposedStyleSensorTemp.display;
+            if (checkedSelectedIcon === 'none' || checkedSelectedIcon === '') {
+                if (!CurrentSocket.active_channel) {
+                    CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": IdSensorTemp } }));
+                } else {
+                    CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": IdSensorTemp } }));
+                }
+                //TabloSensorTemp.style.display = 'flex';
+                //SelectSensorTemp(this, false);
+            }
+            else {
+                if (!CurrentSocket.active_channel) {
+                    CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": 'none' } }));
+                } else {
+                    CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": 'none' } }));
+                }
+                //TabloSensorTemp.style.display = 'none';
+                SelectSensorTemp(this, false);
             }
         }
     }
-
 }
 let SelectSensorTempInfo = document.getElementById('SelectSensorTempInfo');
 let NoneSelectSensorTempInfo = document.getElementById('NoneSelectSensorTempInfo');
-function SelectSensorTemp(item) {
+function SelectSensorTemp(item, mode) {
     let ComposedStyleSensorTemp = getComputedStyle(item.children[1]);
     let checkedSelectedIcon = ComposedStyleSensorTemp.display;
-    if (checkedSelectedIcon === 'none' || checkedSelectedIcon === '') {
+    if (mode) {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         item.children[1].style.display = 'block';
         TabloSensorTemp.style.display = 'flex';
         SelectSensorTempInfo.style.display = 'block';
         NoneSelectSensorTempInfo.style.display = 'none';
-        //let IdSensorTemp = item.id.replace('sensortemp','');
-        //if (!CurrentSocket.active_channel) {
-        //    CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": IdSensorTemp } }));
-        //} else {
-        //    CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": IdSensorTemp } }));
-        //}
     }
     else {
         item.children[1].style.display = 'none';
         TabloSensorTemp.style.display = 'none';
         SelectSensorTempInfo.style.display = 'none';
         NoneSelectSensorTempInfo.style.display = 'block';
-        if (!CurrentSocket.active_channel) {
-            CurrentSocket.Socket.send(JSON.stringify({ "config_1ch": { "sensor_zigbee": 'none' } }));
-        } else {
-            CurrentSocket.Socket.send(JSON.stringify({ "config_2ch": { "sensor_zigbee": 'none' } }));
-        }
     }
 }
 function SetLoader(time, func) {
@@ -2237,7 +2245,7 @@ function CreateDeviceBlock(Socket, type) {
             }
         };
     }
-    else {
+    else if (type === 'esp8266_air') {
         DeviceBlockControlTabloFan.className = 'DeviceBlockControlTablo FanHandlerMainDisplay';
         DeviceBlockControlTablo.className = 'DeviceBlockControlTablo AutoConditionerMainDisplay';
         DeviceBlockControlTablo.innerHTML = 'Auto';
@@ -2423,6 +2431,11 @@ function ShowWifiList(WifiList) {
                                         }
                                     }
                                 ));
+                                SetLoader(10, function () {
+                                    let WifiConnectPopup = document.getElementById('WifiConnectPopup');
+                                    WifiConnectPopup.classList.toggle("show");
+                                });
+
                             }
                         }
                     }
@@ -2453,6 +2466,10 @@ function DetermineWifiSignal(WifiSignal) {
     return result;
 }
 WifiRefreshBtn.onclick = sendRefreshWifi;
+let RefreshWifiConnect = document.getElementById('RefreshWifiConnect');
+RefreshWifiConnect.onclick = function () {
+    location.host = location.host;
+}
 function sendRefreshWifi() {
     ArraySocket[0].Socket.send(JSON.stringify(
         {
