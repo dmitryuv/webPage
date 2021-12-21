@@ -1884,9 +1884,9 @@ function PairHk() {
     let SwitchHomekitBtn = document.getElementById('SwitchHomekitBtn');
     let DispairHomekit = document.getElementById('DispairHomekit');
     let NotQrcode = document.getElementById('NotQrcode');
-    if (CurrentSocket.config.homekit === '1' || CurrentSocket.config.homekit === '2' || CurrentSocket.type === 'esp32_panel_4inch') {
-        if (CurrentSocket.config.pair_hk === '0') {
-            if (CurrentSocket.qr_hk != undefined) {
+    if ((CurrentSocket.config.homekit != undefined & CurrentSocket.config.homekit != null & CurrentSocket.config.homekit != '') & CurrentSocket.config.homekit === '1' || CurrentSocket.config.homekit === '2' || CurrentSocket.type === 'esp32_panel_4inch') {
+        if (CurrentSocket.config.pair_hk === '0' & (CurrentSocket.config.pair_hk != undefined & CurrentSocket.config.pair_hk != null & CurrentSocket.config.pair_hk != '')) {
+            if (CurrentSocket.qr_hk != undefined & CurrentSocket.qr_hk != null) {
                 Qrcode.innerHTML = '';
                 var qrcode = new QRCode("qrcode", {
                     text: CurrentSocket.qr_hk,
@@ -1908,7 +1908,7 @@ function PairHk() {
             BtnMenuHomekit.style.display = 'none';
             SwitchHomekit.style.display = 'none';
         }
-        else if (CurrentSocket.config.pair_hk === '1') {
+        else if (CurrentSocket.config.pair_hk === '1' & (CurrentSocket.config.pair_hk != undefined & CurrentSocket.config.pair_hk != null & CurrentSocket.config.pair_hk != '')) {
             DispairHomekit.style.display = 'block';
             SwitchHomekit.style.display = 'none';
             SwitchHomekitBtn.style.display = 'none';
