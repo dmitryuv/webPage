@@ -1440,6 +1440,14 @@ input[type=range]::-webkit-slider-thumb {
     padding: 0px 20px;
 }
 
+#DispairHomekitBtn {
+    display: none;
+}
+
+#SwitchHomekitBtn {
+    display: none;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

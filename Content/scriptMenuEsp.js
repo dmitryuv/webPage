@@ -922,6 +922,7 @@ function WebSocketOpen(SocketItemDevice) {
                 for (let i = 0; ArraySocket.length > i; i++) {
                     if (ArraySocket[i].id === SocketItemDevice.id) {
                         ArraySocket[i].config = MessageJson.config;
+                        
                         if (ArraySocket[0].config != null && configActive != '0') {
                             CurrentSocket = ArraySocket[0];
                             FirstConfigurate = true;
@@ -1884,8 +1885,8 @@ function PairHk() {
     let SwitchHomekitBtn = document.getElementById('SwitchHomekitBtn');
     let DispairHomekit = document.getElementById('DispairHomekit');
     let NotQrcode = document.getElementById('NotQrcode');
-    if ((CurrentSocket.config.homekit != undefined & CurrentSocket.config.homekit != null & CurrentSocket.config.homekit != '') & CurrentSocket.config.homekit === '1' || CurrentSocket.config.homekit === '2' || CurrentSocket.type === 'esp32_panel_4inch') {
-        if (CurrentSocket.config.pair_hk === '0' & (CurrentSocket.config.pair_hk != undefined & CurrentSocket.config.pair_hk != null & CurrentSocket.config.pair_hk != '')) {
+    if ((CurrentSocket.config.homekit !== undefined & CurrentSocket.config.homekit !== null & CurrentSocket.config.homekit !== '') & Number(CurrentSocket.config.homekit) === 1 || Number(CurrentSocket.config.homekit) === 2 || CurrentSocket.type === 'esp32_panel_4inch') {
+        if (Number(CurrentSocket.config.pair_hk) === 0 & CurrentSocket.config.pair_hk !== undefined & CurrentSocket.config.pair_hk !== null & CurrentSocket.config.pair_hk !== '') {
             if (CurrentSocket.qr_hk != undefined & CurrentSocket.qr_hk != null) {
                 Qrcode.innerHTML = '';
                 var qrcode = new QRCode("qrcode", {
@@ -1908,17 +1909,19 @@ function PairHk() {
             BtnMenuHomekit.style.display = 'none';
             SwitchHomekit.style.display = 'none';
         }
-        else if (CurrentSocket.config.pair_hk === '1' & (CurrentSocket.config.pair_hk != undefined & CurrentSocket.config.pair_hk != null & CurrentSocket.config.pair_hk != '')) {
+        else if (Number(CurrentSocket.config.pair_hk) === 1 & (CurrentSocket.config.pair_hk !== undefined & CurrentSocket.config.pair_hk !== null & CurrentSocket.config.pair_hk !== '')) {
             DispairHomekit.style.display = 'block';
             SwitchHomekit.style.display = 'none';
             SwitchHomekitBtn.style.display = 'none';
             PairHomekit.style.display = 'none';
+            BtnMenuHomekit.style.display = 'flex';
             Qrcode.innerHTML = '';
         }
     } else {
         DispairHomekitBtn.style.display = 'none';
         SwitchHomekit.style.display = 'block';
         SwitchHomekitBtn.style.display = 'block';
+        BtnMenuHomekit.style.display = 'flex';
         PairHomekit.style.display = 'none';
         Qrcode.innerHTML = '';
     }
