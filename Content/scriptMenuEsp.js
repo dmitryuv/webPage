@@ -2090,15 +2090,19 @@ function CreateZigBeeBlockSensorTemp(Sensor, number) {
         let SelectBlock = document.createElement('div');
         let NameSensor = document.createElement('div');
         let SelectedIcon = document.createElement('div');
+        let TempValue = document.createElement('div');
         SelectBlock.className = 'SelectingBlock SensorTempBlock';
         SelectBlock.id = Sensor.ShotAddr + "sensortemp";
         NameSensor.className = 'NameSensor';
+        TempValue.className = 'ValueSensorTemp';
         NameSensor.innerHTML = 'Aqara ' + number;
         NameSensor.id = Sensor.id + 'sensortemp';
+        TempValue.innerHTML = Sensor.data;
         SelectedIcon.className = 'SelectedIcon';
         SelectedIcon.innerHTML = '<svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path d = "M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill = "#2C98F0" /></svg>';
         SelectBlock.append(NameSensor);
         SelectBlock.append(SelectedIcon);
+        SelectBlock.append(TempValue);
         ScrollingMenuSensorTemp.append(SelectBlock);
         SelectBlock.onclick = function () {
             let IdSensorTemp = this.id.replace('sensortemp', '');
@@ -2132,13 +2136,16 @@ function SelectSensorTemp(item, mode) {
     let checkedSelectedIcon = ComposedStyleSensorTemp.display;
     if (mode) {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
+        ScrollingMenuSensorTemp.querySelectorAll('.ValueSensorTemp').forEach(item => item.style.display = 'block');
         item.children[1].style.display = 'block';
+        item.children[2].style.display = 'none';
         TabloSensorTemp.style.display = 'flex';
         SelectSensorTempInfo.style.display = 'block';
         NoneSelectSensorTempInfo.style.display = 'none';
     }
     else {
         item.children[1].style.display = 'none';
+        item.children[2].style.display = 'block';
         TabloSensorTemp.style.display = 'none';
         SelectSensorTempInfo.style.display = 'none';
         NoneSelectSensorTempInfo.style.display = 'block';
