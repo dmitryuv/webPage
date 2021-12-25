@@ -922,7 +922,6 @@ function WebSocketOpen(SocketItemDevice) {
                 for (let i = 0; ArraySocket.length > i; i++) {
                     if (ArraySocket[i].id === SocketItemDevice.id) {
                         ArraySocket[i].config = MessageJson.config;
-                        
                         if (ArraySocket[0].config != null && configActive != '0') {
                             CurrentSocket = ArraySocket[0];
                             FirstConfigurate = true;
@@ -1093,7 +1092,6 @@ function WebSocketOpen(SocketItemDevice) {
                                 SelectSensorTemp(SensorTemp, true);
                             }
                         }
-
                         SocketItemDevice.channel_number = 0;
                         let DeviceBlockCheck = document.getElementById(ArraySocket[i].id_for_use_ch1);
                         if (!DeviceBlockCheck) {
@@ -1209,7 +1207,8 @@ function WebSocketOpen(SocketItemDevice) {
                                 unit: MessageJson.zigbee_data[i].unit[index],
                                 data: MessageJson.zigbee_data[i].data[index],
                                 ShotAddr: MessageJson.zigbee_data[i].ShotAddr,
-                                id: MessageJson.zigbee_data[i].type[index] + MessageJson.zigbee_data[i].ShotAddr + i
+                                id: MessageJson.zigbee_data[i].type[index] + MessageJson.zigbee_data[i].ShotAddr + i,
+                                name: MessageJson.zigbee_data[i].name === null || MessageJson.zigbee_data[i].name === '' || MessageJson.zigbee_data[i].name === undefined ? null : MessageJson.zigbee_data[i].name
                             };
                             CurrentSensorArray.push(ZigBeeSensor);
                             if (ZigBeeSensor.type === 'sensor_temp') {
@@ -2026,7 +2025,6 @@ function ZigBeeSet() {
             else
                 SelectSensorTemp(GetSensor, false);
         }
-        
     } else if (CurrentSocket.config_2ch.sensor_zigbee != undefined & CurrentSocket.config_2ch.sensor_zigbee != null & CurrentSocket.config_2ch.sensor_zigbee != '' & CurrentSocket.config_2ch.sensor_zigbee != 'none') {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
         GetSensor = document.getElementById(CurrentSocket.config_2ch.sensor_zigbee + "sensortemp");
@@ -2036,7 +2034,6 @@ function ZigBeeSet() {
             else
                 SelectSensorTemp(GetSensor, false);
         }
-        
     } else {
         ScrollingMenuSensorTemp.querySelectorAll('.SelectedIcon').forEach(item => item.style.display = 'none');
     }
@@ -2071,7 +2068,7 @@ function CreateZigBeeBlock(sensor, number) {
         SelectBlock.className = 'SelectingBlock ZigBeeSensorBlock';
         SelectBlock.id = sensor.ShotAddr;
         NameSensor.className = 'NameSensor';
-        NameSensor.innerHTML = sensor.ShotAddr;
+        NameSensor.innerHTML = sensor.name === '' || sensor.name === undefined || sensor.name === null ? sensor.ShotAddr : sensor.name;
         NameSensor.id = number;
         SelectedIcon.className = 'SelectedIcon';
         SelectedIcon.innerHTML = '<svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path d = "M0 8.13808L6.84888 15L20 1.86194L18.1119 0L6.84888 11.2499L1.86191 6.26303L0 8.13808Z" fill = "#2C98F0" /></svg >';
@@ -2086,7 +2083,7 @@ function CreateZigBeeBlock(sensor, number) {
 }
 function CreateZigBeeBlockSensorTemp(Sensor, number) {
     let blockCheck = document.getElementById(Sensor.id + 'sensortemp');
-    if (!blockCheck) {
+    if (!blockCheck & Sensor.name !== null) {
         let SelectBlock = document.createElement('div');
         let NameSensor = document.createElement('div');
         let SelectedIcon = document.createElement('div');
@@ -2095,7 +2092,7 @@ function CreateZigBeeBlockSensorTemp(Sensor, number) {
         SelectBlock.id = Sensor.ShotAddr + "sensortemp";
         NameSensor.className = 'NameSensor';
         TempValue.className = 'ValueSensorTemp';
-        NameSensor.innerHTML = 'Aqara ' + number;
+        NameSensor.innerHTML = Sensor.name;
         NameSensor.id = Sensor.id + 'sensortemp';
         TempValue.innerHTML = Sensor.data;
         SelectedIcon.className = 'SelectedIcon';
