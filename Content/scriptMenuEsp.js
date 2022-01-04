@@ -334,6 +334,7 @@ function SelectPowerChannel(item) {
             configPanelChannel.ConfCh2.config_2ch.power = '16';
         } else {
             configPanelChannel.ConfCh1.config_1ch.power = '16';
+            configPanelChannel.ConfCh2.config_2ch.type = 'none';
         }
     }
     if (item.id === '8A') {
@@ -341,6 +342,7 @@ function SelectPowerChannel(item) {
             configPanelChannel.ConfCh2.config_2ch.power = '8';
         } else {
             configPanelChannel.ConfCh1.config_1ch.power = '8';
+            configPanelChannel.ConfCh2.config_2ch.type = 'thermostat';
         }
     }
 }
@@ -906,7 +908,9 @@ function WebSocketOpen(SocketItemDevice) {
                             id_for_use_ch1: MessageJson.ssdp[i].id + 'type_1ch',
                             id_for_use_ch2: MessageJson.ssdp[i].id + 'type_2ch'
                         });
-                        WebSocketOpen(ArraySocket[i]);
+                        if (ArraySocket[ArraySocket.length - 1].Socket != null || ArraySocket[ArraySocket.length - 1].Socket != undefined) {
+                            WebSocketOpen(ArraySocket[i]);
+                        }
                     }
                 }
             }
@@ -1144,7 +1148,7 @@ function WebSocketOpen(SocketItemDevice) {
                 }
             }
         }
-        if ('update_2ch' in MessageJson) {
+        if ('update_2ch' in MessageJson/* 'update' in MessageJson*/) {
             for (let i = 0; ArraySocket.length > i; i++) {
                 if (SocketItemDevice.type_2ch != 'none')
                     if (ArraySocket[i].id === SocketItemDevice.id & !configActive && SocketItemDevice.type === 'esp32_panel_4inch') {
@@ -2474,9 +2478,12 @@ function DetermineWifiSignal(WifiSignal) {
 }
 WifiRefreshBtn.onclick = sendRefreshWifi;
 let RefreshWifiConnect = document.getElementById('RefreshWifiConnect');
-RefreshWifiConnect.onclick = function () {
-    location.host = location.host;
+if (RefreshWifiConnect != null) {
+    RefreshWifiConnect.onclick = function () {
+        location.host = location.host;
+    }
 }
+
 function sendRefreshWifi() {
     ArraySocket[0].Socket.send(JSON.stringify(
         {
