@@ -678,7 +678,7 @@ let TypeChangingTempArray = {
     'TabloTempGisteresis': 'Gisteresis',
     'TabloTempCorrection': 'Correction'
 };
-let GisteresisInvertArray = { 1: '1.00', 2: '2.00', 3: '3.00', 4: '4.00', 5: '5.00' };
+let GisteresisInvertArray = { '5': '5.00', '4.5': '4.50', '4': '4.00', '3.5': '3.50', '3': '3.00', '2.5': '2.50', '2': '2.00', '1.5': '1.50', '1': '1.00', '0.5': '0.50' };
 let CorrectionInvertArray = {
     '-5': '-5.00', '-4.5': '-4.50', '-4': '-4.00', '-3.5': '-3.50', '-3': '-3.00', '-2.5': '-2.50', '-2': '-2.00', '-1.5': '-1.50', '-1': '-1.00', '-0.5': '-0.50', '0': '0.00',
     '5': '5.00', '4.5': '4.50', '4': '4.00', '3.5': '3.50', '3': '3.00', '2.5': '2.50', '2': '2.00', '1.5': '1.50', '1': '1.00', '0.5': '0.50'
@@ -692,17 +692,18 @@ function ChangeTempDynamic() {
     let Sum;
     let RangeStart;
     let RangeEnd;
+    let StepCountingTemp = 1;
     if (TypeChangingTempArray[TypeChangingTemp] === 'Standart') {
         RangeStart = 1;
         RangeEnd = 75;
     } else if (TypeChangingTempArray[TypeChangingTemp] === 'Gisteresis') {
-        RangeStart = 1;
+        RangeStart = 0.5;
         RangeEnd = 5;
+        StepCountingTemp = 0.5;
     } else if (TypeChangingTempArray[TypeChangingTemp] === 'Correction') {
         RangeStart = -5;
         RangeEnd = 5;
     }
-    let StepCountingTemp = 1;
     if (TypeChangingTemp === 'TabloTempCorrection')
         StepCountingTemp = 0.5;
     let CurrentTemp = Number(Tablo.innerText);
