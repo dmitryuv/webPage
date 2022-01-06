@@ -699,7 +699,9 @@ function ChangeTempDynamic() {
     } else if (TypeChangingTempArray[TypeChangingTemp] === 'Gisteresis') {
         RangeStart = 0.5;
         RangeEnd = 5;
-        StepCountingTemp = 0.5;
+        if (CurrentSocket.type === 'esp32_panel_4inch') {
+            StepCountingTemp = 0.5;
+        }
     } else if (TypeChangingTempArray[TypeChangingTemp] === 'Correction') {
         RangeStart = -5;
         RangeEnd = 5;
