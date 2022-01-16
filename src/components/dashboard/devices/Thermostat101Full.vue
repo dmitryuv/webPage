@@ -63,7 +63,16 @@
       <div class="mb-2"></div>
 
       <ItemMenu :text="'Экран'" @click.native="changeDrawerDialog([11, 'Экран'])"/>
-      <div class="mb-2"></div>
+      <div class="mb-5"></div>
+
+      <v-row>
+        <v-col>
+          <BtnOutlined :text="'Сброс настроек'" :fw="true" @click.native="onReset"/>
+        </v-col>
+        <v-col>
+          <BtnBg :text="'Удалить'" :fw="true" @click.native="inDevelop"/>
+        </v-col>
+      </v-row>
     </div>
 
     <div class="dialog" v-if="getDrawerDialog === 2">
@@ -348,7 +357,8 @@
     <div class="dialog" v-if="getDrawerDialog === 11">
       <div class="fullheight_dialog d-flex flex-column">
         <ItemMenu
-            :text="'Экран'"
+            :im_class="'pointer'"
+            :text="'Отключать подсветку'"
             :right_icon="getDrawerDevice['config']['nex_bl'] == 1 ? 'mdi-check' : null"
             @click.native="changeNexBl"
         />
@@ -446,6 +456,7 @@
         'setPreloader',
         'hideDrawer',
         'setSnackbar',
+        'inDevelop',
       ]),
       changedName(event) {
         this.name = event
@@ -548,6 +559,10 @@
         } else {
           this.getDrawerDevice['client'].send('{"config":{"nex_bl":1}}')
         }
+      },
+      onReset() {
+        this.rebootPreloader()
+        this.getDrawerDevice['client'].send('{"reset"}')
       },
 
       rebootPreloader() {
