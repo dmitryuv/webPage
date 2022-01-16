@@ -1,11 +1,9 @@
-const test = true
+const test = false
 const current_ip = test ? '192.168.1.111:9000' : document.domain;
 
 export default {
   state: {
     ssdp: null,
-    // wifi_networks: null,
-    // wifi_signals: null,
 
     current_client: null,
     clients: {},
@@ -17,12 +15,6 @@ export default {
     setSsdp(state, payload) {
       state.ssdp = payload
     },
-    // setWifiNetworks(state, payload) {
-    //   state.wifi_networks = payload
-    // },
-    // setWifiSignals(state, payload) {
-    //   state.wifi_signals = payload
-    // },
 
     createClient(state, payload) {
       let client = {
@@ -96,12 +88,6 @@ export default {
               commit('setSsdp', mess[param])
               dispatch('clients_connect')
             }
-            // if (param === 'wifi_networks') {
-            //   commit('setWifiNetworks', mess[param])
-            // }
-            // if (param === 'signals') {
-            //   commit('setWifiSignals', mess[param])
-            // }
           }
         }
       }
