@@ -438,7 +438,7 @@
       },
       onReset() {
         this.rebootPreloader()
-        this.getDrawerDevice['client'].send('{"reset"}')
+        this.getDrawerDevice['client'].send('"reset"')
       },
 
       rebootPreloader() {
