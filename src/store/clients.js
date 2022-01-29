@@ -1,5 +1,5 @@
 const test = false
-const current_ip = test ? '192.168.1.218' : document.domain;
+const current_ip = test ? '77.40.48.234:8383' : document.domain;
 
 export default {
   state: {
