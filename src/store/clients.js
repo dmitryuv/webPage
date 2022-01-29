@@ -18,7 +18,8 @@ export default {
 
     createClient(state, payload) {
       let client = {
-        ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
+        // ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
+        ['client']: new WebSocket('ws://' + current_ip + '/ws'),
         ['id']: payload['id'],
         ['type']: payload['type'],
         ['update']: null,
