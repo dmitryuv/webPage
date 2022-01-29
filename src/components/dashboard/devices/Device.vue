@@ -1,15 +1,19 @@
 <template>
   <div id="device" class="d-inline-block float-left">
     <Thermostat101 v-if="device.type === 'esp8266_thermostat'" :device="device"/>
+    <Thermostat102 v-if="device.type === 'esp8266_air'" :device="device"/>
   </div>
 </template>
 
 <script>
   import Thermostat101 from "./Thermostat101";
+  import Thermostat102 from "./Thermostat102";
+
   export default {
     name: "Device",
     components: {
       Thermostat101,
+      Thermostat102,
     },
     props: ['device'],
   }

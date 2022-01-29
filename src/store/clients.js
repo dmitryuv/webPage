@@ -1,5 +1,5 @@
 const test = false
-const current_ip = test ? '192.168.1.111:9000' : document.domain;
+const current_ip = test ? '192.168.1.218' : document.domain;
 
 export default {
   state: {
@@ -163,6 +163,12 @@ export default {
       let devices = []
       for (let id in state.clients) {
         if (state.clients[id]['type'] === 'esp8266_thermostat' && getters.mkLoad(id)) {
+          devices.push(state.clients[id])
+        }
+        if (state.clients[id]['type'] === 'esp8266_air' && getters.mkLoad(id)) {
+          devices.push(state.clients[id])
+        }
+        if (state.clients[id]['type'] === 'esp32_panel_4inch' && getters.mkLoad(id)) {
           devices.push(state.clients[id])
         }
       }

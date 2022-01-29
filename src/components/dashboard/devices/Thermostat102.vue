@@ -1,37 +1,85 @@
 <template>
-  <div id="Thermostat101" class="text-center">
-    <div class="thermostat_title color_lytko">{{ device.name }}</div>
-    <div class="temperature white--text font-weight-bold">{{ device['update']['temp'] }} &deg;C</div>
+  <div id="Thermostat102" class="text-center">
+    <div class="thermostat_title color_lytko pointer" @click="toggleDrawer(device)">{{ device['config']['name'] }}</div>
+    <div class="temperature white--text temperature-text pointer" @click="toggleDrawer(device)">
+      {{ device['update']['temp'] }}&deg;C
+    </div>
     <div class="thermostat_buttons">
-      <div class="d-inline-block float-left button white--text" :class="device['update']['relay'] ? 'active' : ''">
-        <span>Auto</span>
-      </div>
-      <div class="d-inline-block float-left button">
-        <v-icon>$Fun0</v-icon>
-      </div>
+      <v-row class="ma-0">
+        <v-col class="pa-0">
+          <div class="button button_text pointer mx-auto" :class="device['update']['heating'] == 'off' ? null : 'active'" @click="onHeating">
+            <v-icon v-if="device['update']['heating'] == 'off'" color="white">Auto</v-icon>
+            <v-icon v-if="device['update']['heating'] == 'auto'" color="white">Auto</v-icon>
+            <v-icon v-if="device['update']['heating'] == 'cool'" color="white">mdi-snowflake</v-icon>
+            <v-icon v-if="device['update']['heating'] == 'heat'" color="white">mdi-fire</v-icon>
+          </div>
+        </v-col>
+        <v-col class="pa-0">
+          <div class="button button_icon pointer mx-auto" :class="parseInt(device['update']['fan_speed']) > 0 ? 'active' : ''" @click="onFunSpeed">
+            <v-icon color="white">$Fun{{ device['update']['fan_speed'] }}</v-icon>
+          </div>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapActions} from 'vuex'
+
   export default {
     name: "Thermostat102",
     props: [
       'device',
-    ]
+    ],
+    data: () => ({
+
+    }),
+    methods: {
+      ...mapActions([
+        'toggleDrawer'
+      ]),
+      onHeating() {
+        switch (this.device['update']['heating']) {
+          case 'off':
+            this.device['client'].send('{"heating":1}')
+            break
+          case 'heat':
+            this.device['client'].send('{"heating":2}')
+            break
+          case 'cool':
+            this.device['client'].send('{"heating":3}')
+            break
+          case 'auto':
+            this.device['client'].send('{"heating":0}')
+            break
+        }
+      },
+      onFunSpeed() {
+        let speed = this.device['update']['fan_speed']
+        if (speed < 5) {
+          speed++
+        } else {
+          speed = 0
+        }
+        this.device['client'].send(`{"fan_speed":${speed}}`)
+      }
+    }
   }
 </script>
 
 <style lang="scss">
-  #Thermostat101 {
+  #Thermostat102 {
     @media (min-width: 1265px) {
       & {
-        height: calc(var(--percent-width) * 18);
-        width: calc(var(--percent-width) * 18);
+        height: calc(var(--percent-width) * 17.5);
+        width: calc(var(--percent-width) * 17.5);
+        padding: var(--percent-width) 0;
       }
 
       .thermostat_title {
-        padding-top: var(--percent-width);
+        font-size: calc(var(--percent-width) * 1.3);
+        line-height: calc(var(--percent-width) * 1.3);
       }
 
       .temperature {
@@ -40,34 +88,33 @@
       }
 
       .thermostat_buttons {
-        padding: 0 calc(var(--percent-width) * 2);
+        padding: 0 var(--percent-width);
         .button {
           background: #1f3c62;
           border-radius: var(--percent-width);
-          width: calc(var(--percent-width) * 6);
-          height: calc(var(--percent-width) * 6);
-          &:first-child {
-            margin-right: calc(var(--percent-width) * 2);
-          }
-          span {
-            font-size: calc(var(--percent-width) * 2);
-            .v-icon__component {
-              height: calc(var(--percent-width) * 3);
-              width: calc(var(--percent-width) * 3);
-            }
-          }
+          width: calc(var(--percent-width) * 6.2);
+          height: calc(var(--percent-width) * 6.2);
+        }
+        .button_text .v-icon {
+          font-size: calc(var(--percent-width) * 2);
+        }
+        .button_icon .v-icon svg {
+          height: calc(var(--percent-width) * 2);
+          width: calc(var(--percent-width) * 2);
         }
       }
     }
 
     @media (max-width: 1264px) {
       & {
-        height: calc(var(--percent-width) * 23);
-        width: calc(var(--percent-width) * 23);
+        height: calc(var(--percent-width) * 22.5);
+        width: calc(var(--percent-width) * 22.5);
+        padding: calc(var(--percent-width) * 2) 0;
       }
 
       .thermostat_title {
-        padding-top: var(--percent-width);
+        font-size: calc(var(--percent-width) * 1.5);
+        line-height: calc(var(--percent-width) * 1.5);
       }
 
       .temperature {
@@ -76,69 +123,67 @@
       }
 
       .thermostat_buttons {
-        padding: 0 calc(var(--percent-width) * 2);
+        padding: 0 var(--percent-width);
         .button {
           background: #1f3c62;
           border-radius: var(--percent-width);
-          width: calc(var(--percent-width) * 9);
-          height: calc(var(--percent-width) * 9);
-          &:first-child {
-            margin-right: var(--percent-width);
-          }
-          span {
-            font-size: calc(var(--percent-width) * 3);
-            .v-icon__component {
-              height: calc(var(--percent-width) * 5);
-              width: calc(var(--percent-width) * 5);
-            }
-          }
+          width: calc(var(--percent-width) * 8);
+          height: calc(var(--percent-width) * 8);
+        }
+        .button_text .v-icon {
+          font-size: calc(var(--percent-width) * 2.5);
+        }
+        .button_icon .v-icon svg {
+          height: calc(var(--percent-width) * 3);
+          width: calc(var(--percent-width) * 3);
         }
       }
     }
 
     @media (max-width: 960px) {
       & {
-        height: calc(var(--percent-width) * 30);
-        width: calc(var(--percent-width) * 30);
+        height: calc(var(--percent-width) * 29);
+        width: calc(var(--percent-width) * 29);
+        padding: calc(var(--percent-width) * 2.5) 0;
       }
 
       .thermostat_title {
-        padding-top: calc(var(--percent-width) * 2);
+        font-size: calc(var(--percent-width) * 1.9);
+        line-height: calc(var(--percent-width) * 1.9);
       }
 
       .temperature {
         font-size: calc(var(--percent-width) * 6);
-        padding: calc(var(--percent-width) * 2);
+        padding: calc(var(--percent-width) * 1.5);
       }
 
       .thermostat_buttons {
-        padding: 0 calc(var(--percent-width) * 3);
+        padding: 0 calc(var(--percent-width) * 2);
         .button {
-          border-radius: var(--percent-width);
-          width: calc(var(--percent-width) * 10);
-          height: calc(var(--percent-width) * 10);
-          &:first-child {
-            margin-right: calc(var(--percent-width) * 4);
-          }
-          span {
-            font-size: calc(var(--percent-width) * 4);
-            .v-icon__component {
-              height: calc(var(--percent-width) * 6);
-              width: calc(var(--percent-width) * 6);
-            }
-          }
+          border-radius: calc(var(--percent-width) * 2);
+          width: calc(var(--percent-width) * 10.5);
+          height: calc(var(--percent-width) * 10.5);
+        }
+        .button_text .v-icon {
+          font-size: calc(var(--percent-width) * 3);
+        }
+        .button_icon .v-icon svg {
+          height: calc(var(--percent-width) * 4);
+          width: calc(var(--percent-width) * 4);
         }
       }
     }
 
     @media (max-width: 600px) {
       & {
-        height: calc(var(--percent-width) * 46);
-        width: calc(var(--percent-width) * 46);
+        height: calc(var(--percent-width) * 44);
+        width: calc(var(--percent-width) * 44);
+        padding: calc(var(--percent-width) * 3) 0;
       }
 
       .thermostat_title {
-        padding-top: calc(var(--percent-width) * 2);
+        font-size: calc(var(--percent-width) * 3);
+        line-height: calc(var(--percent-width) * 3);
       }
 
       .temperature {
@@ -149,19 +194,16 @@
       .thermostat_buttons {
         padding: 0 calc(var(--percent-width) * 2);
         .button {
-          border-radius: var(--percent-width);
-          width: calc(var(--percent-width) * 20);
-          height: calc(var(--percent-width) * 20);
-          &:first-child {
-            margin-right: calc(var(--percent-width) * 2);
-          }
-          span {
-            font-size: calc(var(--percent-width) * 6);
-            .v-icon__component {
-              height: calc(var(--percent-width) * 10);
-              width: calc(var(--percent-width) * 10);
-            }
-          }
+          border-radius: calc(var(--percent-width) * 2);
+          width: calc(var(--percent-width) * 18);
+          height: calc(var(--percent-width) * 18);
+        }
+        .button_text .v-icon {
+          font-size: calc(var(--percent-width) * 5);
+        }
+        .button_icon .v-icon svg {
+          height: calc(var(--percent-width) * 7);
+          width: calc(var(--percent-width) * 7);
         }
       }
     }
@@ -173,12 +215,13 @@
         &.active {
           background: #035cd0;
         }
-        span {
+        .v-icon {
           position: absolute;
           top: 50%;
           left: 50%;
           -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
+          font-style: inherit;
         }
       }
     }
