@@ -1,4 +1,4 @@
-const test = false
+const test = true
 const current_ip = test ? '77.40.48.234:8383' : document.domain;
 
 export default {
