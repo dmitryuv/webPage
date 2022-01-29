@@ -1,5 +1,5 @@
-const test = true
-const current_ip = test ? '77.40.48.234:8383' : document.domain;
+const test = false
+const current_ip = test ? '192.168.1.218' : document.domain;
 
 export default {
   state: {
@@ -18,8 +18,7 @@ export default {
 
     createClient(state, payload) {
       let client = {
-        // ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
-        ['client']: new WebSocket('ws://' + current_ip + '/ws'),
+        ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
         ['id']: payload['id'],
         ['type']: payload['type'],
         ['update']: null,
