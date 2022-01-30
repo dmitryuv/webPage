@@ -48,6 +48,9 @@ export default {
         commit('showDrawer', payload)
       }
     },
+    changeDrawerTitle({commit}, payload) {
+      commit('changeDrawerTitle', payload)
+    },
     changeDrawerDialog({commit}, payload) {
       commit('changeDrawerDialog', payload[0])
       commit('changeDrawerTitle', payload[1])

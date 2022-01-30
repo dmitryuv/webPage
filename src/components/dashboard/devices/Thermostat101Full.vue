@@ -434,7 +434,9 @@
     },
     watch: {
       name(val) {
-        this.getDrawerDevice['client'].send('{"config":{"name":"' + val + '"}}')
+        if (this.getDrawerDevice['config']['name'] != val) {
+          this.getDrawerDevice['client'].send('{"config":{"name":"' + val + '"}}')
+        }
       },
       drawerWfsn() {
         this.wifi_pass = null
@@ -442,15 +444,13 @@
     },
     mounted() {
       this.name = this.getDrawerDevice['config']['name']
-
-      console.log(this.getDrawerDevice)
-
       this.mqtt.server = this.getDrawerDevice['config']['mqtt_server']
       this.mqtt.port = this.getDrawerDevice['config']['mqtt_port']
       this.mqtt.login = this.getDrawerDevice['config']['mqtt_login']
     },
     methods: {
       ...mapActions([
+        'changeDrawerTitle',
         'changeDrawerDialog',
         'changeDrawerWfsn',
         'setPreloader',
@@ -480,7 +480,7 @@
       },
       onChangeSensor(item) {
         this.rebootPreloader()
-        self.getDrawerDevice['client'].send('{"sensor_model_id":' + item + '}')
+        this.getDrawerDevice['client'].send('{"sensor_model_id":' + item + '}')
       },
       onHysteresisUp() {
         let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])

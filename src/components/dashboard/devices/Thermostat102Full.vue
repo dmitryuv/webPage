@@ -56,9 +56,6 @@
       <ItemMenu :text="'WiFi'" :right="getDrawerDevice['config']['wifi_name']" :right_class="'grey--text'" @click.native="changeDrawerDialog([6, 'WiFi'])"/>
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'Марка кондиционера'" @click.native="changeDrawerDialog([7, 'Марка кондиционера'])"/>
-      <div class="mb-2"></div>
-
       <v-row>
         <v-col>
           <BtnOutlined :text="'Сброс настроек'" :fw="true" @click.native="onReset"/>
@@ -255,19 +252,6 @@
         </template>
       </div>
     </div>
-
-    <div class="dialog" v-if="getDrawerDialog === 7">
-      <div class="fullheight_dialog d-flex flex-column">
-          <ItemMenu
-              v-for="brand in brands"
-              :key="brand.id"
-              :im_class="'pointer mb-3'"
-              :text="brand.name"
-              :right_icon="getDrawerDevice['config']['air_brand'] == brand.id ? 'mdi-check' : null"
-              @click.native="changeBrand(brand.id)"
-          />
-      </div>
-    </div>
   </div>
 </template>
 
@@ -303,15 +287,6 @@
           '8': 'WPA / WPA2 / PSK',
         },
         wifi_pass: null,
-        brands: [
-          {id: 'daikin', name: 'Daikin'},
-          {id: 'midea', name: 'Midea'},
-          {id: 'haier', name: 'Haier1'},
-          {id: 'haier1', name: 'Haier2'},
-          {id: 'mitsubishi', name: 'Mitsubishi1'},
-          {id: 'mitsubishi1', name: 'Mitsubishi2'},
-          {id: 'aux', name: 'AUX'},
-        ]
       }
     },
     computed: {
@@ -333,7 +308,9 @@
     },
     watch: {
       name(val) {
-        this.getDrawerDevice['client'].send('{"config":{"name":"' + val + '"}}')
+        if (this.getDrawerDevice['config']['name'] !== val) {
+          this.getDrawerDevice['client'].send('{"config":{"name":"' + val + '"}}')
+        }
       },
       drawerWfsn() {
         this.wifi_pass = null
@@ -349,6 +326,7 @@
     },
     methods: {
       ...mapActions([
+        'changeDrawerTitle',
         'changeDrawerDialog',
         'changeDrawerWfsn',
         'setPreloader',
@@ -432,9 +410,6 @@
           this.getDrawerDevice['client'].send('{"wifi_connect":{"ssid":"' + this.wifi_ssid + '","password":"' + this.wifi_pass + '"}}')
           this.rebootPreloader()
         }
-      },
-      changeBrand(brand_id) {
-        this.getDrawerDevice['client'].send(`"config":{air_brand: ${brand_id}}`)
       },
       onReset() {
         this.rebootPreloader()
