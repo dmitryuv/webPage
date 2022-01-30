@@ -1,6 +1,7 @@
 <template>
   <div id="device" class="d-inline-block float-left">
     <Thermostat101 v-if="device.type === 'esp8266_thermostat'" :device="device"/>
+    <Thermostat101 v-if="device.type === 'esp8266_thermostat_plus'" :device="device"/>
     <Thermostat102 v-if="device.type === 'esp8266_air'" :device="device"/>
   </div>
 </template>

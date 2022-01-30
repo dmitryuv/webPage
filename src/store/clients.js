@@ -160,15 +160,16 @@ export default {
       return state.clients
     },
     getThermostats: (state, getters) => {
+      let available_types = [
+        'esp8266_thermostat',
+        'esp8266_thermostat_plus',
+        'esp8266_air',
+        'esp32_panel_4inch',
+      ]
+
       let devices = []
       for (let id in state.clients) {
-        if (state.clients[id]['type'] === 'esp8266_thermostat' && getters.mkLoad(id)) {
-          devices.push(state.clients[id])
-        }
-        if (state.clients[id]['type'] === 'esp8266_air' && getters.mkLoad(id)) {
-          devices.push(state.clients[id])
-        }
-        if (state.clients[id]['type'] === 'esp32_panel_4inch' && getters.mkLoad(id)) {
+        if (available_types.indexOf(state.clients[id]['type']) >= 0 && getters.mkLoad(id)) {
           devices.push(state.clients[id])
         }
       }
