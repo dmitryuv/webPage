@@ -1,4 +1,4 @@
-const test = true
+const test = false
 const current_ip = test ? '192.168.1.218' : location.host;
 
 export default {
