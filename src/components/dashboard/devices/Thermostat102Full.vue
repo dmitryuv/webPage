@@ -126,7 +126,7 @@
         </div>
         <div class="mt-5 text-justify">
           <div class="qr_block" v-if="getDrawerDevice['qr_hk']">
-            <qrcode-vue :value="getDrawerDevice['qr_hk']" size="300"/>
+            <qrcode-vue :value="getDrawerDevice['qr_hk']" :background="'#000'" :foreground="'#fff'" size="300"/>
           </div>
         </div>
       </div>
@@ -179,12 +179,65 @@
                 @onChange="mqtt.login = $event"
             />
           </div>
-          <TextInput
-              label="Пароль"
-              placeholder="Введите пароль*"
-              :disabled="getDrawerDevice['config']['mqtt_use'] === '1'"
-              @onChange="mqtt.pass = $event"
-          />
+          <div class="mb-5">
+            <PassInput
+                label="Пароль"
+                placeholder="Введите пароль*"
+                :value="mqtt.pass"
+                :disabled="getDrawerDevice['config']['mqtt_use'] === '1'"
+                @onChange="mqtt.pass = $event"
+            />
+          </div>
+        </div>
+        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1'">
+          <v-dialog dark scrollable v-model="mqtt_data_dialog" width="500">
+            <v-card style="background: #232834">
+              <v-card-title class="text-h5 dark lighten-2">Получение данных</v-card-title>
+              <v-card-text>
+                <div class="pa-3">
+                  <h3>Данные</h3>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div><code>{</code></div>
+                  <div><code>&nbsp;"update": {</code></div>
+                  <div><code>&nbsp;&nbsp;"temp": {{ getDrawerDevice['update']['temp'] }},</code></div>
+                  <div><code>&nbsp;&nbsp;"target_temp": {{ getDrawerDevice['update']['target_temp'] }},</code></div>
+                  <div><code>&nbsp;&nbsp;"heating": "{{ getDrawerDevice['update']['heating'] }}",</code></div>
+                  <div><code>&nbsp;&nbsp;"name": "{{ getDrawerDevice['update']['name'] }}",</code></div>
+                  <div><code>&nbsp;&nbsp;"unit": "{{ getDrawerDevice['update']['unit'] }}"</code></div>
+                  <div><code>&nbsp;}</code></div>
+                  <div><code>}</code></div>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Топик для получения данных:</div>
+                  <code>{{ this.getDrawerDevice['mqtt_topics']['state'] }}</code>
+                </div>
+                <div class="pa-3">
+                  <h3>Управление термостатом</h3>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Установить температуру нагрева в C:</div>
+                  <code>{{ this.getDrawerDevice['mqtt_topics']['target_temp'] }}</code>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Повысить температуру на n градусов (n - payload):</div>
+                  <code>{{ this.getDrawerDevice['mqtt_topics']['step_up'] }}</code>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Управление нагревом:</div>
+                  <div><code>{{ this.getDrawerDevice['mqtt_topics']['heating'] }}</code></div>
+                  <div><code>on - включить нагрев</code></div>
+                  <div><code>off - отключить нагрев</code></div>
+                </div>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="mqtt_data_dialog = false">Закрыть</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <BtnOutlined text="Получить данные MQTT" @click.native="mqtt_data_dialog = true"/>
         </div>
         <v-row align-content="end">
           <v-col v-if="getDrawerDevice['config']['mqtt_use'] === '0'">
@@ -287,6 +340,7 @@
           '8': 'WPA / WPA2 / PSK',
         },
         wifi_pass: null,
+        mqtt_data_dialog: false,
       }
     },
     computed: {

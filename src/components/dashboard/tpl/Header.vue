@@ -8,9 +8,9 @@
           <span class="white--text px-3">Моя квартира</span>
       </v-col>
       <v-col cols="3">
-        <div class="text-right">
-          <v-icon color="#249fff" @click="inDevelop">mdi-cog</v-icon>
-        </div>
+<!--        <div class="text-right">-->
+<!--          <v-icon color="#249fff" @click="inDevelop">mdi-cog</v-icon>-->
+<!--        </div>-->
       </v-col>
     </v-row>
     <v-row class="d-none d-sm-flex ma-0">
@@ -18,7 +18,7 @@
         <div class="d-flex align-center">
           <v-icon color="#249fff" @click="inDevelop">mdi-account-circle</v-icon>
           <span class="white--text px-3">Моя квартира</span>
-          <v-icon color="#249fff" @click="inDevelop">mdi-cog</v-icon>
+<!--          <v-icon color="#249fff" @click="inDevelop">mdi-cog</v-icon>-->
         </div>
       </v-col>
       <v-col cols="2">

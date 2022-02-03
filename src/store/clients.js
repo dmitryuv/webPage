@@ -1,4 +1,4 @@
-const test = false
+const test = true
 const current_ip = test ? '192.168.1.218' : location.host;
 
 export default {
@@ -25,6 +25,7 @@ export default {
         ['wifi_networks']: null,
         ['config']: null,
         ['qr_hk']: null,
+        ['mqtt_topics']: null,
         ['update_status']: null,
         ['ip']: payload['ip']
       }

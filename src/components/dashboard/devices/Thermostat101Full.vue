@@ -59,10 +59,17 @@
       <ItemMenu :text="'MQTT'" @click.native="changeDrawerDialog([9, 'MQTT'])"/>
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'WiFi'" :right="getDrawerDevice['config']['wifi_name']" :right_class="'grey--text'" @click.native="changeDrawerDialog([10, 'WiFi'])"/>
+      <ItemMenu
+          :text="'Яндекс Алиса'"
+          @click.native="changeDrawerDialog([10, 'Яндекс Алиса'])"
+          v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'"
+      />
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'Экран'" @click.native="changeDrawerDialog([11, 'Экран'])"/>
+      <ItemMenu :text="'WiFi'" :right="getDrawerDevice['config']['wifi_name']" :right_class="'grey--text'" @click.native="changeDrawerDialog([11, 'WiFi'])"/>
+      <div class="mb-2"></div>
+
+      <ItemMenu :text="'Экран'" @click.native="changeDrawerDialog([12, 'Экран'])"/>
       <div class="mb-5"></div>
 
       <v-row>
@@ -177,23 +184,32 @@
     </div>
 
     <div class="dialog" v-if="getDrawerDialog === 6">
-      <div class="diapason">
-        <v-row>
-          <v-col>
+      <div class="diapason fullheight_dialog d-flex flex-column">
+        <v-row align-content="start">
+          <v-col cols="6">
             <div class="mb-2">Минимальная</div>
-            <div class="color_lytko val my-5">{{ getDrawerDevice['config']['min_temp'] }}</div>
+            <div class="color_lytko val mt-5">{{ getDrawerDevice['config']['min_temp'] }}</div>
           </v-col>
-          <v-col>
+          <v-col cols="6">
             <div class="mb-2">Максимальная</div>
-            <div class="color_lytko val my-5">{{ getDrawerDevice['config']['max_temp'] }}</div>
+            <div class="color_lytko val mt-5">{{ getDrawerDevice['config']['max_temp'] }}</div>
+          </v-col>
+          <v-col cols="12">
+            <div class="help">
+              <div class="mb-4 text-left white--text text-justify">Для смены вывода текущей и целевой температуры нажмите кнопку ниже</div>
+              <div class="text-left white--text text-justify">Для изменения порогов температуры необходимо сбросить устройство и заново произвести
+                первоначальную
+                конфигурацию
+              </div>
+            </div>
           </v-col>
         </v-row>
-        <div class="help mt-4">
-          <div class="mb-4 text-left white--text text-justify">Для смены вывода текущей и целевой температуры нажмите кнопку ниже</div>
-          <div class="text-left white--text text-justify">Для изменения порогов температуры необходимо сбросить устройство и заново произвести первоначальную
-            конфигурацию
-          </div>
-        </div>
+        <v-spacer/>
+        <v-row align-content="end">
+          <v-col>
+            <BtnBg text="Переключить" :fw="true" @click.native="onChangeTargetTempFirst"/>
+          </v-col>
+        </v-row>
       </div>
     </div>
 
@@ -227,7 +243,7 @@
         </div>
         <div class="mt-5 text-justify">
           <div class="qr_block" v-if="getDrawerDevice['qr_hk']">
-            <qrcode-vue :value="getDrawerDevice['qr_hk']" size="300"/>
+            <qrcode-vue :value="getDrawerDevice['qr_hk']" :background="'#000'" :foreground="'#fff'" size="300"/>
           </div>
         </div>
       </div>
@@ -280,12 +296,66 @@
                 @onChange="mqtt.login = $event"
             />
           </div>
-          <TextInput
-              label="Пароль"
-              placeholder="Введите пароль*"
-              :disabled="getDrawerDevice['config']['mqtt_use'] === '1'"
-              @onChange="mqtt.pass = $event"
-          />
+          <div class="mb-5">
+            <PassInput
+                label="Пароль"
+                placeholder="Введите пароль*"
+                :value="mqtt.pass"
+                :disabled="getDrawerDevice['config']['mqtt_use'] === '1'"
+                @onChange="mqtt.pass = $event"
+            />
+          </div>
+        </div>
+        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1' && getDrawerDevice['config']['mqtt_topics']">
+          <v-dialog dark scrollable v-model="mqtt_data_dialog" width="500">
+            <v-card style="background: #232834">
+              <v-card-title class="text-h5 dark lighten-2">Получение данных</v-card-title>
+              <v-card-text>
+                <div class="pa-3">
+                  <h3>Данные</h3>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div><code>{</code></div>
+                  <div><code>&nbsp;"update": {</code></div>
+                  <div><code>&nbsp;&nbsp;"temp": {{ getDrawerDevice['update']['temp'] }},</code></div>
+                  <div><code>&nbsp;&nbsp;"target_temp": {{ getDrawerDevice['update']['target_temp'] }},</code></div>
+                  <div><code>&nbsp;&nbsp;"relay": {{ getDrawerDevice['update']['relay'] }},</code></div>
+                  <div><code>&nbsp;&nbsp;"heating": "{{ getDrawerDevice['update']['heating'] }}",</code></div>
+                  <div><code>&nbsp;&nbsp;"name": "{{ getDrawerDevice['update']['name'] }}",</code></div>
+                  <div><code>&nbsp;&nbsp;"unit": "{{ getDrawerDevice['update']['unit'] }}"</code></div>
+                  <div><code>&nbsp;}</code></div>
+                  <div><code>}</code></div>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Топик для получения данных:</div>
+                  <code>{{ this.getDrawerDevice['mqtt_topics']['state'] }}</code>
+                </div>
+                <div class="pa-3">
+                  <h3>Управление термостатом</h3>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Установить температуру нагрева в C:</div>
+                  <code>{{ this.getDrawerDevice['mqtt_topics']['target_temp'] }}</code>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Повысить температуру на n градусов (n - payload):</div>
+                  <code>{{ this.getDrawerDevice['mqtt_topics']['step_up'] }}</code>
+                </div>
+                <div style="background: #202530" class="pa-3 mb-1">
+                  <div>Управление нагревом:</div>
+                  <div><code>{{ this.getDrawerDevice['mqtt_topics']['heating'] }}</code></div>
+                  <div><code>on - включить нагрев</code></div>
+                  <div><code>off - отключить нагрев</code></div>
+                </div>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="mqtt_data_dialog = false">Закрыть</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <BtnOutlined text="Получить данные MQTT" @click.native="mqtt_data_dialog = true"/>
         </div>
         <v-row align-content="end">
           <v-col v-if="getDrawerDevice['config']['mqtt_use'] === '0'">
@@ -313,6 +383,35 @@
     </div>
 
     <div class="dialog" v-if="getDrawerDialog === 10">
+      <div class="fullheight_dialog d-flex flex-column">
+        <div>
+          <div class="mb-5">
+            <TextInput
+                label="Логин"
+                placeholder="Введите логин*"
+                :value="mqttAlice.login"
+                @onChange="mqttAlice.login = $event"
+            />
+          </div>
+          <div class="mb-5">
+            <PassInput
+                label="Пароль"
+                placeholder="Введите пароль*"
+                :value="mqttAlice.pass"
+                @onChange="mqttAlice.pass = $event"
+            />
+          </div>
+        </div>
+      </div>
+      <v-spacer/>
+      <v-row align-content="end">
+        <v-col>
+          <BtnBg text="Подключить" @click.native="onConnectAlice"/>
+        </v-col>
+      </v-row>
+    </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 11">
       <div class="fullheight_dialog d-flex flex-column">
         <template v-if="getDrawerWfsn === null">
           <v-row>
@@ -354,7 +453,7 @@
       </div>
     </div>
 
-    <div class="dialog" v-if="getDrawerDialog === 11">
+    <div class="dialog" v-if="getDrawerDialog === 12">
       <div class="fullheight_dialog d-flex flex-column">
         <ItemMenu
             :im_class="'pointer'"
@@ -404,6 +503,10 @@
           login: null,
           pass: null,
         },
+        mqttAlice: {
+          login: null,
+          pass: null,
+        },
         externar_sensor_topic: null,
         wifi_encryptions: {
           '5': 'WEP',
@@ -413,6 +516,7 @@
           '8': 'WPA / WPA2 / PSK',
         },
         wifi_pass: null,
+        mqtt_data_dialog: false,
       }
     },
     computed: {
@@ -491,7 +595,7 @@
       },
       onHysteresisDown() {
         let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
-        if (new_val > 2) {
+        if (new_val > 1) {
           new_val--
         }
         this.getDrawerDevice['client'].send('{"hysteresis":"' + new_val + '" }')
@@ -526,9 +630,16 @@
       },
       onConnectExternarSensor() {
         if (this.externar_sensor_topic) {
-          this.getDrawerDevice['client'].send('{"mqtt_external_topic":' + this.externar_sensor_topic + '}')
+          this.getDrawerDevice['client'].send('{"mqtt_external_topic":"' + this.externar_sensor_topic + '"}')
         } else {
           this.setSnackbar('Введите MQTT топик')
+        }
+      },
+      onChangeTargetTempFirst() {
+        if (this.getDrawerDevice['config']['is_target_temp_first'] == 1) {
+          this.getDrawerDevice['client'].send('{"is_target_temp_first":1}')
+        } else {
+          this.getDrawerDevice['client'].send('{"is_target_temp_first":0}')
         }
       },
       onConnectMqtt() {
@@ -543,6 +654,10 @@
       onDisconnectMqtt() {
         this.getDrawerDevice['client'].send('{"mqtt_disconnect":1}')
         this.rebootPreloader()
+      },
+      onConnectAlice() {
+        this.getDrawerDevice['client'].send('{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}')
+        this.setSnackbar('Алиса подключена')
       },
       onWifiUpdate() {
         this.getDrawerDevice['client'].send('{"wifi_refresh":1}')
