@@ -1,5 +1,6 @@
-const test = false
-const current_ip = test ? '192.168.1.218' : location.host;
+// const test = true
+const devmode = location.hostname === 'localhost';
+const current_ip = devmode ? '192.168.1.218' : location.host;
 
 export default {
   state: {

@@ -408,7 +408,8 @@
       <v-spacer/>
       <v-row align-content="end">
         <v-col>
-          <BtnBg text="Подключить" @click.native="onConnectAlice"/>
+          <BtnBg v-if="getDrawerDevice['config']['mqtt_alice'] == '0'" text="Подключить" @click.native="onConnectAlice"/>
+          <BtnBg v-if="getDrawerDevice['config']['mqtt_alice'] == '1'" text="Отключить" @click.native="onDisconnectAlice"/>
         </v-col>
       </v-row>
     </div>
@@ -554,6 +555,7 @@
       this.mqtt.port = this.getDrawerDevice['config']['mqtt_port']
       this.mqtt.login = this.getDrawerDevice['config']['mqtt_login']
       this.mqtt_external_topic = this.getDrawerDevice['config']['mqtt_external_topic']
+      this.mqttAlice.login = this.getDrawerDevice['config']['alice_login']
     },
     methods: {
       ...mapActions([
@@ -665,6 +667,11 @@
       onConnectAlice() {
         this.getDrawerDevice['client'].send('{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}')
         this.setSnackbar('Алиса подключена')
+      },
+      onDisconnectAlice() {
+        this.getDrawerDevice['client'].send('{"alice_disconnect":1}')
+        this.setSnackbar('Алиса отключена')
+        this.mqttAlice.login = null
       },
       onWifiUpdate() {
         this.getDrawerDevice['client'].send('{"wifi_refresh":1}')
