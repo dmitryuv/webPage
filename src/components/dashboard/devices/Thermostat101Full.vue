@@ -50,6 +50,7 @@
           :right="getDrawerDevice['config']['mqtt_use'] === '0' ? 'Только MQTT' : ''"
           :right_class="'color_lytko2 body-2'"
           @click.native="changeDrawerDialog([7, 'Внешние датчики'])"
+          v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'"
       />
       <div class="mb-2"></div>
 
@@ -223,14 +224,15 @@
             <TextInput
                 label="Топик"
                 placeholder="Введите топик"
-                :value="externar_sensor_topic"
-                @onChange="externar_sensor_topic = $event"
+                :value="mqtt_external_topic"
+                @onChange="mqtt_external_topic = $event"
             />
           </div>
         </div>
         <v-row align-content="end">
           <v-col>
-            <BtnBg text="Подключить" @click.native="onConnectExternarSensor"/>
+            <BtnBg v-if="getDrawerDevice['config']['mqtt_external_topic'] == ''" text="Подключить" @click.native="onConnectExternarSensor"/>
+            <BtnBg v-else text="Отключить" @click.native="onDisconnectExternarSensor"/>
           </v-col>
         </v-row>
       </div>
@@ -507,7 +509,7 @@
           login: null,
           pass: null,
         },
-        externar_sensor_topic: null,
+        mqtt_external_topic: null,
         wifi_encryptions: {
           '5': 'WEP',
           '2': 'WPA / PSK',
@@ -551,6 +553,7 @@
       this.mqtt.server = this.getDrawerDevice['config']['mqtt_server']
       this.mqtt.port = this.getDrawerDevice['config']['mqtt_port']
       this.mqtt.login = this.getDrawerDevice['config']['mqtt_login']
+      this.mqtt_external_topic = this.getDrawerDevice['config']['mqtt_external_topic']
     },
     methods: {
       ...mapActions([
@@ -629,11 +632,15 @@
         }
       },
       onConnectExternarSensor() {
-        if (this.externar_sensor_topic) {
-          this.getDrawerDevice['client'].send('{"mqtt_external_topic":"' + this.externar_sensor_topic + '"}')
+        if (this.mqtt_external_topic) {
+          this.getDrawerDevice['client'].send('{"mqtt_external_topic":"' + this.mqtt_external_topic + '"}')
         } else {
           this.setSnackbar('Введите MQTT топик')
         }
+      },
+      onDisconnectExternarSensor() {
+        this.getDrawerDevice['client'].send('{"mqtt_external":"disconnect"}')
+        this.mqtt_external_topic = null
       },
       onChangeTargetTempFirst() {
         if (this.getDrawerDevice['config']['is_target_temp_first'] == 1) {
