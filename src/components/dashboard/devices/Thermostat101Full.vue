@@ -239,11 +239,14 @@
     </div>
 
     <div class="dialog" v-if="getDrawerDialog === 8">
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1'">
+      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'">
         <div class="mt-5 text-justify white--text">
           Экспериментальная версия прошивки HomeKit представлена для тестового ознакомления. Отсканируйте QR-код, чтобы добавить устройство в приложение Дом
         </div>
-        <div class="mt-5 text-justify">
+        <div class="mt-5 text-justify" v-if="getDrawerDevice['config']['pair_hk'] === '1'">
+          <BtnOutlined text="Очистить пару" @click.native="onClearHK"/>
+        </div>
+        <div class="mt-5 text-justify" v-else>
           <div class="qr_block" v-if="getDrawerDevice['qr_hk']">
             <qrcode-vue :value="getDrawerDevice['qr_hk']" :background="'#000'" :foreground="'#fff'" size="300"/>
           </div>
@@ -369,7 +372,7 @@
         </v-row>
       </div>
 
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1'">
+      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'">
         <div>
           <div class="mt-5 text-justify white--text">
             При активации режима MQTT устройство перезагрузится. Использование HomeKit будет невозможно
@@ -408,8 +411,8 @@
       <v-spacer/>
       <v-row align-content="end">
         <v-col>
-          <BtnBg v-if="getDrawerDevice['config']['mqtt_alice'] == '0'" text="Подключить" @click.native="onConnectAlice"/>
           <BtnBg v-if="getDrawerDevice['config']['mqtt_alice'] == '1'" text="Отключить" @click.native="onDisconnectAlice"/>
+          <BtnBg v-else text="Подключить" @click.native="onConnectAlice"/>
         </v-col>
       </v-row>
     </div>
@@ -625,6 +628,9 @@
       onUpgrade() {
         this.getDrawerDevice['client'].send('{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}')
       },
+      onClearHK() {
+        this.getDrawerDevice['client'].send('{"clear_homekit":1}')
+      },
       onChangeHK(status) {
         this.rebootPreloader()
         if (status) {
@@ -665,8 +671,10 @@
         this.rebootPreloader()
       },
       onConnectAlice() {
-        this.getDrawerDevice['client'].send('{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}')
-        this.setSnackbar('Алиса подключена')
+        if (this.getDrawerDevice['config']['homekit'] != '0') {
+          this.getDrawerDevice['client'].send('{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}')
+          this.setSnackbar('Алиса подключена')
+        }
       },
       onDisconnectAlice() {
         this.getDrawerDevice['client'].send('{"alice_disconnect":1}')

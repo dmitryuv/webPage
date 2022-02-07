@@ -1,30 +1,26 @@
 <template>
-  <div id="device" class="d-inline-block float-left">
-    <Thermostat101 v-if="device.type === 'esp8266_thermostat'" :device="device"/>
-    <Thermostat101 v-if="device.type === 'esp8266_thermostat_plus'" :device="device"/>
-    <Thermostat102 v-if="device.type === 'esp8266_air'" :device="device"/>
-    <Thermostat103 v-if="device.type === 'esp32_panel_4inch'" :device="device"/>
+  <div id="Sensor" class="d-inline-block float-left">
+    <Temp v-if="sensor.type === 'sensor_temp'" :sensor="sensor"/>
+    <Hum v-if="sensor.type === 'sensor_hum'" :sensor="sensor"/>
   </div>
 </template>
 
 <script>
-  import Thermostat101 from "./Thermostat101";
-  import Thermostat102 from "./Thermostat102";
-  import Thermostat103 from "./Thermostat103";
+  import Temp from "./Temp";
+  import Hum from "./Hum";
 
   export default {
-    name: "Device",
+    name: "Sensor",
     components: {
-      Thermostat101,
-      Thermostat102,
-      Thermostat103,
+      Temp,
+      Hum,
     },
-    props: ['device'],
+    props: ['sensor'],
   }
 </script>
 
 <style lang="scss">
-  #device {
+  #Sensor {
     background: #2c3041;
     border: 0;
 

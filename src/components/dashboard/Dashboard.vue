@@ -28,13 +28,13 @@
           <div class="devices_count">{{ devicesLengthText }}</div>
         </div>
 
-        <div class="sensors" v-if="sensors.length">
-
+        <div class="sensors d-flex" v-if="Object.keys(getSensors).length">
+          <Sensor v-for="sensor in getSensors" :key="sensor.id" :sensor="sensor"/>
         </div>
-        <div class="thermostats" v-if="Object.keys(getThermostats).length">
+        <div class="thermostats d-flex" v-if="Object.keys(getThermostats).length">
           <Device v-for="thermostat in getThermostats" :key="thermostat.id" :device="thermostat"/>
         </div>
-        <div class="switchers" v-if="switchers.length">
+        <div class="switchers d-flex" v-if="switchers.length">
 
         </div>
       </div>
@@ -48,19 +48,20 @@
   import DeviceFull from "./devices/DeviceFull";
 
   import {mapGetters, mapActions} from 'vuex'
+  import Sensor from "./sensors/Sensor";
 
   export default {
     name: "Dashboard",
-    components: {Header, Device, DeviceFull},
+    components: {Header, Device, DeviceFull, Sensor},
     data() {
       return {
-        sensors: [],
         switchers: [],
       }
     },
     computed: {
       ...mapGetters([
         'getClients',
+        'getSensors',
         'getThermostats',
         'getDrawerStatus',
         'getDrawerTitle',
@@ -69,7 +70,7 @@
         'getDrawerWfsn',
       ]),
       devicesLength() {
-        return Object.keys(this.getClients).length
+        return Object.keys(this.getSensors).length + Object.keys(this.getThermostats).length
       },
       devicesLengthText() {
         let num = this.devicesLength.toString()

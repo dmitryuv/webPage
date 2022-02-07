@@ -1,5 +1,5 @@
 <template>
-  <div id="Thermostat102Full" class="text-center">
+  <div id="Thermostat103Full" class="text-center">
     <div class="dialog" v-if="getDrawerDialog === 0">
       <div class="temperature white--text temperature-text">
         <v-row>
@@ -15,20 +15,9 @@
           </v-col>
         </v-row>
       </div>
-      <div class="thermostat_fan relative">
-        <v-icon class="absolute">$Fun0</v-icon>
-        <div class="fan_speed white--text">{{ fan_speed * 20 }}%</div>
-        <input class="fan_slider w-100" type="range" min="0" max="5" v-model="fan_speed" step="1" @change="onChangeSpeed">
-      </div>
       <div class="thermostat_buttons">
-        <div class="button button_text pointer" :class="getDrawerDevice['update']['heating'] === 'auto' ? 'active' : ''" @click="onHeating('auto')">
-          <v-icon color="white">Auto</v-icon>
-        </div>
-        <div class="button button_icon pointer" :class="getDrawerDevice['update']['heating'] === 'heat' ? 'active' : ''" @click="onHeating('heat')">
+        <div class="button pointer mx-auto" :class="getDrawerDevice['update']['heating'] === 'heat' ? 'active' : ''" @click="onHeating">
           <v-icon color="white">mdi-fire</v-icon>
-        </div>
-        <div class="button button_icon pointer" :class="getDrawerDevice['update']['heating'] === 'cool' ? 'active' : ''" @click="onHeating('cool')">
-          <v-icon color="white">mdi-snowflake</v-icon>
         </div>
       </div>
     </div>
@@ -44,17 +33,48 @@
       />
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'Комната'" @click.native="changeDrawerDialog([3, 'Комната'])"/>
+      <ItemMenu :text="'Тип датчика'" @click.native="changeDrawerDialog([3, 'Тип датчика'])"/>
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'HomeKit'" @click.native="changeDrawerDialog([4, 'HomeKit'])"/>
+      <ItemMenu :text="'Комната'" @click.native="changeDrawerDialog([4, 'Комната'])"/>
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'MQTT'" @click.native="changeDrawerDialog([5, 'MQTT'])"/>
+      <ItemMenu :text="'Гистерезис'" @click.native="changeDrawerDialog([5, 'Гистерезис'])"/>
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'WiFi'" :right="getDrawerDevice['config']['wifi_name']" :right_class="'grey--text'" @click.native="changeDrawerDialog([6, 'WiFi'])"/>
+      <ItemMenu :text="'Температура'" @click.native="changeDrawerDialog([6, 'Температура'])"/>
       <div class="mb-2"></div>
+
+      <ItemMenu
+          :text="'Внешние датчики'"
+          :right="getDrawerDevice['config']['mqtt_use'] === '0' ? 'Только MQTT' : ''"
+          :right_class="'color_lytko2 body-2'"
+          @click.native="changeDrawerDialog([7, 'Внешние датчики'])"
+          v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'"
+      />
+      <div class="mb-2"></div>
+
+      <ItemMenu :text="'HomeKit'" @click.native="changeDrawerDialog([8, 'HomeKit'])"/>
+      <div class="mb-2"></div>
+
+      <ItemMenu :text="'MQTT'" @click.native="changeDrawerDialog([9, 'MQTT'])"/>
+      <div class="mb-2"></div>
+
+      <ItemMenu
+          :text="'Яндекс Алиса'"
+          @click.native="changeDrawerDialog([10, 'Яндекс Алиса'])"
+          v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'"
+      />
+      <div class="mb-2"></div>
+
+      <ItemMenu :text="'WiFi'" :right="getDrawerDevice['config']['wifi_name']" :right_class="'grey--text'" @click.native="changeDrawerDialog([11, 'WiFi'])"/>
+      <div class="mb-2"></div>
+
+      <ItemMenu :text="'ZigBee'" @click.native="changeDrawerDialog([12, 'ZigBee'])"/>
+      <div class="mb-2"></div>
+
+      <ItemMenu :text="'Датчик темп. воздуха'" @click.native="changeDrawerDialog([13, 'Датчик темп. воздуха'])"/>
+      <div class="mb-5"></div>
 
       <v-row>
         <v-col>
@@ -113,14 +133,116 @@
     </div>
 
     <div class="dialog" v-if="getDrawerDialog === 3">
+      <div class="sensors">
+        <ItemCheck
+            v-for="item in Object.keys(sensors)"
+            :key="item"
+            :text="sensors[item]"
+            :active="getDrawerDevice['config']['sensor_model_id'] == item"
+            @click.native="onChangeSensor(item)"
+        />
+      </div>
+    </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 4">
       <div>
         <div class="text-left white--text">Требуется синхронизация с облаком</div>
         <div class="text-left white--text">(в разработке)</div>
       </div>
     </div>
 
-    <div class="dialog" v-if="getDrawerDialog === 4">
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'">
+    <div class="dialog" v-if="getDrawerDialog === 5">
+      <div class="hysteresis">
+        <v-row>
+          <v-col>
+            <div class="mb-2">Шаг</div>
+            <div>
+              <v-icon color="white" @click="onHysteresisUp">mdi-menu-up</v-icon>
+            </div>
+            <div class="color_lytko val">{{ parseInt(getDrawerDevice['config']['hysteresis']) }}</div>
+            <div>
+              <v-icon color="white" @click="onHysteresisDown">mdi-menu-down</v-icon>
+            </div>
+          </v-col>
+          <v-col>
+            <div class="mb-2">Корректировка t&deg;</div>
+            <div>
+              <v-icon color="white" @click="onCorrectionUp">mdi-menu-up</v-icon>
+            </div>
+            <div class="color_lytko val">{{ parseFloat(getDrawerDevice['config']['sensor_corr']).toFixed(1) }}</div>
+            <div>
+              <v-icon color="white" @click="onCorrectionDown">mdi-menu-down</v-icon>
+            </div>
+          </v-col>
+        </v-row>
+        <div class="help d-block d-sm-none mt-4">
+          <div class="mb-4 text-left white--text text-justify">
+            Гистерезис - разница между текущей и заданной температурой. Термостат нагревает пол только в том случае, если текущая температура меньше заданной на
+            эту разницу.
+          </div>
+          <div class="text-left white--text text-justify">
+            Корректировка температуры - сдвиг показаний текущей температуры с датчика в большую или меньшую сторону для более гибкой настройки.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 6">
+      <div class="diapason fullheight_dialog d-flex flex-column">
+        <v-row align-content="start">
+          <v-col cols="6">
+            <div class="mb-2">Минимальная</div>
+            <div class="color_lytko val mt-5">{{ getDrawerDevice['config']['min_temp'] }}</div>
+          </v-col>
+          <v-col cols="6">
+            <div class="mb-2">Максимальная</div>
+            <div class="color_lytko val mt-5">{{ getDrawerDevice['config']['max_temp'] }}</div>
+          </v-col>
+          <v-col cols="12">
+            <div class="help">
+              <div class="mb-4 text-left white--text text-justify">Для смены вывода текущей и целевой температуры нажмите кнопку ниже</div>
+              <div class="text-left white--text text-justify">Для изменения порогов температуры необходимо сбросить устройство и заново произвести
+                первоначальную
+                конфигурацию
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+        <v-spacer/>
+        <v-row align-content="end">
+          <v-col>
+            <BtnBg text="Переключить" :fw="true" @click.native="onChangeTargetTempFirst"/>
+          </v-col>
+        </v-row>
+      </div>
+    </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 7">
+      <div class="fullheight_dialog d-flex flex-column">
+        <div v-if="getDrawerDevice['config']['mqtt_use'] === '0'" class="text-left white--text">
+          Доступно только в режиме MQTT
+        </div>
+        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1'" class="text-left white--text">
+          <div class="mb-5">
+            <TextInput
+                label="Топик"
+                placeholder="Введите топик"
+                :value="mqtt_external_topic"
+                @onChange="mqtt_external_topic = $event"
+            />
+          </div>
+        </div>
+        <v-row align-content="end">
+          <v-col>
+            <BtnBg v-if="getDrawerDevice['config']['mqtt_external_topic'] == ''" text="Подключить" @click.native="onConnectExternarSensor"/>
+            <BtnBg v-else text="Отключить" @click.native="onDisconnectExternarSensor"/>
+          </v-col>
+        </v-row>
+      </div>
+    </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 8">
+      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1'">
         <div class="mt-5 text-justify white--text">
           Экспериментальная версия прошивки HomeKit представлена для тестового ознакомления. Отсканируйте QR-код, чтобы добавить устройство в приложение Дом
         </div>
@@ -149,7 +271,7 @@
       </div>
     </div>
 
-    <div class="dialog" v-if="getDrawerDialog === 5">
+    <div class="dialog" v-if="getDrawerDialog === 9">
       <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '0'">
         <div>
           <div class="mb-5">
@@ -189,7 +311,7 @@
             />
           </div>
         </div>
-        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1'">
+        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1' && getDrawerDevice['config']['mqtt_topics']">
           <v-dialog dark scrollable v-model="mqtt_data_dialog" width="500">
             <v-card style="background: #232834">
               <v-card-title class="text-h5 dark lighten-2">Получение данных</v-card-title>
@@ -202,6 +324,7 @@
                   <div><code>&nbsp;"update": {</code></div>
                   <div><code>&nbsp;&nbsp;"temp": {{ getDrawerDevice['update']['temp'] }},</code></div>
                   <div><code>&nbsp;&nbsp;"target_temp": {{ getDrawerDevice['update']['target_temp'] }},</code></div>
+                  <div><code>&nbsp;&nbsp;"relay": {{ getDrawerDevice['update']['relay'] }},</code></div>
                   <div><code>&nbsp;&nbsp;"heating": "{{ getDrawerDevice['update']['heating'] }}",</code></div>
                   <div><code>&nbsp;&nbsp;"name": "{{ getDrawerDevice['update']['name'] }}",</code></div>
                   <div><code>&nbsp;&nbsp;"unit": "{{ getDrawerDevice['update']['unit'] }}"</code></div>
@@ -249,7 +372,7 @@
         </v-row>
       </div>
 
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'">
+      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1'">
         <div>
           <div class="mt-5 text-justify white--text">
             При активации режима MQTT устройство перезагрузится. Использование HomeKit будет невозможно
@@ -264,7 +387,37 @@
       </div>
     </div>
 
-    <div class="dialog" v-if="getDrawerDialog === 6">
+    <div class="dialog" v-if="getDrawerDialog === 10">
+      <div class="fullheight_dialog d-flex flex-column">
+        <div>
+          <div class="mb-5">
+            <TextInput
+                label="Логин"
+                placeholder="Введите логин*"
+                :value="mqttAlice.login"
+                @onChange="mqttAlice.login = $event"
+            />
+          </div>
+          <div class="mb-5">
+            <PassInput
+                label="Пароль"
+                placeholder="Введите пароль*"
+                :value="mqttAlice.pass"
+                @onChange="mqttAlice.pass = $event"
+            />
+          </div>
+        </div>
+      </div>
+      <v-spacer/>
+      <v-row align-content="end">
+        <v-col>
+          <BtnBg v-if="getDrawerDevice['config']['mqtt_alice'] == '0'" text="Подключить" @click.native="onConnectAlice"/>
+          <BtnBg v-if="getDrawerDevice['config']['mqtt_alice'] == '1'" text="Отключить" @click.native="onDisconnectAlice"/>
+        </v-col>
+      </v-row>
+    </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 11">
       <div class="fullheight_dialog d-flex flex-column">
         <template v-if="getDrawerWfsn === null">
           <v-row>
@@ -305,6 +458,34 @@
         </template>
       </div>
     </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 12">
+      <div class="fullheight_dialog d-flex flex-column">
+        <div>
+          <ItemMenu
+              v-for="(item, index) of getDrawerDevice['zigbee']"
+              :key="index"
+              :text="item.name"
+              :right-icon="selected_zigbee.indexOf(index) >= 0 ? 'mdi-check' : null"
+              @click.native="onSelectZigbee(index)"/>
+        </div>
+        <v-row align-content="end">
+          <v-col>
+            <BtnOutlined text="Очистить ZigBee" @click.native="onClearZigbee"/>
+          </v-col>
+          <v-col>
+            <BtnBg text="Отключить" v-if="selected_zigbee.length" @click.native="onDisableZigbee"/>
+            <BtnBg text="Сопряжение" v-else @click.native="onPairZigbee"/>
+          </v-col>
+        </v-row>
+      </div>
+    </div>
+
+    <div class="dialog" v-if="getDrawerDialog === 13">
+      <div class="fullheight_dialog d-flex flex-column">
+        asdasd
+      </div>
+    </div>
   </div>
 </template>
 
@@ -314,24 +495,42 @@
   import TextInput from "../tpl/TextInput";
   import PassInput from "../tpl/PassInput";
   import ItemMenu from "../tpl/ItemMenu";
+  import ItemCheck from "../tpl/ItemCheck";
   import BtnBg from "../tpl/BtnBg";
   import BtnOutlined from "../tpl/BtnOutlined";
 
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
-    name: "Thermostat102Full",
-    components: {QrcodeVue, TextInput, PassInput, ItemMenu, BtnBg, BtnOutlined},
+    name: "Thermostat103Full",
+    components: {QrcodeVue, TextInput, PassInput, ItemMenu, ItemCheck, BtnBg, BtnOutlined},
     data() {
       return {
         name: null,
-        fan_speed: null,
+        sensors: {
+          '0': 'Digital',
+          '1': '3.3 кОм',
+          '2': '5 кОм',
+          '3': '6.8 кОм',
+          '4': '10 кОм',
+          '5': '12 кОм',
+          '6': '14.8 кОм',
+          '7': '15 кОм',
+          '8': '20 кОм',
+          '9': '33 кОм',
+          '10': '47 кОм',
+        },
         mqtt: {
           server: null,
           port: null,
           login: null,
           pass: null,
         },
+        mqttAlice: {
+          login: null,
+          pass: null,
+        },
+        mqtt_external_topic: null,
         wifi_encryptions: {
           '5': 'WEP',
           '2': 'WPA / PSK',
@@ -341,6 +540,7 @@
         },
         wifi_pass: null,
         mqtt_data_dialog: false,
+        selected_zigbee: []
       }
     },
     computed: {
@@ -362,7 +562,7 @@
     },
     watch: {
       name(val) {
-        if (this.getDrawerDevice['config']['name'] !== val) {
+        if (this.getDrawerDevice['config']['name'] != val) {
           this.getDrawerDevice['client'].send('{"config":{"name":"' + val + '"}}')
         }
       },
@@ -372,11 +572,11 @@
     },
     mounted() {
       this.name = this.getDrawerDevice['config']['name']
-      this.fan_speed = this.getDrawerDevice['update']['fan_speed']
-
       this.mqtt.server = this.getDrawerDevice['config']['mqtt_server']
       this.mqtt.port = this.getDrawerDevice['config']['mqtt_port']
       this.mqtt.login = this.getDrawerDevice['config']['mqtt_login']
+      this.mqtt_external_topic = this.getDrawerDevice['config']['mqtt_external_topic']
+      this.mqttAlice.login = this.getDrawerDevice['config']['alice_login']
     },
     methods: {
       ...mapActions([
@@ -395,39 +595,50 @@
       changedWifiPass(event) {
         this.wifi_pass = event
       },
-      onHeating(mode) {
-        if (mode === 'auto') {
-          if (this.getDrawerDevice['update']['heating'] !== 'auto') {
-            this.getDrawerDevice['client'].send('{"heating":3}')
-          } else {
-            this.getDrawerDevice['client'].send('{"heating":0}')
-          }
-        }
-
-        if (mode === 'heat') {
-          if (this.getDrawerDevice['update']['heating'] !== 'heat') {
-            this.getDrawerDevice['client'].send('{"heating":1}')
-          } else {
-            this.getDrawerDevice['client'].send('{"heating":0}')
-          }
-        }
-
-        if (mode === 'cool') {
-          if (this.getDrawerDevice['update']['heating'] !== 'cool') {
-            this.getDrawerDevice['client'].send('{"heating":2}')
-          } else {
-            this.getDrawerDevice['client'].send('{"heating":0}')
-          }
+      onHeating() {
+        if (this.getDrawerDevice['update']['heating'] === 'heat') {
+          this.getDrawerDevice['client'].send('{"update' + this.getDrawerDevice['ch'] + '": {"heating": 0}}')
+        } else {
+          this.getDrawerDevice['client'].send('{"update' + this.getDrawerDevice['ch'] + '": {"heating": 1}}')
         }
       },
       tempDown() {
-        this.getDrawerDevice['client'].send('"tempDown"')
+        this.getDrawerDevice['client'].send('{"update' + this.getDrawerDevice['ch'] + '": {"tempDown": 1}}')
       },
       tempUp() {
-        this.getDrawerDevice['client'].send('"tempUp"')
+        this.getDrawerDevice['client'].send('{"update' + this.getDrawerDevice['ch'] + '": {"tempUp": 1}}')
       },
-      onChangeSpeed() {
-        this.getDrawerDevice['client'].send(`{"fan_speed":${this.fan_speed}}`)
+      onChangeSensor(item) {
+        this.rebootPreloader()
+        this.getDrawerDevice['client'].send('{"config' + this.getDrawerDevice['ch'] + '": {"sensor_model_id": ' + item + '}}')
+      },
+      onHysteresisUp() {
+        let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
+        if (new_val < 5) {
+          new_val++
+        }
+        this.getDrawerDevice['client'].send('{"config' + this.getDrawerDevice['ch'] + '": {"hysteresis":"' + new_val + '" }}')
+      },
+      onHysteresisDown() {
+        let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
+        if (new_val > 1) {
+          new_val--
+        }
+        this.getDrawerDevice['client'].send('{"config' + this.getDrawerDevice['ch'] + '": {"hysteresis":"' + new_val + '" }}')
+      },
+      onCorrectionUp() {
+        let new_val = parseFloat(this.getDrawerDevice['config']['sensor_corr'])
+        if (new_val < 5) {
+          new_val += 0.5
+        }
+        this.getDrawerDevice['client'].send('{"config' + this.getDrawerDevice['ch'] + '": {"sensor_corr":"' + new_val + '" }}')
+      },
+      onCorrectionDown() {
+        let new_val = parseFloat(this.getDrawerDevice['config']['sensor_corr'])
+        if (new_val > -5) {
+          new_val -= 0.5
+        }
+        this.getDrawerDevice['client'].send('{"config' + this.getDrawerDevice['ch'] + '": {"sensor_corr":"' + new_val + '" }}')
       },
       onUpgradeFile() {
         window.open(`http://${this.getDrawerDevice['ip']}/manual_update`, '_blank');
@@ -443,6 +654,24 @@
           this.getDrawerDevice['client'].send('{"config":{"homekit":"0"}}')
         }
       },
+      onConnectExternarSensor() {
+        if (this.mqtt_external_topic) {
+          this.getDrawerDevice['client'].send('{"mqtt_external_topic":"' + this.mqtt_external_topic + '"}')
+        } else {
+          this.setSnackbar('Введите MQTT топик')
+        }
+      },
+      onDisconnectExternarSensor() {
+        this.getDrawerDevice['client'].send('{"mqtt_external":"disconnect"}')
+        this.mqtt_external_topic = null
+      },
+      onChangeTargetTempFirst() {
+        if (this.getDrawerDevice['config']['is_target_temp_first'] == 1) {
+          this.getDrawerDevice['client'].send('{"is_target_temp_first":1}')
+        } else {
+          this.getDrawerDevice['client'].send('{"is_target_temp_first":0}')
+        }
+      },
       onConnectMqtt() {
         if (this.mqtt.server.length && this.mqtt.port.length && this.mqtt.login.length && this.mqtt.pass.length) {
           this.rebootPreloader()
@@ -456,6 +685,15 @@
         this.getDrawerDevice['client'].send('{"mqtt_disconnect":1}')
         this.rebootPreloader()
       },
+      onConnectAlice() {
+        this.getDrawerDevice['client'].send('{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}')
+        this.setSnackbar('Алиса подключена')
+      },
+      onDisconnectAlice() {
+        this.getDrawerDevice['client'].send('{"alice_disconnect":1}')
+        this.setSnackbar('Алиса отключена')
+        this.mqttAlice.login = null
+      },
       onWifiUpdate() {
         this.getDrawerDevice['client'].send('{"wifi_refresh":1}')
       },
@@ -464,6 +702,23 @@
           this.getDrawerDevice['client'].send('{"wifi_connect":{"ssid":"' + this.wifi_ssid + '","password":"' + this.wifi_pass + '"}}')
           this.rebootPreloader()
         }
+      },
+      onSelectZigbee(index) {
+        let i = this.selected_zigbee.indexOf(index);
+        if (i !== -1) {
+          this.selected_zigbee.splice(i, 1);
+        } else {
+          this.selected_zigbee.push(index)
+        }
+      },
+      onClearZigbee() {
+        this.getDrawerDevice['client'].send('{"clear_zigbee_module":1}')
+      },
+      onPairZigbee() {
+        this.getDrawerDevice['client'].send('{"pair_zigbee":1}')
+      },
+      onDisableZigbee(i) {
+        this.getDrawerDevice['client'].send('{"clear_zigbee":' + i + '}')
       },
       onReset() {
         this.rebootPreloader()
@@ -501,7 +756,7 @@
 </script>
 
 <style lang="scss">
-  #Thermostat102Full {
+  #Thermostat103Full {
     width: 100%;
 
     .temperature {
@@ -513,15 +768,6 @@
       .target_temp {
         position: absolute;
       }
-    }
-
-    .thermostat_fan {
-      background: #2c3041;
-      border-radius: var(--percent-width);
-      border: 0;
-      margin-bottom: var(--percent-width);
-      padding: var(--percent-width);
-      font-weight: 300;
     }
 
     .thermostat_buttons {
@@ -538,7 +784,6 @@
           left: 50%;
           -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
-          font-style: initial;
         }
       }
     }
@@ -581,33 +826,13 @@
         }
       }
 
-      .thermostat_fan {
-        .v-icon {
-          left: 7px;
-          top: 7px;
-          height: calc(var(--percent-width) * 1.5);
-          width: calc(var(--percent-width) * 1.5);
-        }
-        .fan_speed {
-          font-size: calc(var(--percent-width) * 2);
-        }
-      }
-
       .thermostat_buttons {
         .button {
           background: #1f3c62;
           border-radius: var(--percent-width);
           height: calc(var(--percent-width) * 6);
-          width: calc(var(--percent-width) * 6);
-          display: inline-block;
-          margin: 0 var(--percent-width);
-
-          &.button_text .v-icon {
-            font-size: calc(var(--percent-width) * 2);
-          }
-          &.button_icon .v-icon svg {
-            height: calc(var(--percent-width) * 2);
-            width: calc(var(--percent-width) * 2);
+          .v-icon {
+            font-size: calc(var(--percent-width) * 3);
           }
         }
       }
@@ -642,33 +867,13 @@
         }
       }
 
-      .thermostat_fan {
-        .v-icon {
-          left: 7px;
-          top: 7px;
-          height: calc(var(--percent-width) * 2);
-          width: calc(var(--percent-width) * 2);
-        }
-        .fan_speed {
-          font-size: calc(var(--percent-width) * 2);
-        }
-      }
-
       .thermostat_buttons {
         .button {
           background: #1f3c62;
           border-radius: var(--percent-width);
-          height: calc(var(--percent-width) * 8);
-          width: calc(var(--percent-width) * 8);
-          display: inline-block;
-          margin: 0 var(--percent-width);
-
-          &.button_text .v-icon {
-            font-size: calc(var(--percent-width) * 2.5);
-          }
-          &.button_icon .v-icon svg {
-            height: calc(var(--percent-width) * 3);
-            width: calc(var(--percent-width) * 3);
+          height: calc(var(--percent-width) * 9);
+          .v-icon {
+            font-size: calc(var(--percent-width) * 4);
           }
         }
       }
@@ -703,33 +908,12 @@
         }
       }
 
-      .thermostat_fan {
-        .v-icon {
-          left: 7px;
-          top: 7px;
-          height: calc(var(--percent-width) * 3);
-          width: calc(var(--percent-width) * 3);
-        }
-        .fan_speed {
-          font-size: calc(var(--percent-width) * 4);
-        }
-      }
-
       .thermostat_buttons {
         .button {
-          background: #1f3c62;
           border-radius: var(--percent-width);
           height: calc(var(--percent-width) * 10);
-          width: calc(var(--percent-width) * 10);
-          display: inline-block;
-          margin: 0 var(--percent-width);
-
-          &.button_text .v-icon {
-            font-size: calc(var(--percent-width) * 3);
-          }
-          &.button_icon .v-icon svg {
-            height: calc(var(--percent-width) * 4);
-            width: calc(var(--percent-width) * 4);
+          .v-icon {
+            font-size: calc(var(--percent-width) * 5);
           }
         }
       }
@@ -764,33 +948,12 @@
         }
       }
 
-      .thermostat_fan {
-        .v-icon {
-          left: 7px;
-          top: 7px;
-          height: calc(var(--percent-width) * 6);
-          width: calc(var(--percent-width) * 6);
-        }
-        .fan_speed {
-          font-size: calc(var(--percent-width) * 6);
-        }
-      }
-
       .thermostat_buttons {
         .button {
-          background: #1f3c62;
           border-radius: var(--percent-width);
           height: calc(var(--percent-width) * 20);
-          width: calc(var(--percent-width) * 20);
-          display: inline-block;
-          margin: 0 var(--percent-width);
-
-          &.button_text .v-icon {
-            font-size: calc(var(--percent-width) * 5);
-          }
-          &.button_icon .v-icon svg {
-            height: calc(var(--percent-width) * 10);
-            width: calc(var(--percent-width) * 10);
+          .v-icon {
+            font-size: calc(var(--percent-width) * 10);
           }
         }
       }

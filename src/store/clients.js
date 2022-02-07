@@ -1,6 +1,37 @@
 // const test = true
 const devmode = location.hostname === 'localhost';
-const current_ip = devmode ? '192.168.1.218' : location.host;
+// const current_ip = devmode ? '192.168.1.218' : location.host;
+const current_ip = devmode ? '192.168.1.111:9103' : location.host;
+const available_types = [
+  'esp8266_thermostat',
+  'esp8266_thermostat_plus',
+  'esp8266_air',
+  'esp32_panel_4inch',
+]
+const type_params = {
+  'esp8266_thermostat': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'esp8266_thermostat_plus': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'esp8266_air': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'esp32_panel_4inch': [
+    'config',
+    'config_1ch',
+    'config_2ch',
+    'mqtt_topics',
+    'mqtt_topics_1ch',
+    'mqtt_topics_2ch',
+    'zigbee',
+    'zigbee_data',
+    'mqtt',
+    'mqtt_data',
+    'update_1ch',
+    'update_2ch',
+    'wifi_networks',
+    'update_status',
+    'qr_hk',
+    'loading',
+    'refresh',
+  ],
+}
 
 export default {
   state: {
@@ -22,18 +53,15 @@ export default {
         ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
         ['id']: payload['id'],
         ['type']: payload['type'],
-        ['update']: null,
-        ['wifi_networks']: null,
-        ['config']: null,
-        ['qr_hk']: null,
-        ['mqtt_topics']: null,
-        ['update_status']: null,
         ['ip']: payload['ip']
+      }
+      for (let param of type_params[payload['type']]) {
+        client[param] = null
       }
 
       state.clients = {
         ...state.clients,
-        [ payload['id'] ]: { ...client }
+        [payload['id']]: {...client}
       }
     },
     updateClient(state, payload) {
@@ -136,7 +164,7 @@ export default {
             if (getters.mkLoad(id)) {
               commit('updateClient', {id: id, param: 'data_loaded', value: true})
             }
-            if (['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'].indexOf(k) >= 0) {
+            if (type_params[state.clients[id]['type']].indexOf(k) >= 0) {
               commit('updateClient', {id: id, param: k, value: v})
 
               let drawer_device = rootState.drawer.device;
@@ -155,24 +183,90 @@ export default {
   getters: {
     mkLoad: state => {
       return function (id) {
-        return state.clients[id]['update'] && state.clients[id]['config'];
+        if (state.clients[id]['type'] === 'esp32_panel_4inch') {
+          return state.clients[id]['update_1ch'] && state.clients[id]['config'] && state.clients[id]['config_1ch'];
+        } else {
+          return state.clients[id]['update'] && state.clients[id]['config'];
+        }
       };
     },
     getClients: state => {
       return state.clients
     },
-    getThermostats: (state, getters) => {
-      let available_types = [
-        'esp8266_thermostat',
-        'esp8266_thermostat_plus',
-        'esp8266_air',
-        'esp32_panel_4inch',
-      ]
+    getSensors: (state, getters) => {
+      let sensors = []
+      for (let id in state.clients) {
+        if (state.clients[id]['type'] === 'esp32_panel_4inch' && getters.mkLoad(id)) {
+          for (let item in state.clients[id]['zigbee_data']) {
+            let dev = state.clients[id]['zigbee_data'][item]
+            for (let i in dev['type']) {
+              sensors.push({
+                'id': dev['ShotAddr'] + '_' + i,
+                'type': dev['type'][i],
+                'value': dev['data'][i],
+                'unit': dev['unit'][i],
+              })
+            }
+          }
+        }
+      }
 
+      return sensors
+    },
+    getThermostats: (state, getters) => {
       let devices = []
       for (let id in state.clients) {
         if (available_types.indexOf(state.clients[id]['type']) >= 0 && getters.mkLoad(id)) {
-          devices.push(state.clients[id])
+          if (state.clients[id]['type'] === 'esp32_panel_4inch') {
+            if (state.clients[id]['config_1ch']['type'] === 'thermostat') {
+              devices.push({
+                'id': id + '_1',
+                'ch': '_1ch',
+                'client': state.clients[id]['client'],
+                'type': state.clients[id]['type'],
+                'ip': state.clients[id]['ip'],
+                'config': state.clients[id]['config'],
+                'config_ch': state.clients[id]['config_1ch'],
+                'mqtt_topics': state.clients[id]['mqtt_topics'],
+                'mqtt_topics_ch': state.clients[id]['mqtt_topics_1ch'],
+                'zigbee': state.clients[id]['zigbee'],
+                'zigbee_data': state.clients[id]['zigbee_data'],
+                'mqtt': state.clients[id]['mqtt'],
+                'mqtt_data': state.clients[id]['mqtt_data'],
+                'update': state.clients[id]['update_1ch'],
+                'wifi_networks': state.clients[id]['wifi_networks'],
+                'update_status': state.clients[id]['update_status'],
+                'qr_hk': state.clients[id]['qr_hk'],
+                'loading': state.clients[id]['loading'],
+                'refresh': state.clients[id]['refresh'],
+              })
+            }
+            if (state.clients[id]['config_2ch']['type'] === 'thermostat') {
+              devices.push({
+                'id': id + '_2',
+                'ch': '_2ch',
+                'client': state.clients[id]['client'],
+                'type': state.clients[id]['type'],
+                'ip': state.clients[id]['ip'],
+                'config': state.clients[id]['config'],
+                'config_ch': state.clients[id]['config_2ch'],
+                'mqtt_topics': state.clients[id]['mqtt_topics'],
+                'mqtt_topics_ch': state.clients[id]['mqtt_topics_2ch'],
+                'zigbee': state.clients[id]['zigbee'],
+                'zigbee_data': state.clients[id]['zigbee_data'],
+                'mqtt': state.clients[id]['mqtt'],
+                'mqtt_data': state.clients[id]['mqtt_data'],
+                'update': state.clients[id]['update_2ch'],
+                'wifi_networks': state.clients[id]['wifi_networks'],
+                'update_status': state.clients[id]['update_status'],
+                'qr_hk': state.clients[id]['qr_hk'],
+                'loading': state.clients[id]['loading'],
+                'refresh': state.clients[id]['refresh'],
+              })
+            }
+          } else {
+            devices.push(state.clients[id])
+          }
         }
       }
       return devices
