@@ -240,17 +240,24 @@
 
     <div class="dialog" v-if="getDrawerDialog === 8">
       <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'">
-        <div class="mt-5 text-justify white--text">
-          Экспериментальная версия прошивки HomeKit представлена для тестового ознакомления. Отсканируйте QR-код, чтобы добавить устройство в приложение Дом
-        </div>
-        <div class="mt-5 text-justify" v-if="getDrawerDevice['config']['pair_hk'] === '1'">
-          <BtnOutlined text="Очистить пару" @click.native="onClearHK"/>
-        </div>
-        <div class="mt-5 text-justify" v-else>
-          <div class="qr_block" v-if="getDrawerDevice['qr_hk']">
-            <qrcode-vue :value="getDrawerDevice['qr_hk']" :background="'#000'" :foreground="'#fff'" size="300"/>
+        <template v-if="getDrawerDevice['config']['pair_hk'] === '1'">
+          <div class="mt-5 text-justify white--text">
+            Соединение с приложением Дом установлено
           </div>
-        </div>
+          <div class="mt-5 text-justify">
+            <BtnOutlined text="Очистить пару" @click.native="onClearHK"/>
+          </div>
+        </template>
+        <template v-else>
+          <div class="mt-5 text-justify white--text">
+            Экспериментальная версия прошивки HomeKit представлена для тестового ознакомления. Отсканируйте QR-код, чтобы добавить устройство в приложение Дом
+          </div>
+          <div class="mt-5 text-justify">
+            <div class="qr_block" v-if="getDrawerDevice['qr_hk']">
+              <qrcode-vue :value="getDrawerDevice['qr_hk']" :background="'#000'" :foreground="'#fff'" size="300"/>
+            </div>
+          </div>
+        </template>
       </div>
 
       <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '0'">
@@ -630,6 +637,9 @@
       },
       onClearHK() {
         this.getDrawerDevice['client'].send('{"clear_homekit":1}')
+        setTimeout(() => {
+          location.reload()
+        }, 200)
       },
       onChangeHK(status) {
         this.rebootPreloader()
@@ -708,6 +718,7 @@
         setTimeout(function () {
           self.setPreloader(false)
           self.hideDrawer()
+          location.reload()
         }, 15000)
       },
       wifi_icon(signal) {
