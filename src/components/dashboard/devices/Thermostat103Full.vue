@@ -472,12 +472,12 @@
     <div class="dialog" v-if="getDrawerDialog === 12">
       <div class="fullheight_dialog d-flex flex-column">
         <div>
-          <ItemMenu
-              v-for="(item, index) of getDrawerDevice['zigbee']"
-              :key="index"
-              :text="item.name"
-              :right-icon="selected_zigbee.indexOf(index) >= 0 ? 'mdi-check' : null"
-              @click.native="onSelectZigbee(index)"/>
+          <div class="mb-2" v-for="(item, index) of getDrawerDevice['zigbee']" :key="index">
+            <ItemMenu
+                :text="item.name"
+                :right_icon="selected_zigbee.indexOf(index) >= 0 ? 'mdi-check' : null"
+                @click.native="onSelectZigbee(index)"/>
+          </div>
         </div>
         <v-row align-content="end">
           <v-col>
@@ -493,7 +493,36 @@
 
     <div class="dialog" v-if="getDrawerDialog === 13">
       <div class="fullheight_dialog d-flex flex-column">
-        asdasd
+        <div>
+          <template v-for="(item, index) of getDrawerDevice['zigbee_data']">
+            <div class="mb-2" :key="index">
+              <ItemMenu
+                  :text="getZigbeeName(item['ShotAddr'])"
+                  :right_icon="getDrawerDevice['config_ch']['sensor_zigbee'] === item['ShotAddr'] ? 'mdi-check' : null"
+                  @click.native="onSelectZigbeeTerm(item['ShotAddr'])"/>
+            </div>
+          </template>
+        </div>
+        <v-row align-content="end" class="diapason">
+          <v-col>
+            <div class="mb-2 white--text">Порог защиты t&deg;</div>
+            <div>
+              <v-icon color="white" @click="onMaxTempUp">mdi-menu-up</v-icon>
+            </div>
+            <div class="color_lytko val">{{ getDrawerDevice['config_ch']['max_temp'] }}</div>
+            <div>
+              <v-icon color="white" @click="onMaxTempDown">mdi-menu-down</v-icon>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row align-content="end" class="diapason">
+          <v-col>
+            <div class="help white--text">
+              Порог защиты t&deg; - значение температуры с датчика в полу, при котором автоматически будет отключен нагрев независимо от показаний других
+              датчиков
+            </div>
+          </v-col>
+        </v-row>
       </div>
     </div>
   </div>
@@ -550,7 +579,7 @@
         },
         wifi_pass: null,
         mqtt_data_dialog: false,
-        selected_zigbee: []
+        selected_zigbee: [],
       }
     },
     computed: {
@@ -689,7 +718,7 @@
         }
       },
       onConnectMqtt() {
-        if (this.mqtt.server.length && this.mqtt.port.length && this.mqtt.login.length && this.mqtt.pass.length) {
+        if (this.mqtt.server.length && this.mqtt.port.length) {
           this.rebootPreloader()
           this.getDrawerDevice['client']
             .send('{"mqtt_connect": {"mqtt_server":' + this.mqtt.server + ',"mqtt_port":' + this.mqtt.port + ',"mqtt_login":' + this.mqtt.login + ',"mqtt_password":' + this.mqtt.pass + '}}')
@@ -733,8 +762,29 @@
       onPairZigbee() {
         this.getDrawerDevice['client'].send('{"pair_zigbee":1}')
       },
-      onDisableZigbee(i) {
-        this.getDrawerDevice['client'].send('{"clear_zigbee":' + i + '}')
+      onDisableZigbee() {
+        for (let i of this.selected_zigbee) {
+          this.getDrawerDevice['client'].send('{"clear_zigbee":' + i + '}')
+        }
+      },
+      onSelectZigbeeTerm(shotAddr) {
+        this.getDrawerDevice['client'].send('{}')
+      },
+      getZigbeeName(shotAddr) {
+        for (let i in this.getDrawerDevice['zigbee']) {
+          if (shotAddr === this.getDrawerDevice['zigbee'][i]['ShotAddr']) {
+            return this.getDrawerDevice['zigbee'][i]['name']
+          }
+        }
+        return null
+      },
+      onMaxTempUp() {
+        let val = parseInt(this.getDrawerDevice['config_ch']['max_temp']) + 1
+        this.getDrawerDevice['client'].send('{"max_temp":"' + val + '"}')
+      },
+      onMaxTempDown() {
+        let val = parseInt(this.getDrawerDevice['config_ch']['max_temp']) - 1
+        this.getDrawerDevice['client'].send('{"max_temp":"' + val + '"}')
       },
       onReset() {
         this.rebootPreloader()

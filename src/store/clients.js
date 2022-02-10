@@ -1,7 +1,6 @@
-// const test = true
 const devmode = location.hostname === 'localhost';
-// const current_ip = devmode ? '192.168.1.218' : location.host;
 const current_ip = devmode ? '192.168.1.111:9103' : location.host;
+
 const available_types = [
   'esp8266_thermostat',
   'esp8266_thermostat_plus',
