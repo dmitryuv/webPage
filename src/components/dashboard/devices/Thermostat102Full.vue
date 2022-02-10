@@ -464,9 +464,10 @@
           this.rebootPreloader()
           if (this.mqtt.login.length && this.mqtt.pass.length) {
             this.getDrawerDevice['client']
-              .send('{"mqtt_connect": {"mqtt_server":' + this.mqtt.server + ',"mqtt_port":' + this.mqtt.port + ',"mqtt_login":' + this.mqtt.login + ',"mqtt_password":' + this.mqtt.pass + '}}')
+              .send('{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}')
           } else {
-            this.getDrawerDevice['client'].send('{"mqtt_connect": {"mqtt_server":' + this.mqtt.server + ',"mqtt_port":' + this.mqtt.port + '}}')
+            this.getDrawerDevice['client']
+              .send('{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}')
           }
         } else {
           this.setSnackbar('Заполните все поля')
