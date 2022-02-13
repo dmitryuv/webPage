@@ -323,7 +323,7 @@
             />
           </div>
         </div>
-        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1' && getDrawerDevice['config']['mqtt_topics']">
+        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1' && getDrawerDevice['mqtt_topics']">
           <v-dialog dark scrollable v-model="mqtt_data_dialog" width="500">
             <v-card style="background: #232834">
               <v-card-title class="text-h5 dark lighten-2">Получение данных</v-card-title>
