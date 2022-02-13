@@ -72,8 +72,8 @@
   #Thermostat102 {
     @media (min-width: 1265px) {
       & {
-        height: calc(var(--percent-width) * 17.5);
-        width: calc(var(--percent-width) * 17.5);
+        height: calc(var(--percent-width) * 14.33);
+        width: calc(var(--percent-width) * 14.33);
         padding: var(--percent-width) 0;
       }
 
@@ -83,17 +83,17 @@
       }
 
       .temperature {
-        font-size: calc(var(--percent-width) * 4);
-        padding: var(--percent-width) 0;
+        font-size: calc(var(--percent-width) * 3);
+        padding: calc(var(--percent-width) * 0.8) 0;
       }
 
       .thermostat_buttons {
         padding: 0 var(--percent-width);
         .button {
           background: #1f3c62;
-          border-radius: var(--percent-width);
-          width: calc(var(--percent-width) * 6.2);
-          height: calc(var(--percent-width) * 6.2);
+          border-radius: calc(var(--percent-width) * 0.8);
+          width: calc(var(--percent-width) * 5.2);
+          height: calc(var(--percent-width) * 5.2);
         }
         .button_text .v-icon {
           font-size: calc(var(--percent-width) * 2);
@@ -107,9 +107,9 @@
 
     @media (max-width: 1264px) {
       & {
-        height: calc(var(--percent-width) * 22.5);
-        width: calc(var(--percent-width) * 22.5);
-        padding: calc(var(--percent-width) * 2) 0;
+        height: calc(var(--percent-width) * 17.6);
+        width: calc(var(--percent-width) * 17.6);
+        padding: var(--percent-width) 0;
       }
 
       .thermostat_title {
@@ -118,8 +118,8 @@
       }
 
       .temperature {
-        font-size: calc(var(--percent-width) * 5);
-        padding: var(--percent-width) 0;
+        font-size: calc(var(--percent-width) * 4);
+        padding: calc(var(--percent-width) * 0.9) 0;
       }
 
       .thermostat_buttons {
@@ -127,8 +127,8 @@
         .button {
           background: #1f3c62;
           border-radius: var(--percent-width);
-          width: calc(var(--percent-width) * 8);
-          height: calc(var(--percent-width) * 8);
+          width: calc(var(--percent-width) * 6.5);
+          height: calc(var(--percent-width) * 6.5);
         }
         .button_text .v-icon {
           font-size: calc(var(--percent-width) * 2.5);
@@ -142,9 +142,9 @@
 
     @media (max-width: 960px) {
       & {
-        height: calc(var(--percent-width) * 29);
-        width: calc(var(--percent-width) * 29);
-        padding: calc(var(--percent-width) * 2.5) 0;
+        height: calc(var(--percent-width) * 21);
+        width: calc(var(--percent-width) * 21);
+        padding: calc(var(--percent-width) * 1.5) 0;
       }
 
       .thermostat_title {
@@ -153,16 +153,16 @@
       }
 
       .temperature {
-        font-size: calc(var(--percent-width) * 6);
-        padding: calc(var(--percent-width) * 1.5);
+        font-size: calc(var(--percent-width) * 4);
+        padding: calc(var(--percent-width) * 1);
       }
 
       .thermostat_buttons {
         padding: 0 calc(var(--percent-width) * 2);
         .button {
-          border-radius: calc(var(--percent-width) * 2);
-          width: calc(var(--percent-width) * 10.5);
-          height: calc(var(--percent-width) * 10.5);
+          border-radius: var(--percent-width);
+          width: calc(var(--percent-width) * 8.25);
+          height: calc(var(--percent-width) * 8.25);
         }
         .button_text .v-icon {
           font-size: calc(var(--percent-width) * 3);
@@ -176,27 +176,27 @@
 
     @media (max-width: 600px) {
       & {
-        height: calc(var(--percent-width) * 44);
-        width: calc(var(--percent-width) * 44);
+        height: calc(var(--percent-width) * 28);
+        width: calc(var(--percent-width) * 28);
         padding: calc(var(--percent-width) * 3) 0;
       }
 
       .thermostat_title {
-        font-size: calc(var(--percent-width) * 3);
-        line-height: calc(var(--percent-width) * 3);
+        font-size: calc(var(--percent-width) * 2);
+        line-height: calc(var(--percent-width) * 2);
       }
 
       .temperature {
-        font-size: calc(var(--percent-width) * 8);
-        padding: calc(var(--percent-width) * 2);
+        font-size: calc(var(--percent-width) * 6);
+        padding: var(--percent-width);
       }
 
       .thermostat_buttons {
         padding: 0 calc(var(--percent-width) * 2);
         .button {
           border-radius: calc(var(--percent-width) * 2);
-          width: calc(var(--percent-width) * 18);
-          height: calc(var(--percent-width) * 18);
+          width: calc(var(--percent-width) * 10);
+          height: calc(var(--percent-width) * 10);
         }
         .button_text .v-icon {
           font-size: calc(var(--percent-width) * 5);

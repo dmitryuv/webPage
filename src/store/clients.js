@@ -1,5 +1,5 @@
 const devmode = location.hostname === 'localhost';
-const current_ip = devmode ? '192.168.1.111:9103' : location.host;
+const current_ip = devmode ? '192.168.1.218' : location.host;
 
 const available_types = [
   'esp8266_thermostat',
@@ -165,6 +165,13 @@ export default {
             }
             if (type_params[state.clients[id]['type']].indexOf(k) >= 0) {
               commit('updateClient', {id: id, param: k, value: v})
+              if (k === 'loader') {
+                if (v == 1) {
+                  commit('set_preloader', true)
+                } else {
+                  commit('set_preloader', false)
+                }
+              }
 
               let drawer_device = rootState.drawer.device;
               if (drawer_device && drawer_device['id'] === id) {

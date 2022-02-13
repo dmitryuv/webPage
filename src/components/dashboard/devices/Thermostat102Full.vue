@@ -78,6 +78,7 @@
           <v-col>
             <div class="d-none d-sm-block dark_bg text-left pa-3 mb-5">
               <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
+              <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
               <div class="white--text">
                 {{ getDrawerDevice['config']['version_new'] ? 'Доступно обновление' : 'Нет доступных обновлений' }}
               </div>

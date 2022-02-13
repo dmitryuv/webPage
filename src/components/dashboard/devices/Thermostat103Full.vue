@@ -50,7 +50,7 @@
           :right="getDrawerDevice['config']['mqtt_use'] === '0' ? 'Только MQTT' : ''"
           :right_class="'color_lytko2 body-2'"
           @click.native="changeDrawerDialog([7, 'Внешние датчики'])"
-          v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'"
+          v-if="getDrawerDevice['config']['homekit'] === '0'"
       />
       <div class="mb-2"></div>
 
@@ -98,6 +98,7 @@
           <v-col>
             <div class="d-none d-sm-block dark_bg text-left pa-3 mb-5">
               <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
+              <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
               <div class="white--text">
                 {{ getDrawerDevice['config']['version_new'] ? 'Доступно обновление' : 'Нет доступных обновлений' }}
               </div>
@@ -105,6 +106,7 @@
 
             <div class="d-block d-sm-none text-left pa-3 mb-5">
               <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
+              <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
               <div class="white--text">
                 {{ getDrawerDevice['config']['version_new'] ? 'Доступно обновление ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
               </div>
