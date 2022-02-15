@@ -94,17 +94,17 @@
         <v-row>
           <v-col>
             <div class="d-none d-sm-block dark_bg text-left pa-3 mb-5">
-              <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
-              <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
+              <div><small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small></div>
+              <div><small>ID чипа: {{ getDrawerDevice['id'] }}</small></div>
               <div class="white--text">
-                {{ getDrawerDevice['config']['version_new'] ? 'Доступно обновление' : 'Нет доступных обновлений' }}
+                {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
               </div>
             </div>
 
             <div class="d-block d-sm-none text-left pa-3 mb-5">
               <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
               <div class="white--text">
-                {{ getDrawerDevice['config']['version_new'] ? 'Доступно обновление ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
               </div>
               <div class="white--text">
                 ID чипа: {{ getDrawerDevice['id'] }}
@@ -472,7 +472,7 @@
         <ItemMenu
             :im_class="'pointer'"
             :text="'Отключать подсветку'"
-            :right_icon="getDrawerDevice['config']['nex_bl'] == 1 ? 'mdi-check' : null"
+            :right_icon="getDrawerDevice['config']['nex_bl'] != 0 ? 'mdi-check' : null"
             @click.native="changeNexBl"
         />
       </div>
@@ -707,10 +707,10 @@
         }
       },
       changeNexBl() {
-        if (this.getDrawerDevice['config']['nex_bl'] == 1) {
+        if (this.getDrawerDevice['config']['nex_bl'] != 0) {
           this.getDrawerDevice['client'].send('{"config":{"nex_bl":0}}')
         } else {
-          this.getDrawerDevice['client'].send('{"config":{"nex_bl":1}}')
+          this.getDrawerDevice['client'].send('{"config":{"nex_bl":100}}')
         }
       },
       onReset() {
