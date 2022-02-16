@@ -472,7 +472,7 @@
         <ItemMenu
             :im_class="'pointer'"
             :text="'Отключать подсветку'"
-            :right_icon="getDrawerDevice['config']['nex_bl'] != 0 ? 'mdi-check' : null"
+            :right_icon="getDrawerDevice['config']['nex_bl'] == 0 ? 'mdi-check' : null"
             @click.native="changeNexBl"
         />
       </div>
