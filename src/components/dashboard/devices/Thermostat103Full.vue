@@ -45,15 +45,6 @@
       <ItemMenu :text="'Температура'" @click.native="changeDrawerDialog([6, 'Температура'])"/>
       <div class="mb-2"></div>
 
-      <ItemMenu
-          :text="'Внешние датчики'"
-          :right="getDrawerDevice['config']['mqtt_use'] === '0' ? 'Только MQTT' : ''"
-          :right_class="'color_lytko2 body-2'"
-          @click.native="changeDrawerDialog([7, 'Внешние датчики'])"
-          v-if="getDrawerDevice['config']['homekit'] === '0'"
-      />
-      <div class="mb-2"></div>
-
       <ItemMenu :text="'HomeKit'" @click.native="changeDrawerDialog([8, 'HomeKit'])"/>
       <div class="mb-2"></div>
 
@@ -217,32 +208,8 @@
       </div>
     </div>
 
-    <div class="dialog" v-if="getDrawerDialog === 7">
-      <div class="fullheight_dialog d-flex flex-column">
-        <div v-if="getDrawerDevice['config']['mqtt_use'] === '0'" class="text-left white--text">
-          Доступно только в режиме MQTT
-        </div>
-        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1'" class="text-left white--text">
-          <div class="mb-5">
-            <TextInput
-                label="Топик"
-                placeholder="Введите топик"
-                :value="mqtt_external_topic"
-                @onChange="mqtt_external_topic = $event"
-            />
-          </div>
-        </div>
-        <v-row align-content="end">
-          <v-col>
-            <BtnBg v-if="getDrawerDevice['config']['mqtt_external_topic'] == ''" text="Подключить" @click.native="onConnectExternarSensor"/>
-            <BtnBg v-else text="Отключить" @click.native="onDisconnectExternarSensor"/>
-          </v-col>
-        </v-row>
-      </div>
-    </div>
-
     <div class="dialog" v-if="getDrawerDialog === 8">
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1' || getDrawerDevice['config']['homekit'] === '2'">
+      <div class="fullheight_dialog d-flex flex-column">
         <template v-if="getDrawerDevice['config']['pair_hk'] === '1'">
           <div class="mt-5 text-justify white--text">
             Соединение с приложением Дом установлено
@@ -262,27 +229,10 @@
           </div>
         </template>
       </div>
-
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '0'">
-        <div>
-          <div class="mt-5 text-justify white--text">
-            Экспериментальная версия прошивки HomeKit представлена для тестового ознакомления.
-          </div>
-          <div class="mt-5 text-justify white--text">
-            При активации режима HomeKit устройство перезагрузится. Использование MQTT будет невозможно.
-          </div>
-        </div>
-        <v-spacer/>
-        <v-row align-content="end">
-          <v-col>
-            <BtnBg text="Переключить" @click.native="onChangeHK(1)"/>
-          </v-col>
-        </v-row>
-      </div>
     </div>
 
     <div class="dialog" v-if="getDrawerDialog === 9">
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '0'">
+      <div class="fullheight_dialog d-flex flex-column">
         <div>
           <div class="mb-5">
             <TextInput
@@ -321,7 +271,7 @@
             />
           </div>
         </div>
-        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1' && getDrawerDevice['mqtt_topics']">
+        <div v-if="getDrawerDevice['config']['mqtt_use'] === '1' && getDrawerDevice['mqtt_topics_ch']">
           <v-dialog dark scrollable v-model="mqtt_data_dialog" width="500">
             <v-card style="background: #232834">
               <v-card-title class="text-h5 dark lighten-2">Получение данных</v-card-title>
@@ -343,22 +293,22 @@
                 </div>
                 <div style="background: #202530" class="pa-3 mb-1">
                   <div>Топик для получения данных:</div>
-                  <code>{{ this.getDrawerDevice['mqtt_topics']['state'] }}</code>
+                  <code>{{ this.getDrawerDevice['mqtt_topics_ch']['state'] }}</code>
                 </div>
                 <div class="pa-3">
                   <h3>Управление термостатом</h3>
                 </div>
                 <div style="background: #202530" class="pa-3 mb-1">
                   <div>Установить температуру нагрева в C:</div>
-                  <code>{{ this.getDrawerDevice['mqtt_topics']['target_temp'] }}</code>
+                  <code>{{ this.getDrawerDevice['mqtt_topics_ch']['target_temp'] }}</code>
                 </div>
                 <div style="background: #202530" class="pa-3 mb-1">
                   <div>Повысить температуру на n градусов (n - payload):</div>
-                  <code>{{ this.getDrawerDevice['mqtt_topics']['step_up'] }}</code>
+                  <code>{{ this.getDrawerDevice['mqtt_topics_ch']['step_up'] }}</code>
                 </div>
                 <div style="background: #202530" class="pa-3 mb-1">
                   <div>Управление нагревом:</div>
-                  <div><code>{{ this.getDrawerDevice['mqtt_topics']['heating'] }}</code></div>
+                  <div><code>{{ this.getDrawerDevice['mqtt_topics_ch']['heating'] }}</code></div>
                   <div><code>on - включить нагрев</code></div>
                   <div><code>off - отключить нагрев</code></div>
                 </div>
@@ -378,20 +328,6 @@
           </v-col>
           <v-col v-if="getDrawerDevice['config']['mqtt_use'] === '1'">
             <BtnBg text="Отключить" @click.native="onDisconnectMqtt"/>
-          </v-col>
-        </v-row>
-      </div>
-
-      <div class="fullheight_dialog d-flex flex-column" v-if="getDrawerDevice['config']['homekit'] === '1'">
-        <div>
-          <div class="mt-5 text-justify white--text">
-            При активации режима MQTT устройство перезагрузится. Использование HomeKit будет невозможно
-          </div>
-        </div>
-        <v-spacer/>
-        <v-row align-content="end">
-          <v-col>
-            <BtnBg text="Переключить" @click.native="onChangeHK(0)"/>
           </v-col>
         </v-row>
       </div>

@@ -399,6 +399,7 @@
         'hideDrawer',
         'setSnackbar',
         'inDevelop',
+        'socketSend',
       ]),
       changedName(event) {
         this.name = event
