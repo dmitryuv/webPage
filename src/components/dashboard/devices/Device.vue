@@ -2,7 +2,10 @@
   <div id="device" class="d-inline-block float-left">
     <Thermostat101 v-if="device.type === 'esp8266_thermostat'" :device="device"/>
     <Thermostat101 v-if="device.type === 'esp8266_thermostat_plus'" :device="device"/>
+
     <Thermostat102 v-if="device.type === 'esp8266_air'" :device="device"/>
+    <Thermostat102 v-if="device.type === 'airconditioner'" :device="device"/>
+
     <Thermostat103 v-if="device.type === 'esp32_panel_4inch'" :device="device"/>
   </div>
 </template>
@@ -37,19 +40,19 @@
     @media (max-width: 1264px) {
       & {
         margin: calc(var(--percent-width) * 1);
-        border-radius: calc(var(--percent-width) * 2);
+        border-radius: calc(var(--percent-width) * 1.25);
       }
     }
     @media (max-width: 960px) {
       & {
         margin: calc(var(--percent-width) * 1.6);
-        border-radius: calc(var(--percent-width) * 3);
+        border-radius: calc(var(--percent-width) * 1.5);
       }
     }
     @media (max-width: 600px) {
       & {
         margin: calc(var(--percent-width) * 2);
-        border-radius: calc(var(--percent-width) * 4);
+        border-radius: calc(var(--percent-width) * 2);
       }
     }
   }

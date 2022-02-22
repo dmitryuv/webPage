@@ -22,13 +22,14 @@
     ],
     methods: {
       ...mapActions([
-        'toggleDrawer'
+        'toggleDrawer',
+        'socketSend',
       ]),
       onHeating() {
         if (this.device['update']['heating'] === 'heat') {
-          this.device['client'].send('{"update' + this.device['ch'] + '": {"heating": 0}}')
+          this.socketSend({id: this.device['id'], mess: '{"update' + this.device['ch'] + '": {"heating": 0}}'})
         } else {
-          this.device['client'].send('{"update' + this.device['ch'] + '": {"heating": 1}}')
+          this.socketSend({id: this.device['id'], mess: '{"update' + this.device['ch'] + '": {"heating": 1}}'})
         }
       }
     }
@@ -50,7 +51,7 @@
       }
 
       .temperature {
-        font-size: calc(var(--percent-width) * 4);
+        font-size: calc(var(--percent-width) * 3);
         padding: calc(var(--percent-width) * 0.8) 0;
       }
 

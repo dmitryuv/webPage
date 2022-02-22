@@ -33,19 +33,19 @@
     @media (max-width: 1264px) {
       & {
         margin: calc(var(--percent-width) * 1);
-        border-radius: calc(var(--percent-width) * 2);
+        border-radius: calc(var(--percent-width) * 1.25);
       }
     }
     @media (max-width: 960px) {
       & {
         margin: calc(var(--percent-width) * 1.6);
-        border-radius: calc(var(--percent-width) * 3);
+        border-radius: calc(var(--percent-width) * 1.5);
       }
     }
     @media (max-width: 600px) {
       & {
         margin: calc(var(--percent-width) * 2);
-        border-radius: calc(var(--percent-width) * 4);
+        border-radius: calc(var(--percent-width) * 2);
       }
     }
   }

@@ -2,7 +2,10 @@
   <div id="DeviceFull">
     <Thermostat101Full v-if="getDrawerDevice.type === 'esp8266_thermostat'"/>
     <Thermostat101Full v-if="getDrawerDevice.type === 'esp8266_thermostat_plus'"/>
+
     <Thermostat102Full v-if="getDrawerDevice.type === 'esp8266_air'"/>
+    <Thermostat102Full v-if="getDrawerDevice.type === 'airconditioner'"/>
+
     <Thermostat103Full v-if="getDrawerDevice.type === 'esp32_panel_4inch'"/>
   </div>
 </template>

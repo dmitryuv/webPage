@@ -1,16 +1,18 @@
-const devmode = location.hostname === 'localhost';
-const current_ip = devmode ? '192.168.1.218' : location.host;
+// const devmode = location.hostname === 'localhost';
+// const current_ip = devmode ? '192.168.1.218' : location.host;
 
 const available_types = [
   'esp8266_thermostat',
   'esp8266_thermostat_plus',
   'esp8266_air',
+  'airconditioner',
   'esp32_panel_4inch',
 ]
 const type_params = {
   'esp8266_thermostat': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
   'esp8266_thermostat_plus': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
   'esp8266_air': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'airconditioner': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
   'esp32_panel_4inch': [
     'config',
     'config_1ch',
@@ -34,22 +36,16 @@ const type_params = {
 
 export default {
   state: {
-    ssdp: null,
-
-    current_client: null,
+    sockets: {},
     clients: {},
     error: null,
-
-    thermostats: [],
   },
   mutations: {
-    setSsdp(state, payload) {
-      state.ssdp = payload
-    },
-
     createClient(state, payload) {
+      if (state.sockets[payload['id']] === undefined) {
+        state.sockets[payload['id']] = new WebSocket('ws://' + payload['ip'] + '/ws')
+      }
       let client = {
-        ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
         ['id']: payload['id'],
         ['type']: payload['type'],
         ['ip']: payload['ip']
@@ -68,63 +64,19 @@ export default {
     },
     deleteClient(state, id) {
       delete state.clients[id]
+      delete state.sockets[id]
     }
   },
   actions: {
     startConnect({dispatch}) {
-      dispatch('socket_current_connect');
-      setInterval(() => {
-        dispatch('socket_current_connect');
-      }, 3000);
+      dispatch('clients_connect')
     },
-    socket_current_connect({state, commit, dispatch}) {
-      if (state.current_client === null) {
-        dispatch('setPreloader', true)
-
-        state.current_client = {};
-        state.current_client['client'] = null;
-        state.current_client['ip'] = current_ip;
-        state.current_client['client'] = new WebSocket('ws://' + current_ip + '/ws');
-
-        state.current_client['client'].onopen = function () {
-          dispatch('setPreloader', false)
-          console.log('Соединение с ' + current_ip + ' установлено.');
-          state.current_client['status'] = true;
-        };
-
-        state.current_client['client'].onclose = function (event) {
-          if (event.wasClean) {
-            console.log('Контроллер ' + current_ip + '  отключился');
-            dispatch('setSnackbar', 'Контроллер ' + current_ip + '  отключился')
-          } else {
-            console.log('Обрыв соединения с ' + current_ip);
-            dispatch('setSnackbar', 'Обрыв соединения с ' + current_ip)
-          }
-          state.current_client = null
-        };
-
-        state.current_client['client'].onerror = function (error) {
-          console.log('Ошибка соединения с ' + current_ip + ' | ' + error);
-          dispatch('setSnackbar', 'Ошибка соединения с ' + current_ip)
-          state.current_client = null
-        };
-
-        state.current_client['client'].onmessage = function (event) {
-          if (IsJsonString(event.data)) {
-            let mess = JSON.parse(event.data);
-            let param = Object.keys(mess)[0]
-            if (param === 'ssdp') {
-              commit('setSsdp', mess[param])
-              dispatch('clients_connect')
-            }
-          }
+    clients_connect({rootGetters, state, dispatch}) {
+      setInterval(() => rootGetters.getSsdp.forEach(function (val) {
+        if (state.clients[val.id] === undefined && available_types.indexOf(val.type) >= 0) {
+          dispatch('socket_connect', val);
         }
-      }
-    },
-    clients_connect({state, dispatch}) {
-      setInterval(() => state.ssdp.forEach(function (val) {
-        dispatch('socket_connect', val);
-      }), 5000);
+      }), 1000);
     },
     socket_connect({rootState, state, commit, dispatch, getters}, ssdp_item) {
       let id = ssdp_item.id
@@ -133,12 +85,12 @@ export default {
         commit('createClient', ssdp_item)
       }
 
-      state.clients[id]['client'].onopen = function () {
+      state.sockets[id].onopen = function () {
         commit('updateClient', {id: id, param: 'status', value: true})
         console.log('Соединение с ' + id + ' установлено.');
       };
 
-      state.clients[id]['client'].onclose = function (event) {
+      state.sockets[id].onclose = function (event) {
         if (event.wasClean) {
           console.log('Контроллер ' + id + '  отключился');
         } else {
@@ -148,12 +100,12 @@ export default {
         commit('hideDrawer')
       };
 
-      state.clients[id]['client'].onerror = function (error) {
+      state.sockets[id].onerror = function (error) {
         console.log('Ошибка соединения с ' + id + ' | ' + error);
-        delete state.clients[id]
+        commit('deleteClient', id)
       };
 
-      state.clients[id]['client'].onmessage = function (event) {
+      state.sockets[id].onmessage = function (event) {
         if (IsJsonString(event.data)) {
           let mess = JSON.parse(event.data);
           let param = Object.keys(mess)[0]
@@ -165,17 +117,20 @@ export default {
             }
             if (type_params[state.clients[id]['type']].indexOf(k) >= 0) {
               commit('updateClient', {id: id, param: k, value: v})
-              if (k === 'loader') {
-                if (v == 1) {
-                  commit('set_preloader', true)
-                } else {
-                  commit('set_preloader', false)
-                }
-              }
 
               let drawer_device = rootState.drawer.device;
-              if (drawer_device && drawer_device['id'] === id) {
-                commit('changeDrawerDevice', {param: k, value: v})
+              if (drawer_device) {
+                let dd_id = drawer_device['id'].toString()
+                if (dd_id.indexOf('_') > 0) {
+                  let s = dd_id.split('_')
+                  dd_id = s[0]
+                }
+                if (dd_id === id.toString()) {
+                  if (['update_1ch', 'update_2ch'].indexOf(k) >= 0) {
+                    k = 'update'
+                  }
+                  commit('changeDrawerDevice', {param: k, value: v})
+                }
               }
             }
           });
@@ -185,6 +140,14 @@ export default {
         }
       };
     },
+    socketSend({state}, payload) {
+      let id = payload.id
+      if (id.indexOf('_') > 0) {
+        let s = id.split('_')
+        id = s[0]
+      }
+      state.sockets[id].send(payload.mess)
+    }
   },
   getters: {
     mkLoad: state => {
@@ -228,7 +191,7 @@ export default {
               devices.push({
                 'id': id + '_1',
                 'ch': '_1ch',
-                'client': state.clients[id]['client'],
+                'client': state.sockets[id],
                 'type': state.clients[id]['type'],
                 'ip': state.clients[id]['ip'],
                 'config': state.clients[id]['config'],
@@ -251,7 +214,7 @@ export default {
               devices.push({
                 'id': id + '_2',
                 'ch': '_2ch',
-                'client': state.clients[id]['client'],
+                'client': state.sockets[id],
                 'type': state.clients[id]['type'],
                 'ip': state.clients[id]['ip'],
                 'config': state.clients[id]['config'],

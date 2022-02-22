@@ -22,7 +22,7 @@
         </div>
       </v-col>
       <v-col cols="2">
-        <div class="text-center font-weight-bold">{{ $router.currentRoute.name }}</div>
+        <div class="text-center font-weight-bold">Главная</div>
       </v-col>
       <v-col cols="5">
         <div class="text-right">

@@ -360,6 +360,7 @@
         'getDrawerDevice',
         'getDrawerDialog',
         'getDrawerWfsn',
+        'socketSend',
       ]),
       drawerWfsn() {
         return this.getDrawerWfsn
@@ -374,7 +375,7 @@
     watch: {
       name(val) {
         if (this.getDrawerDevice['config']['name'] !== val) {
-          this.getDrawerDevice['client'].send('{"config":{"name":"' + val + '"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"name":"' + val + '"}}'})
         }
       },
       drawerWfsn() {
@@ -409,45 +410,45 @@
       onHeating(mode) {
         if (mode === 'auto') {
           if (this.getDrawerDevice['update']['heating'] !== 'auto') {
-            this.getDrawerDevice['client'].send('{"heating":3}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":3}'})
           } else {
-            this.getDrawerDevice['client'].send('{"heating":0}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":0}'})
           }
         }
 
         if (mode === 'heat') {
           if (this.getDrawerDevice['update']['heating'] !== 'heat') {
-            this.getDrawerDevice['client'].send('{"heating":1}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":1}'})
           } else {
-            this.getDrawerDevice['client'].send('{"heating":0}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":0}'})
           }
         }
 
         if (mode === 'cool') {
           if (this.getDrawerDevice['update']['heating'] !== 'cool') {
-            this.getDrawerDevice['client'].send('{"heating":2}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":2}'})
           } else {
-            this.getDrawerDevice['client'].send('{"heating":0}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":0}'})
           }
         }
       },
       tempDown() {
-        this.getDrawerDevice['client'].send('"tempDown"')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '"tempDown"'})
       },
       tempUp() {
-        this.getDrawerDevice['client'].send('"tempUp"')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '"tempUp"'})
       },
       onChangeSpeed() {
-        this.getDrawerDevice['client'].send(`{"fan_speed":${this.fan_speed}}`)
+        this.socketSend({id: this.getDrawerDevice['id'], mess: `{"fan_speed":${this.fan_speed}}`})
       },
       onUpgradeFile() {
         window.open(`http://${this.getDrawerDevice['ip']}/manual_update`, '_blank');
       },
       onUpgrade() {
-        this.getDrawerDevice['client'].send('{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}'})
       },
       onClearHK() {
-        this.getDrawerDevice['client'].send('{"clear_homekit":1}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"clear_homekit":1}'})
         setTimeout(() => {
           location.reload()
         }, 200)
@@ -455,41 +456,39 @@
       onChangeHK(status) {
         this.rebootPreloader()
         if (status) {
-          this.getDrawerDevice['client'].send('{"config":{"homekit":"1"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"homekit":"1"}}'})
         } else {
-          this.getDrawerDevice['client'].send('{"config":{"homekit":"0"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"homekit":"0"}}'})
         }
       },
       onConnectMqtt() {
         if (this.mqtt.server.length && this.mqtt.port.length) {
           this.rebootPreloader()
           if (this.mqtt.login.length && this.mqtt.pass.length) {
-            this.getDrawerDevice['client']
-              .send('{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}'})
           } else {
-            this.getDrawerDevice['client']
-              .send('{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}'})
           }
         } else {
           this.setSnackbar('Заполните все поля')
         }
       },
       onDisconnectMqtt() {
-        this.getDrawerDevice['client'].send('{"mqtt_disconnect":1}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_disconnect":1}'})
         this.rebootPreloader()
       },
       onWifiUpdate() {
-        this.getDrawerDevice['client'].send('{"wifi_refresh":1}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"wifi_refresh":1}'})
       },
       onConnectWifi() {
         if (this.wifi_ssid && this.wifi_pass.length) {
-          this.getDrawerDevice['client'].send('{"wifi_connect":{"ssid":"' + this.wifi_ssid + '","password":"' + this.wifi_pass + '"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"wifi_connect":{"ssid":"' + this.wifi_ssid + '","password":"' + this.wifi_pass + '"}}'})
           this.rebootPreloader()
         }
       },
       onReset() {
         this.rebootPreloader()
-        this.getDrawerDevice['client'].send('"reset"')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '"reset"'})
       },
 
       rebootPreloader() {
@@ -809,7 +808,7 @@
           margin: 0 var(--percent-width);
 
           &.button_text .v-icon {
-            font-size: calc(var(--percent-width) * 5);
+            font-size: calc(var(--percent-width) * 4);
           }
           &.button_icon .v-icon svg {
             height: calc(var(--percent-width) * 10);

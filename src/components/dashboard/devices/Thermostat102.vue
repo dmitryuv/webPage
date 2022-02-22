@@ -37,21 +37,22 @@
     }),
     methods: {
       ...mapActions([
-        'toggleDrawer'
+        'toggleDrawer',
+        'socketSend',
       ]),
       onHeating() {
         switch (this.device['update']['heating']) {
           case 'off':
-            this.device['client'].send('{"heating":1}')
+            this.socketSend({id: this.device['id'], mess: '{"heating":1}'})
             break
           case 'heat':
-            this.device['client'].send('{"heating":2}')
+            this.socketSend({id: this.device['id'], mess: '{"heating":2}'})
             break
           case 'cool':
-            this.device['client'].send('{"heating":3}')
+            this.socketSend({id: this.device['id'], mess: '{"heating":3}'})
             break
           case 'auto':
-            this.device['client'].send('{"heating":0}')
+            this.socketSend({id: this.device['id'], mess: '{"heating":0}'})
             break
         }
       },
@@ -62,7 +63,7 @@
         } else {
           speed = 0
         }
-        this.device['client'].send(`{"fan_speed":${speed}}`)
+        this.socketSend({id: this.device['id'], mess: `{"fan_speed":${speed}}`})
       }
     }
   }

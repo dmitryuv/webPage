@@ -22,13 +22,14 @@
     ],
     methods: {
       ...mapActions([
-        'toggleDrawer'
+        'toggleDrawer',
+        'socketSend',
       ]),
       onHeating() {
         if (this.device['update']['heating'] === 'heat') {
-          this.device['client'].send('{"heating":0}')
+          this.socketSend({id: this.device['id'], mess: '{"heating":0}'})
         } else {
-          this.device['client'].send('{"heating":1}')
+          this.socketSend({id: this.device['id'], mess: '{"heating":1}'})
         }
       }
     }

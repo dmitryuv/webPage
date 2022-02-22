@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard">
-    <v-sheet class="vsheet" style="position: relative; height: 100vh;">
+    <v-sheet class="vsheet v">
       <v-navigation-drawer :value="getDrawerStatus" absolute right overlay-opacity="0.4" class="drawer">
         <div class="d-flex align-center justify-space-between drawer_title white--text">
           <div class="d-flex align-center">
@@ -17,6 +17,23 @@
 
       <Header/>
 
+      <v-dialog v-model="scanDialog" width="350">
+        <v-card class="color_lytko3_bg">
+          <v-card-text>
+            <div class="white--text mb-3 pt-3 text-center">Введите IP адрес любого устройства Lytko</div>
+            <TextInput :label="'IP адрес'" :value="scanIp" @onChange="changedIp($event)"/>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions class="px-6">
+            <v-btn color="secondary" @click="scanDialog = false">Отмена</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="onScan">Найти</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <div class="devices">
         <div class="filters my-4 text-sm-center pr-8">
           <v-icon color="#249fff" @click="inDevelop">mdi-tune</v-icon>
@@ -25,13 +42,14 @@
         <div class="room_title d-flex align-center">
           <div class="room_name">КОМНАТА</div>
           <v-icon color="white">mdi-chevron-right</v-icon>
-          <div class="devices_count">{{ devicesLengthText }}</div>
+          <span class="devices_count mr-3">{{ devicesLengthText }}</span>
+          <v-icon v-if="!devicesLength" color="white" @click="scanDialog = true">mdi-plus</v-icon>
         </div>
 
         <div class="sensors d-flex" v-if="Object.keys(getSensors).length">
           <Sensor v-for="sensor in getSensors" :key="sensor.id" :sensor="sensor"/>
         </div>
-        <div class="thermostats d-flex" v-if="Object.keys(getThermostats).length">
+        <div class="thermostats d-flex flex-wrap" v-if="Object.keys(getThermostats).length">
           <Device v-for="thermostat in getThermostats" :key="thermostat.id" :device="thermostat"/>
         </div>
         <div class="switchers d-flex" v-if="switchers.length">
@@ -47,14 +65,17 @@
   import Device from "./devices/Device";
   import DeviceFull from "./devices/DeviceFull";
 
-  import {mapGetters, mapActions} from 'vuex'
+  import {mapGetters, mapActions, mapMutations} from 'vuex'
   import Sensor from "./sensors/Sensor";
+  import TextInput from "./tpl/TextInput";
 
   export default {
     name: "Dashboard",
-    components: {Header, Device, DeviceFull, Sensor},
+    components: {TextInput, Header, Device, DeviceFull, Sensor},
     data() {
       return {
+        scanDialog: false,
+        scanIp: null,
         switchers: [],
       }
     },
@@ -95,6 +116,11 @@
         'inDevelop',
         'changeDrawerDialog',
         'changeDrawerWfsn',
+        'setPreloader',
+        'startConnect',
+      ]),
+      ...mapMutations([
+        'UPDATE_SSDP'
       ]),
       back() {
         if (this.getDrawerWfsn != null) {
@@ -108,6 +134,58 @@
             this.changeDrawerDialog([1, 'Настройки'])
           }
         }
+      },
+      changedIp(event) {
+        this.scanIp = event
+      },
+      onScan() {
+        let self = this
+        self.setPreloader(true)
+
+        let client = new WebSocket('ws://' + self.scanIp + '/ws')
+
+        client.onopen = function () {
+          console.log('Соединение с ' + self.scanIp + ' установлено.');
+        };
+        client.onclose = function (event) {
+          if (event.wasClean) {
+            console.log('Контроллер ' + self.scanIp + '  отключился');
+          } else {
+            console.log('Обрыв соединения с ' + self.scanIp);
+          }
+        };
+        client.onerror = function (error) {
+          console.log('Ошибка соединения с ' + self.scanIp + ' | ' + error);
+        };
+        client.onmessage = function (event) {
+          if (self.IsJsonString(event.data)) {
+            let mess = JSON.parse(event.data);
+            let param = Object.keys(mess)[0]
+            if (param === 'ssdp') {
+              for (let item of mess[param]) {
+                self.UPDATE_SSDP({'id': item.id, 'ip': item.ip, 'type': item.type})
+              }
+              client.close()
+              self.setPreloader(false)
+              self.scanDialog = false
+              self.scanIp = null
+            }
+          } else {
+            console.log('Не правильный JSON');
+            console.log(event.data);
+          }
+        }
+      },
+      /**
+       * @return {boolean}
+       */
+      IsJsonString(str) {
+        try {
+          JSON.parse(str);
+        } catch (e) {
+          return false;
+        }
+        return true;
       }
     }
   }
@@ -117,6 +195,11 @@
   #dashboard {
     font-family: 'Noto Sans', sans-serif;
     color: #50566f;
+
+    .v {
+      position: relative;
+      height: 100vh;
+    }
 
     .drawer {
       top: 50px !important;

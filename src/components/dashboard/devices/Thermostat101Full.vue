@@ -553,7 +553,7 @@
     watch: {
       name(val) {
         if (this.getDrawerDevice['config']['name'] != val) {
-          this.getDrawerDevice['client'].send('{"config":{"name":"' + val + '"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"name":"' + val + '"}}'})
         }
       },
       drawerWfsn() {
@@ -577,6 +577,7 @@
         'hideDrawer',
         'setSnackbar',
         'inDevelop',
+        'socketSend',
       ]),
       changedName(event) {
         this.name = event
@@ -587,57 +588,57 @@
       },
       onHeating() {
         if (this.getDrawerDevice['update']['heating'] === 'heat') {
-          this.getDrawerDevice['client'].send('{"heating":0}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":0}'})
         } else {
-          this.getDrawerDevice['client'].send('{"heating":1}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"heating":1}'})
         }
       },
       tempDown() {
-        this.getDrawerDevice['client'].send('"tempDown"')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '"tempDown"'})
       },
       tempUp() {
-        this.getDrawerDevice['client'].send('"tempUp"')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '"tempUp"'})
       },
       onChangeSensor(item) {
         this.rebootPreloader()
-        this.getDrawerDevice['client'].send('{"sensor_model_id":' + item + '}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"sensor_model_id":' + item + '}'})
       },
       onHysteresisUp() {
         let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
         if (new_val < 5) {
           new_val++
         }
-        this.getDrawerDevice['client'].send('{"hysteresis":"' + new_val + '" }')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"hysteresis":"' + new_val + '" }'})
       },
       onHysteresisDown() {
         let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
         if (new_val > 1) {
           new_val--
         }
-        this.getDrawerDevice['client'].send('{"hysteresis":"' + new_val + '" }')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"hysteresis":"' + new_val + '" }'})
       },
       onCorrectionUp() {
         let new_val = parseFloat(this.getDrawerDevice['config']['sensor_corr'])
         if (new_val < 5) {
           new_val += 0.5
         }
-        this.getDrawerDevice['client'].send('{"sensor_corr":"' + new_val + '" }')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"sensor_corr":"' + new_val + '" }'})
       },
       onCorrectionDown() {
         let new_val = parseFloat(this.getDrawerDevice['config']['sensor_corr'])
         if (new_val > -5) {
           new_val -= 0.5
         }
-        this.getDrawerDevice['client'].send('{"sensor_corr":"' + new_val + '" }')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"sensor_corr":"' + new_val + '" }'})
       },
       onUpgradeFile() {
         window.open(`http://${this.getDrawerDevice['ip']}/manual_update`, '_blank');
       },
       onUpgrade() {
-        this.getDrawerDevice['client'].send('{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}'})
       },
       onClearHK() {
-        this.getDrawerDevice['client'].send('{"clear_homekit":1}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"clear_homekit":1}'})
         setTimeout(() => {
           location.reload()
         }, 200)
@@ -645,77 +646,75 @@
       onChangeHK(status) {
         this.rebootPreloader()
         if (status) {
-          this.getDrawerDevice['client'].send('{"config":{"homekit":"1"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"homekit":"1"}}'})
         } else {
-          this.getDrawerDevice['client'].send('{"config":{"homekit":"0"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"homekit":"0"}}'})
         }
       },
       onConnectExternarSensor() {
         if (this.mqtt_external_topic) {
-          this.getDrawerDevice['client'].send('{"mqtt_external_topic":"' + this.mqtt_external_topic + '"}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_external_topic":"' + this.mqtt_external_topic + '"}'})
         } else {
           this.setSnackbar('Введите MQTT топик')
         }
       },
       onDisconnectExternarSensor() {
-        this.getDrawerDevice['client'].send('{"mqtt_external":"disconnect"}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_external":"disconnect"}'})
         this.mqtt_external_topic = null
       },
       onChangeTargetTempFirst() {
         if (this.getDrawerDevice['config']['is_target_temp_first'] == 1) {
-          this.getDrawerDevice['client'].send('{"is_target_temp_first":1}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"is_target_temp_first":1}'})
         } else {
-          this.getDrawerDevice['client'].send('{"is_target_temp_first":0}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"is_target_temp_first":0}'})
         }
       },
       onConnectMqtt() {
         if (this.mqtt.server.length && this.mqtt.port.length) {
           this.rebootPreloader()
           if (this.mqtt.login.length && this.mqtt.pass.length) {
-            this.getDrawerDevice['client']
-              .send('{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}'})
           } else {
-            this.getDrawerDevice['client']
-              .send('{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}')
+            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}'})
           }
         } else {
           this.setSnackbar('Заполните все поля')
         }
       },
       onDisconnectMqtt() {
-        this.getDrawerDevice['client'].send('{"mqtt_disconnect":1}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_disconnect":1}'})
         this.rebootPreloader()
       },
       onConnectAlice() {
         if (this.getDrawerDevice['config']['homekit'] != '0') {
-          this.getDrawerDevice['client'].send('{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}'})
           this.setSnackbar('Алиса подключена')
         }
       },
       onDisconnectAlice() {
-        this.getDrawerDevice['client'].send('{"alice_disconnect":1}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"alice_disconnect":1}'})
         this.setSnackbar('Алиса отключена')
         this.mqttAlice.login = null
       },
       onWifiUpdate() {
-        this.getDrawerDevice['client'].send('{"wifi_refresh":1}')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"wifi_refresh":1}'})
       },
       onConnectWifi() {
         if (this.wifi_ssid && this.wifi_pass.length) {
-          this.getDrawerDevice['client'].send('{"wifi_connect":{"ssid":"' + this.wifi_ssid + '","password":"' + this.wifi_pass + '"}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"wifi_connect":{"ssid":"' + this.wifi_ssid + '","password":"' + this.wifi_pass + '"}}'})
           this.rebootPreloader()
         }
       },
       changeNexBl() {
         if (this.getDrawerDevice['config']['nex_bl'] != 0) {
-          this.getDrawerDevice['client'].send('{"config":{"nex_bl":0}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"nex_bl":0}}'})
         } else {
-          this.getDrawerDevice['client'].send('{"config":{"nex_bl":100}}')
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"nex_bl":100}}'})
         }
       },
       onReset() {
         this.rebootPreloader()
-        this.getDrawerDevice['client'].send('"reset"')
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '"reset"'})
       },
 
       rebootPreloader() {
