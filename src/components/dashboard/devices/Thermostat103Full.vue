@@ -648,10 +648,10 @@
         this.mqtt_external_topic = null
       },
       onChangeTargetTempFirst() {
-        if (this.getDrawerDevice['config']['is_target_temp_first'] == 1) {
-          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"is_target_temp_first":1}'})
+        if (this.getDrawerDevice['config_ch']['is_target_temp_first'] == 1) {
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"is_target_temp_first":1}}'})
         } else {
-          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"is_target_temp_first":0}'})
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"is_target_temp_first":0}}'})
         }
       },
       onConnectMqtt() {
