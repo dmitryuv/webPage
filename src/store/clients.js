@@ -186,6 +186,9 @@ export default {
                   if (['update_1ch', 'update_2ch'].indexOf(k) >= 0) {
                     k = 'update'
                   }
+                  if (['config_1ch', 'config_2ch'].indexOf(k) >= 0) {
+                    k = 'config_ch'
+                  }
                   commit('changeDrawerDevice', {param: k, value: v})
                 }
               }

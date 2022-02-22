@@ -160,7 +160,7 @@
             <div>
               <v-icon color="white" @click="onHysteresisUp">mdi-menu-up</v-icon>
             </div>
-            <div class="color_lytko val">{{ parseInt(getDrawerDevice['config']['hysteresis']) }}</div>
+            <div class="color_lytko val">{{ parseInt(getDrawerDevice['config_ch']['hysteresis']) }}</div>
             <div>
               <v-icon color="white" @click="onHysteresisDown">mdi-menu-down</v-icon>
             </div>
@@ -170,7 +170,7 @@
             <div>
               <v-icon color="white" @click="onCorrectionUp">mdi-menu-up</v-icon>
             </div>
-            <div class="color_lytko val">{{ parseFloat(getDrawerDevice['config']['sensor_corr']).toFixed(1) }}</div>
+            <div class="color_lytko val">{{ parseFloat(getDrawerDevice['config_ch']['sensor_corr']).toFixed(1) }}</div>
             <div>
               <v-icon color="white" @click="onCorrectionDown">mdi-menu-down</v-icon>
             </div>
@@ -193,18 +193,17 @@
         <v-row align-content="start">
           <v-col cols="6">
             <div class="mb-2">Минимальная</div>
-            <div class="color_lytko val mt-5">{{ getDrawerDevice['config']['min_temp'] }}</div>
+            <div class="color_lytko val mt-5">{{ getDrawerDevice['config_ch']['min_temp'] }}</div>
           </v-col>
           <v-col cols="6">
             <div class="mb-2">Максимальная</div>
-            <div class="color_lytko val mt-5">{{ getDrawerDevice['config']['max_temp'] }}</div>
+            <div class="color_lytko val mt-5">{{ getDrawerDevice['config_ch']['max_temp'] }}</div>
           </v-col>
           <v-col cols="12">
             <div class="help">
               <div class="mb-4 text-left white--text text-justify">Для смены вывода текущей и целевой температуры нажмите кнопку ниже</div>
-              <div class="text-left white--text text-justify">Для изменения порогов температуры необходимо сбросить устройство и заново произвести
-                первоначальную
-                конфигурацию
+              <div class="text-left white--text text-justify">
+                Для изменения порогов температуры необходимо сбросить устройство и заново произвести первоначальную конфигурацию
               </div>
             </div>
           </v-col>
@@ -654,28 +653,28 @@
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_model_id": ' + item + '}}'})
       },
       onHysteresisUp() {
-        let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
+        let new_val = parseInt(this.getDrawerDevice['config_ch']['hysteresis'])
         if (new_val < 5) {
           new_val++
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"hysteresis":"' + new_val + '" }}'})
       },
       onHysteresisDown() {
-        let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
+        let new_val = parseInt(this.getDrawerDevice['config_ch']['hysteresis'])
         if (new_val > 1) {
           new_val--
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"hysteresis":"' + new_val + '" }}'})
       },
       onCorrectionUp() {
-        let new_val = parseFloat(this.getDrawerDevice['config']['sensor_corr'])
+        let new_val = parseFloat(this.getDrawerDevice['config_ch']['sensor_corr'])
         if (new_val < 5) {
           new_val += 0.5
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_corr":"' + new_val + '" }}'})
       },
       onCorrectionDown() {
-        let new_val = parseFloat(this.getDrawerDevice['config']['sensor_corr'])
+        let new_val = parseFloat(this.getDrawerDevice['config_ch']['sensor_corr'])
         if (new_val > -5) {
           new_val -= 0.5
         }
