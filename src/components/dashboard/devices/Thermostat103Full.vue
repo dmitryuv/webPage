@@ -88,15 +88,21 @@
         <v-row>
           <v-col>
             <div class="d-none d-sm-block dark_bg text-left pa-3 mb-5">
-              <div><small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small></div>
-              <div><small>ID чипа: {{ getDrawerDevice['id'] }}</small></div>
+              <div>
+                <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
+              </div>
+              <div>
+                <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
+              </div>
               <div class="white--text">
                 {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
               </div>
             </div>
 
             <div class="d-block d-sm-none text-left pa-3 mb-5">
-              <div><small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small></div>
+              <div>
+                <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
+              </div>
               <div class="white--text">
                 {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
               </div>
@@ -658,9 +664,15 @@
         if (this.mqtt.server.length && this.mqtt.port.length) {
           this.rebootPreloader()
           if (this.mqtt.login.length && this.mqtt.pass.length) {
-            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}'})
+            this.socketSend({
+              id: this.getDrawerDevice['id'],
+              mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}'
+            })
           } else {
-            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}'})
+            this.socketSend({
+              id: this.getDrawerDevice['id'],
+              mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}'
+            })
           }
         } else {
           this.setSnackbar('Заполните все поля')
@@ -671,7 +683,10 @@
         this.rebootPreloader()
       },
       onConnectAlice() {
-        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}'})
+        this.socketSend({
+          id: this.getDrawerDevice['id'],
+          mess: '{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}'
+        })
         this.setSnackbar('Алиса подключена')
       },
       onDisconnectAlice() {
@@ -708,7 +723,7 @@
         }
       },
       onSelectZigbeeTerm(shotAddr) {
-        this.socketSend({id: this.getDrawerDevice['id'], mess: '{}'})
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_zigbee": ' + shotAddr + '}}'})
       },
       getZigbeeName(shotAddr) {
         for (let i in this.getDrawerDevice['zigbee']) {

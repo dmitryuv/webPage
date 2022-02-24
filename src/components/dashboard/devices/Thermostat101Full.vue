@@ -157,7 +157,7 @@
             <div>
               <v-icon color="white" @click="onHysteresisUp">mdi-menu-up</v-icon>
             </div>
-            <div class="color_lytko val">{{ parseInt(getDrawerDevice['config']['hysteresis']) }}</div>
+            <div class="color_lytko val">{{ parseFloat(getDrawerDevice['config']['hysteresis']) }}</div>
             <div>
               <v-icon color="white" @click="onHysteresisDown">mdi-menu-down</v-icon>
             </div>
@@ -604,16 +604,16 @@
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"sensor_model_id":' + item + '}'})
       },
       onHysteresisUp() {
-        let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
+        let new_val = parseFloat(this.getDrawerDevice['config']['hysteresis'])
         if (new_val < 5) {
-          new_val++
+          new_val += 0.5
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"hysteresis":"' + new_val + '" }'})
       },
       onHysteresisDown() {
-        let new_val = parseInt(this.getDrawerDevice['config']['hysteresis'])
-        if (new_val > 1) {
-          new_val--
+        let new_val = parseFloat(this.getDrawerDevice['config']['hysteresis'])
+        if (new_val > 0) {
+          new_val -= 0.5
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"hysteresis":"' + new_val + '" }'})
       },

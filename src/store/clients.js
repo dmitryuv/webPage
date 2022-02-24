@@ -41,8 +41,6 @@ export default {
     current_client: null,
     clients: {},
     error: null,
-
-    thermostats: [],
   },
   mutations: {
     setSsdp(state, payload) {
@@ -183,13 +181,21 @@ export default {
                   dd_id = s[0]
                 }
                 if (dd_id === id.toString()) {
-                  if (['update_1ch', 'update_2ch'].indexOf(k) >= 0) {
-                    k = 'update'
+                  if (['update_1ch', 'config_1ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_1ch') {
+                    if (k === 'update_1ch')
+                      k = 'update'
+                    if (k === 'config_1ch')
+                      k = 'config_ch'
+                    commit('changeDrawerDevice', {param: k, value: v})
+                  } else if (['update_2ch', 'config_2ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_2ch') {
+                    if (k === 'update_2ch')
+                      k = 'update'
+                    if (k === 'config_2ch')
+                      k = 'config_ch'
+                    commit('changeDrawerDevice', {param: k, value: v})
+                  } else {
+                    commit('changeDrawerDevice', {param: k, value: v})
                   }
-                  if (['config_1ch', 'config_2ch'].indexOf(k) >= 0) {
-                    k = 'config_ch'
-                  }
-                  commit('changeDrawerDevice', {param: k, value: v})
                 }
               }
             }
