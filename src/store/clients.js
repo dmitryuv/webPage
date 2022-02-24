@@ -9,11 +9,12 @@ const available_types = [
   'esp32_panel_4inch',
 ]
 const type_params = {
-  'esp8266_thermostat': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
-  'esp8266_thermostat_plus': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
-  'esp8266_air': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
-  'airconditioner': ['config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'esp8266_thermostat': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'esp8266_thermostat_plus': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'esp8266_air': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
+  'airconditioner': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
   'esp32_panel_4inch': [
+    'ssdp',
     'config',
     'config_1ch',
     'config_2ch',
@@ -45,6 +46,22 @@ export default {
   mutations: {
     setSsdp(state, payload) {
       state.ssdp = payload
+    },
+    updateSsdp(state, ssdp) {
+      for (let item of ssdp) {
+        let isset = false
+        for (let ssdp_item of state.ssdp) {
+          if (ssdp_item['id'] === item['id']) {
+            isset = true
+          }
+        }
+        if (!isset) {
+          state.ssdp.push(item)
+        }
+      }
+      for (let ssdp_item of state.ssdp) {
+        console.log(ssdp_item['id'], ssdp_item['ip'])
+      }
     },
 
     createClient(state, payload) {
@@ -164,38 +181,42 @@ export default {
               commit('updateClient', {id: id, param: 'data_loaded', value: true})
             }
             if (type_params[state.clients[id]['type']].indexOf(k) >= 0) {
-              commit('updateClient', {id: id, param: k, value: v})
-              if (k === 'loader') {
-                if (v == 1) {
-                  commit('set_preloader', true)
-                } else {
-                  commit('set_preloader', false)
-                }
-              }
-
-              let drawer_device = rootState.drawer.device;
-              if (drawer_device) {
-                let dd_id = drawer_device['id'].toString()
-                if (dd_id.indexOf('_') > 0) {
-                  let s = dd_id.split('_')
-                  dd_id = s[0]
-                }
-                if (dd_id === id.toString()) {
-                  let ch = k.split('_')
-                  if (['update_1ch', 'config_1ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_' + ch[1]) {
-                    if (k === 'update_1ch')
-                      k = 'update'
-                    if (k === 'config_1ch')
-                      k = 'config_ch'
-                    commit('changeDrawerDevice', {param: k, value: v})
-                  } else if (['update_2ch', 'config_2ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_' + ch[1]) {
-                    if (k === 'update_2ch')
-                      k = 'update'
-                    if (k === 'config_2ch')
-                      k = 'config_ch'
-                    commit('changeDrawerDevice', {param: k, value: v})
+              if (k === 'ssdp') {
+                commit('updateSsdp', v)
+              } else {
+                commit('updateClient', {id: id, param: k, value: v})
+                if (k === 'loader') {
+                  if (v == 1) {
+                    commit('set_preloader', true)
                   } else {
-                    commit('changeDrawerDevice', {param: k, value: v})
+                    commit('set_preloader', false)
+                  }
+                }
+
+                let drawer_device = rootState.drawer.device;
+                if (drawer_device) {
+                  let dd_id = drawer_device['id'].toString()
+                  if (dd_id.indexOf('_') > 0) {
+                    let s = dd_id.split('_')
+                    dd_id = s[0]
+                  }
+                  if (dd_id === id.toString()) {
+                    let ch = k.split('_')
+                    if (['update_1ch', 'config_1ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_' + ch[1]) {
+                      if (k === 'update_1ch')
+                        k = 'update'
+                      if (k === 'config_1ch')
+                        k = 'config_ch'
+                      commit('changeDrawerDevice', {param: k, value: v})
+                    } else if (['update_2ch', 'config_2ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_' + ch[1]) {
+                      if (k === 'update_2ch')
+                        k = 'update'
+                      if (k === 'config_2ch')
+                        k = 'config_ch'
+                      commit('changeDrawerDevice', {param: k, value: v})
+                    } else {
+                      commit('changeDrawerDevice', {param: k, value: v})
+                    }
                   }
                 }
               }
