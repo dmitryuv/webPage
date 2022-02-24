@@ -723,7 +723,11 @@
         }
       },
       onSelectZigbeeTerm(shotAddr) {
-        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_zigbee": ' + shotAddr + '}}'})
+        if (shotAddr === this.getDrawerDevice['config_ch']['sensor_zigbee']) {
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_zigbee": "none"}}'})
+        } else {
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_zigbee": "' + shotAddr + '"}}'})
+        }
       },
       getZigbeeName(shotAddr) {
         for (let i in this.getDrawerDevice['zigbee']) {
