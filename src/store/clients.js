@@ -181,13 +181,14 @@ export default {
                   dd_id = s[0]
                 }
                 if (dd_id === id.toString()) {
-                  if (['update_1ch', 'config_1ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_1ch') {
+                  let ch = k.split('_')
+                  if (['update_1ch', 'config_1ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_' + ch[1]) {
                     if (k === 'update_1ch')
                       k = 'update'
                     if (k === 'config_1ch')
                       k = 'config_ch'
                     commit('changeDrawerDevice', {param: k, value: v})
-                  } else if (['update_2ch', 'config_2ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_2ch') {
+                  } else if (['update_2ch', 'config_2ch'].indexOf(k) >= 0 && drawer_device['ch'] === '_' + ch[1]) {
                     if (k === 'update_2ch')
                       k = 'update'
                     if (k === 'config_2ch')
