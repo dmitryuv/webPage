@@ -426,7 +426,7 @@
 
     <div class="dialog" v-if="getDrawerDialog === 12">
       <div class="fullheight_dialog d-flex flex-column">
-        <div>
+        <div v-if="getDrawerDevice['zigbee'] != '{}'">
           <div class="mb-2" v-for="(item, index) of getDrawerDevice['zigbee']" :key="index">
             <ItemMenu
                 :text="item.name"
