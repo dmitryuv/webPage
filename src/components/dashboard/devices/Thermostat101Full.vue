@@ -70,7 +70,7 @@
       <ItemMenu :text="'WiFi'" :right="getDrawerDevice['config']['wifi_name']" :right_class="'grey--text'" @click.native="changeDrawerDialog([11, 'WiFi'])"/>
       <div class="mb-2"></div>
 
-      <ItemMenu :text="'Экран'" @click.native="changeDrawerDialog([12, 'Экран'])"/>
+      <ItemMenu :text="'Экран'" @click.native="changeDrawerDialog([12, 'Экран'])" v-if="getDrawerDevice['type'] === 'esp8266_thermostat'"/>
       <div class="mb-5"></div>
 
       <v-row>
@@ -224,7 +224,7 @@
     <div class="dialog" v-if="getDrawerDialog === 7">
       <div class="fullheight_dialog d-flex flex-column">
         <div v-if="getDrawerDevice['config']['mqtt_use'] === '0'" class="text-left white--text">
-          Доступно только в режиме MQTT
+          Дkя использования этого подключитесь к MQTT брокеру.
         </div>
         <div v-if="getDrawerDevice['config']['mqtt_use'] === '1'" class="text-left white--text">
           <div class="mb-5">

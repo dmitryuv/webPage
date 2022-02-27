@@ -12,6 +12,7 @@
             <div class="presets">
               <div
                   v-for="(preset, index) in getPanelPresets"
+                  :key="index"
                   class="preset d-inline-block pointer"
                   :class="preset_selected == index ? 'selected' : null"
                   @click="preset_selected = index">
@@ -50,7 +51,10 @@
       </v-dialog>
 
       <div class="presets">
-        <div v-for="(panel, index) in panels" class="preset d-inline-block pointer" :class="selected_panel == index ? 'selected' : null"
+        <div v-for="(panel, index) in panels"
+             :key="index"
+             class="preset d-inline-block pointer"
+             :class="selected_panel == index ? 'selected' : null"
              @click="selected_panel = index">
           <div class="preset_grid relative">
             <v-icon class="preset_del_icon absolute pointer" color="white" @click="onPresetDel(index)">mdi-close</v-icon>
@@ -153,22 +157,23 @@
           :row-height="65">
         <grid-item
             v-for="item in getDevicesGrid"
-            v-if="uniqDev(item.i)"
             :x="item.x"
             :y="item.y"
             :w="item.w"
             :h="item.h"
             :i="item.i"
             :key="item.i">
-          <div v-if="item.device.type === 'switcher'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
-            <Switcher/>
-          </div>
-          <div v-if="item.device.type === 'thermostat'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
-            <Thermostat :size="item.h" :selected='false'/>
-          </div>
-          <div v-if="item.device.type === 'conditioner'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
-            <Conditioner :size="item.w" :selected='false'/>
-          </div>
+          <template v-if="uniqDev(item.i)">
+            <div v-if="item.device.type === 'switcher'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
+              <Switcher/>
+            </div>
+            <div v-if="item.device.type === 'thermostat'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
+              <Thermostat :size="item.h" :selected='false'/>
+            </div>
+            <div v-if="item.device.type === 'conditioner'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
+              <Conditioner :size="item.w" :selected='false'/>
+            </div>
+          </template>
         </grid-item>
       </grid-layout>
     </div>
