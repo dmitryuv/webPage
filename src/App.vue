@@ -88,6 +88,10 @@
   .w-100 {
     width: 100%;
   }
+  .hw100 {
+    height: 100%;
+    width: 100%;
+  }
 
   .relative {
     position: relative !important;
@@ -99,5 +103,13 @@
   .dark_bg {
     background-color: #202530;
     border-radius: 7px;
+  }
+
+  .center_transform {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    -ms-transform: translate(-50%, -50%) !important;
+    transform: translate(-50%, -50%) !important;
   }
 </style>

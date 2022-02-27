@@ -8,6 +8,12 @@ export default {
         state.status++
       else
         state.status--
+    },
+    set_reload_timer(state, time) {
+      state.status++
+      setTimeout(() => {
+        location.reload()
+      }, time)
     }
   },
   actions: {

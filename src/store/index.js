@@ -7,6 +7,7 @@ import preloader from './preloader'
 import snackbar from './snackbar'
 import drawer from './drawer'
 import clients from './clients'
+import grid from './grid'
 
 export default new Vuex.Store({
   state: {
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     snackbar,
     drawer,
     clients,
+    grid,
   },
   plugins: [
   ]

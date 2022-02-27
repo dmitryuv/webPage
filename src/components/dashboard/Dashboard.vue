@@ -7,6 +7,10 @@
             <v-icon color="#249fff" @click="back()" class="mr-2">mdi-arrow-left</v-icon>
             <div>{{ getDrawerTitle }}</div>
           </div>
+          <v-spacer/>
+<!--          <template v-if="getDrawerDevice && getDrawerDevice['type'] === 'esp32_panel_4inch'">-->
+<!--            <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="panelConfig = true" class="mx-3">mdi-dots-grid</v-icon>-->
+<!--          </template>-->
           <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="changeDrawerDialog([1, 'Настройки'])" class="float-right">mdi-cog</v-icon>
         </div>
 
@@ -16,6 +20,24 @@
       </v-navigation-drawer>
 
       <Header/>
+
+      <v-dialog v-model="panelConfig" fullscreen hide-overlay transition="dialog-bottom-transition" dark>
+        <v-card v-if="getDrawerDevice">
+          <v-toolbar dark style="background: #2c3041">
+            <v-btn icon dark @click="panelConfig = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Конфигурация панели</v-toolbar-title>
+            <v-spacer/>
+            <v-toolbar-items>
+              <v-btn dark text @click="panelConfig = false">Сохранить</v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-card-text>
+            <Screen v-if="getDrawerDevice && getDrawerDevice['type'] === 'esp32_panel_4inch'"/>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
 
       <v-dialog v-model="scanDialog" width="350">
         <v-card class="color_lytko3_bg">
@@ -68,12 +90,14 @@
   import {mapGetters, mapActions, mapMutations} from 'vuex'
   import Sensor from "./sensors/Sensor";
   import TextInput from "./tpl/TextInput";
+  import Screen from "../panels/103/screens/Screen";
 
   export default {
     name: "Dashboard",
-    components: {TextInput, Header, Device, DeviceFull, Sensor},
+    components: {Screen, TextInput, Header, Device, DeviceFull, Sensor},
     data() {
       return {
+        panelConfig: false,
         scanDialog: false,
         scanIp: null,
         switchers: [],

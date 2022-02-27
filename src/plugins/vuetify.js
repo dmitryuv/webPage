@@ -3,6 +3,7 @@ import Vuetify from 'vuetify/lib/framework';
 
 import HeaderLogo from '@/components/icons/HeaderLogo'
 import UpgradeLogo from '@/components/icons/UpgradeLogo'
+import Lamp from '@/components/icons/Lamp'
 
 import Fun0 from '@/components/icons/Fun0'
 import Fun1 from '@/components/icons/Fun1'
@@ -25,6 +26,7 @@ export default new Vuetify({
     values: {
       HeaderLogo: {component: HeaderLogo},
       UpgradeLogo: {component: UpgradeLogo},
+      Lamp: {component: Lamp},
       Fun0: {component: Fun0},
       Fun1: {component: Fun1},
       Fun2: {component: Fun2},

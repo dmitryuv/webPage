@@ -91,11 +91,16 @@
               <div>
                 <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
               </div>
+              <div class="white--text">
+                <small>
+                  {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия: ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                </small>
+              </div>
               <div>
                 <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
               </div>
-              <div class="white--text">
-                {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+              <div v-if="getDrawerDevice['config']['dwin_version_new']" class="white--text">
+                <small>Доступно обновление экрана: {{ getDrawerDevice['config']['dwin_version_new'] }}</small>
               </div>
             </div>
 
@@ -104,10 +109,15 @@
                 <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
               </div>
               <div class="white--text">
-                {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                <small>
+                  {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия: ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                </small>
               </div>
               <div class="white--text">
-                ID чипа: {{ getDrawerDevice['id'] }}
+                <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
+              </div>
+              <div v-if="getDrawerDevice['config']['dwin_version_new']" class="white--text">
+                <small>Доступно обновление экрана: {{ getDrawerDevice['config']['dwin_version_new'] }}</small>
               </div>
             </div>
 
@@ -125,6 +135,9 @@
           </v-col>
           <v-col v-if="getDrawerDevice['config']['version_new']">
             <BtnBg text="Обновить" :fw="true" @click.native="onUpgrade"/>
+          </v-col>
+          <v-col cols="12" v-if="getDrawerDevice['config']['dwin_link'] === 'stub'">
+            <BtnBg text="Обновить экран" :fw="true" @click.native="onUpgradeDwin"/>
           </v-col>
         </v-row>
       </div>
@@ -157,7 +170,7 @@
             <div>
               <v-icon color="white" @click="onHysteresisUp">mdi-menu-up</v-icon>
             </div>
-            <div class="color_lytko val">{{ parseInt(getDrawerDevice['config_ch']['hysteresis']) }}</div>
+            <div class="color_lytko val">{{ parseFloat(getDrawerDevice['config_ch']['hysteresis']) }}</div>
             <div>
               <v-icon color="white" @click="onHysteresisDown">mdi-menu-down</v-icon>
             </div>
@@ -216,7 +229,7 @@
 
     <div class="dialog" v-if="getDrawerDialog === 8">
       <div class="fullheight_dialog d-flex flex-column">
-        <template v-if="getDrawerDevice['config']['pair_hk'] === '1'">
+        <template v-if="getDrawerDevice['config']['pair_hk'] === '1' || getDrawerDevice['config']['qr_hk'] === '1'">
           <div class="mt-5 text-justify white--text">
             Соединение с приложением Дом установлено
           </div>
@@ -595,16 +608,16 @@
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_model_id": ' + item + '}}'})
       },
       onHysteresisUp() {
-        let new_val = parseInt(this.getDrawerDevice['config_ch']['hysteresis'])
+        let new_val = parseFloat(this.getDrawerDevice['config_ch']['hysteresis'])
         if (new_val < 5) {
-          new_val++
+          new_val += 0.5
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"hysteresis":"' + new_val + '" }}'})
       },
       onHysteresisDown() {
-        let new_val = parseInt(this.getDrawerDevice['config_ch']['hysteresis'])
+        let new_val = parseFloat(this.getDrawerDevice['config_ch']['hysteresis'])
         if (new_val > 1) {
-          new_val--
+          new_val -= 0.5
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"hysteresis":"' + new_val + '" }}'})
       },
@@ -627,6 +640,9 @@
       },
       onUpgrade() {
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}'})
+      },
+      onUpgradeDwin() {
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"files":{"dwin_link":"' + this.getDrawerDevice['config']['dwin_link'] + '"}}'})
       },
       onClearHK() {
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"clear_homekit":1}'})
@@ -739,11 +755,11 @@
       },
       onMaxTempUp() {
         let val = parseInt(this.getDrawerDevice['config_ch']['max_temp']) + 1
-        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"max_temp":"' + val + '"}'})
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"temp_limit":"' + val + '"}}'})
       },
       onMaxTempDown() {
         let val = parseInt(this.getDrawerDevice['config_ch']['max_temp']) - 1
-        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"max_temp":"' + val + '"}'})
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"temp_limit":"' + val + '"}}'})
       },
       onReset() {
         this.rebootPreloader()

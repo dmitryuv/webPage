@@ -5,14 +5,12 @@ const available_types = [
   'esp8266_thermostat',
   'esp8266_thermostat_plus',
   'esp8266_air',
-  'airconditioner',
   'esp32_panel_4inch',
 ]
 const type_params = {
   'esp8266_thermostat': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
   'esp8266_thermostat_plus': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
   'esp8266_air': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
-  'airconditioner': ['ssdp', 'config', 'mqtt_topics', 'update', 'wifi_networks', 'qr_hk', 'update_status'],
   'esp32_panel_4inch': [
     'ssdp',
     'config',
@@ -51,7 +49,7 @@ export default {
       for (let item of ssdp) {
         let isset = false
         for (let ssdp_item of state.ssdp) {
-          if (ssdp_item['id'] === item['id']) {
+          if (ssdp_item['id'] === item['id'] || ssdp_item['ip'] === item['ip']) {
             isset = true
           }
         }
@@ -188,8 +186,12 @@ export default {
                 if (k === 'loader') {
                   if (v == 1) {
                     commit('set_preloader', true)
-                  } else {
+                  }
+                  if (v == 0) {
                     commit('set_preloader', false)
+                  }
+                  if (v > 1) {
+                    commit('set_reload_timer', v)
                   }
                 }
 

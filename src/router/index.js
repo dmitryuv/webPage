@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Dashboard from '../components/dashboard/Dashboard.vue'
-import Panels from '../components/panels/Panels.vue'
 
 Vue.use(VueRouter)
 
@@ -15,15 +14,7 @@ const routes = [
     meta: {
       title: 'Главная - ' + title,
     },
-  },
-  {
-    path: '/panels',
-    name: 'Panels',
-    component: Panels,
-    meta: {
-      title: 'Panels - ' + title,
-    },
-  },
+  }
 ]
 
 const router = new VueRouter({
