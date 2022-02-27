@@ -347,6 +347,7 @@
         wifi_encryptions: {
           '5': 'WEP',
           '2': 'WPA / PSK',
+          '3': 'WPA2 / PSK',
           '4': 'WPA2 / PSK',
           '7': 'open network',
           '8': 'WPA / WPA2 / PSK',
