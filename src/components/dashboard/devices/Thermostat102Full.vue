@@ -488,7 +488,7 @@
       },
       onReset() {
         this.rebootPreloader()
-        this.socketSend({id: this.getDrawerDevice['id'], mess: 'reset'})
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '"reset"'})
       },
 
       rebootPreloader() {

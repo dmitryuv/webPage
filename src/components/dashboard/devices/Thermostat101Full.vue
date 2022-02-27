@@ -224,7 +224,7 @@
     <div class="dialog" v-if="getDrawerDialog === 7">
       <div class="fullheight_dialog d-flex flex-column">
         <div v-if="getDrawerDevice['config']['mqtt_use'] === '0'" class="text-left white--text">
-          Дkя использования этого подключитесь к MQTT брокеру.
+          Только в режиме MQTT. Для использования подключитесь к MQTT брокеру.
         </div>
         <div v-if="getDrawerDevice['config']['mqtt_use'] === '1'" class="text-left white--text">
           <div class="mb-5">
