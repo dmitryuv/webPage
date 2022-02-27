@@ -283,6 +283,7 @@
               <div
                   class="wifi_networks color_lytko3_bg text-left pa-3 mb-3 pointer relative"
                   v-for="(network, index) of getDrawerDevice['wifi_networks']"
+                  :class="getDrawerDevice['config']['wifi_name'] === network['ssid'] ? 'color_lytko_border' : ''"
                   :key="index"
                   @click="changeDrawerWfsn([index, network['ssid']])">
                 <div class="white--text">{{ network['ssid'] }}</div>

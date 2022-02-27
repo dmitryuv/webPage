@@ -67,6 +67,10 @@
     background: #249fff;
   }
 
+  .color_lytko_border {
+    border: 1px solid #0455bf;
+  }
+
   .color_lytko2 {
     color: #464E70;
   }
