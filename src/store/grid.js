@@ -8,9 +8,8 @@ export default {
         {"x": 0, "y": 0, "w": 1, "h": 1, i: 0, type: 'switcher'},
       ],
       thermostats: [
-        {"x": 0, "y": 1, "w": 2, "h": 1, i: 1, type: 'thermostat'},
-        {"x": 0, "y": 3, "w": 2, "h": 2, i: 2, type: 'conditioner'},
-        {"x": 0, "y": 3, "w": 2, "h": 3, i: 3, type: 'esp32_panel_4inch'},
+        {"x": 0, "y": 1, "w": 2, "h": 1, i: 2, type: 'thermostat'},
+        {"x": 0, "y": 2, "w": 2, "h": 2, i: 2, type: 'conditioner'},
       ]
     },
     devices_grid: [
@@ -65,10 +64,11 @@ export default {
     }
   },
   actions: {
-    setDevicesGrid({commit}, payload) {
+    setDevicesGrid({commit, rootGetters}, payload) {
       commit('set_size', payload.size)
 
       console.log(payload.type)
+      // console.log(rootGetters)
     },
   },
   getters: {

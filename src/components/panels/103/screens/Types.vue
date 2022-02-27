@@ -65,10 +65,10 @@
             :i="item.i"
             :key="item.i">
           <template v-if="item.type === 'thermostat'">
-            <Thermostat :size="item.h" :selected="selected == `$(item.type)_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
+            <Thermostat :size="item.h" :selected="selected == `${item.type}_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
           </template>
           <template v-if="item.type === 'conditioner'">
-            <Conditioner :size="item.w" :selected="selected == `$(item.type)_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
+            <Conditioner :size="item.w" :selected="selected == `${item.type}_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
           </template>
         </grid-item>
       </grid-layout>

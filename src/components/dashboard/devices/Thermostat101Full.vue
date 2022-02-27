@@ -133,6 +133,12 @@
     <div class="dialog" v-if="getDrawerDialog === 3">
       <div class="sensors">
         <ItemCheck
+            v-if="getDrawerDevice['config']['sensor_internal_use'] != 255"
+            :active="getDrawerDevice['config']['sensor_internal_use'] == 1"
+            text="Внутренний датчик"
+            @click.native="onChangeInternalSensor"
+        />
+        <ItemCheck
             v-for="item in Object.keys(sensors)"
             :key="item"
             :text="sensors[item]"
@@ -509,7 +515,6 @@
           '7': '15 кОм',
           '8': '20 кОм',
           '9': '33 кОм',
-          '10': '47 кОм',
         },
         mqtt: {
           server: null,
@@ -602,6 +607,13 @@
       onChangeSensor(item) {
         this.rebootPreloader()
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"sensor_model_id":' + item + '}'})
+      },
+      onChangeInternalSensor() {
+        if (this.getDrawerDevice['config']['sensor_internal_use'] == 1) {
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"sensor_internal_use": "0"}'})
+        } else {
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"sensor_internal_use": "1"}'})
+        }
       },
       onHysteresisUp() {
         let new_val = parseFloat(this.getDrawerDevice['config']['hysteresis'])
