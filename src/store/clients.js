@@ -187,6 +187,9 @@ export default {
                 commit('updateSsdp', v)
               } else {
                 commit('updateClient', {id: id, param: k, value: v})
+                if (k === 'refresh') {
+                  location.reload()
+                }
                 if (k === 'loading') {
                   if (parseInt(v) == 1) {
                     commit('set_preloader', true)
