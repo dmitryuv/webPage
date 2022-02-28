@@ -449,7 +449,7 @@
 
     <div class="dialog" v-if="getDrawerDialog === 13">
       <div class="fullheight_dialog d-flex flex-column">
-        <div>
+        <div v-if="getDrawerDevice['zigbee_data'] !== '{}'">
           <template v-for="(item, index) of getDrawerDevice['zigbee_data']">
             <div class="mb-2" :key="index">
               <ItemMenu
@@ -459,7 +459,7 @@
             </div>
           </template>
         </div>
-        <v-row align-content="end" class="diapason">
+        <v-row align-content="end" class="diapason" v-if="getDrawerDevice['zigbee_data'] !== '{}'">
           <v-col>
             <div class="mb-2 white--text">Порог защиты t&deg;</div>
             <div>

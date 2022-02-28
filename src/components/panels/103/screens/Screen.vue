@@ -3,7 +3,7 @@
     <Types/>
     <v-spacer/>
     <div class="panel">
-      <h2 class="my-3">Панель 1</h2>
+      <h2 class="my-3">Панель {{ getDrawerDevice['id'] }}</h2>
 
       <v-dialog v-model="preset_dialog" persistent max-width="410" content-class="presets_dialog">
         <v-card dark color="#232834">
@@ -225,6 +225,7 @@
         'getSize',
         'getPanelPresets',
         'getDevicesGrid',
+        'getDrawerDevice',
       ]),
     },
     methods: {

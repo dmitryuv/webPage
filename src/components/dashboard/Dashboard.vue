@@ -8,9 +8,9 @@
             <div>{{ getDrawerTitle }}</div>
           </div>
           <v-spacer/>
-<!--          <template v-if="getDrawerDevice && getDrawerDevice['type'] === 'esp32_panel_4inch'">-->
-<!--            <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="panelConfig = true" class="mx-3">mdi-dots-grid</v-icon>-->
-<!--          </template>-->
+          <template v-if="getDrawerDevice && getDrawerDevice['type'] === 'esp32_panel_4inch'">
+            <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="panelConfig = true" class="mx-3">mdi-dots-grid</v-icon>
+          </template>
           <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="changeDrawerDialog([1, 'Настройки'])" class="float-right">mdi-cog</v-icon>
         </div>
 

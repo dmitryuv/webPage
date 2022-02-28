@@ -57,9 +57,13 @@ export default {
           state.ssdp.push(item)
         }
       }
+
+      console.log('===================')
+      console.log('Updated SSDP:')
       for (let ssdp_item of state.ssdp) {
-        console.log(ssdp_item['id'], ssdp_item['ip'])
+        console.log(ssdp_item['id'], ssdp_item['ip'], ssdp_item['type'])
       }
+      console.log('===================')
     },
 
     createClient(state, payload) {
@@ -183,15 +187,15 @@ export default {
                 commit('updateSsdp', v)
               } else {
                 commit('updateClient', {id: id, param: k, value: v})
-                if (k === 'loader') {
-                  if (v == 1) {
+                if (k === 'loading') {
+                  if (parseInt(v) == 1) {
                     commit('set_preloader', true)
                   }
-                  if (v == 0) {
+                  if (parseInt(v) == 0) {
                     commit('set_preloader', false)
                   }
-                  if (v > 1) {
-                    commit('set_reload_timer', v)
+                  if (parseInt(v) > 1) {
+                    commit('set_reload_timer', parseInt(v))
                   }
                 }
 
@@ -238,7 +242,6 @@ export default {
       }
       state.clients[id]['client'].send(payload.mess)
     }
-
   },
   getters: {
     mkLoad: state => {
@@ -280,7 +283,7 @@ export default {
           if (state.clients[id]['type'] === 'esp32_panel_4inch') {
             if (state.clients[id]['config_1ch']['type'] === 'thermostat') {
               devices.push({
-                'id': id + '_1',
+                'id': id + '_1ch',
                 'ch': '_1ch',
                 'client': state.clients[id]['client'],
                 'type': state.clients[id]['type'],
@@ -303,7 +306,7 @@ export default {
             }
             if (state.clients[id]['config_2ch']['type'] === 'thermostat') {
               devices.push({
-                'id': id + '_2',
+                'id': id + '_2ch',
                 'ch': '_2ch',
                 'client': state.clients[id]['client'],
                 'type': state.clients[id]['type'],

@@ -8,7 +8,7 @@ export default {
         {"x": 0, "y": 0, "w": 1, "h": 1, i: 0, type: 'switcher'},
       ],
       thermostats: [
-        {"x": 0, "y": 1, "w": 2, "h": 1, i: 2, type: 'thermostat'},
+        {"x": 0, "y": 1, "w": 2, "h": 1, i: 1, type: 'thermostat'},
         {"x": 0, "y": 2, "w": 2, "h": 2, i: 2, type: 'conditioner'},
       ]
     },

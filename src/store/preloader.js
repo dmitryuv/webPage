@@ -13,7 +13,7 @@ export default {
       state.status++
       setTimeout(() => {
         location.reload()
-      }, time)
+      }, time * 1000)
     }
   },
   actions: {
