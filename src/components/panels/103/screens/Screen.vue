@@ -132,10 +132,12 @@
                 <div class="del_cont relation hw100">
                   <template v-if="item.device != null">
                     <v-icon class="del_icon absolute pointer" color="white" @click="onDel(item.i)">mdi-close</v-icon>
-                    <Sensor :gridItem="item" v-if="item.device.type === 'sensor'"/>
-                    <Switcher :gridItem="item" v-if="item.device.type === 'switcher'"/>
-                    <Thermostat :gridItem="item" v-if="item.device.type === 'thermostat'"/>
-                    <Conditioner :gridItem="item" v-if="item.device.type === 'conditioner'"/>
+                    <Sensor :gridItem="item" v-if="item.type === 'sensor'"/>
+                    <Switcher :gridItem="item" v-if="item.type === 'switcher'"/>
+                    <Thermostat :gridItem="item" v-if="item.device.type === 'esp8266_thermostat'"/>
+                    <Thermostat :gridItem="item" v-if="item.device.type === 'esp8266_thermostat_plus'"/>
+                    <Thermostat :gridItem="item" v-if="item.device.type === 'esp32_panel_4inch'"/>
+                    <Conditioner :gridItem="item" v-if="item.device.type === 'esp8266_air'"/>
                   </template>
                 </div>
               </grid-item>
@@ -148,7 +150,7 @@
     <div class="devices text-left">
       <h3>Доступные устройства</h3>
       <grid-layout
-          :layout="getDevicesGrid"
+          :layout.sync="getDevicesGrid"
           :is-draggable="false"
           :is-resizable="false"
           :is-mirrored="false"
@@ -163,15 +165,15 @@
             :h="item.h"
             :i="item.i"
             :key="item.i">
-          <template v-if="uniqDev(item.i)">
-            <div v-if="item.device.type === 'switcher'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
-              <Switcher/>
+          <template v-if="uniqDev(item.device.id)">
+            <div v-if="item.type === 'switcher'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
+              <Switcher :device="item.device"/>
             </div>
-            <div v-if="item.device.type === 'thermostat'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
-              <Thermostat :size="item.h" :selected='false'/>
+            <div v-if="item.type === 'thermostat'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
+              <Thermostat :size="item.h" :selected='false' :device="item.device"/>
             </div>
-            <div v-if="item.device.type === 'conditioner'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
-              <Conditioner :size="item.w" :selected='false'/>
+            <div v-if="item.type === 'conditioner'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
+              <Conditioner :size="item.w" :selected='false' :device="item.device"/>
             </div>
           </template>
         </grid-item>
@@ -218,7 +220,7 @@
     watch: {
       preset_dialog() {
         this.preset_selected = null
-      }
+      },
     },
     computed: {
       ...mapGetters([
@@ -261,9 +263,10 @@
 
               if (dropped_cel_index !== null) {
                 let available_types = this.panels[this.selected_panel][dropped_cel_index].devices
-                if (available_types.indexOf(device.device.type) >= 0) {
+                if (available_types.indexOf(device.type) >= 0) {
                   this.panels[this.selected_panel][dropped_cel_index].device = device.device
                   this.$forceUpdate();
+                  console.log(this.panels)
                 }
               }
             }

@@ -61,14 +61,39 @@ export default {
   mutations: {
     set_size(state, payload) {
       state.size_devices = payload
-    }
+    },
+    clear_devices_grid(state) {
+      state.devices_grid = []
+    },
+    add_devices_grid(state, payload) {
+      state.devices_grid.push(payload)
+    },
   },
   actions: {
     setDevicesGrid({commit, rootGetters}, payload) {
       commit('set_size', payload.size)
+      commit('clear_devices_grid')
 
-      console.log(payload.type)
-      // console.log(rootGetters)
+      let i = 0
+      if (payload.type === 'thermostat') {
+        for (let device of rootGetters.getThermostats) {
+          if (device['type'] !== 'esp8266_air') {
+            let type = null
+            if (['esp8266_thermostat', 'esp8266_thermostat_plus', 'esp32_panel_4inch'].indexOf(device.type) >= 0) {
+              type = 'thermostat'
+            }
+            if (['esp8266_air'].indexOf(device.type) >= 0) {
+              type = 'conditioner'
+            }
+            console.log(type)
+
+            if (type) {
+              commit('add_devices_grid', {x: 0, y: 2 * i, w: 2, h: 1, i: i, type: type, device: device})
+              i++
+            }
+          }
+        }
+      }
     },
   },
   getters: {

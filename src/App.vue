@@ -41,6 +41,10 @@
 </script>
 
 <style lang="scss">
+  body {
+    background: #232834;
+  }
+
   .theme--light.v-application {
     background: #232834 !important;
   }

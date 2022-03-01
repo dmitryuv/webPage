@@ -9,7 +9,6 @@
   export default {
     name: "Thermostat",
     props: ['size', 'selected'],
-
   }
 </script>
 

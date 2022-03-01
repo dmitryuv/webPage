@@ -94,20 +94,34 @@
         <v-row>
           <v-col>
             <div class="d-none d-sm-block dark_bg text-left pa-3 mb-5">
-              <div><small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small></div>
-              <div><small>ID чипа: {{ getDrawerDevice['id'] }}</small></div>
+              <div>
+                <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
+              </div>
+              <div>
+                <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
+              </div>
               <div class="white--text">
-                {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                <small>
+                  {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                </small>
+              </div>
+              <div v-if="getDrawerDevice['config']['dwin_version_new']" class="white--text">
+                <small>Доступно обновление экрана: {{ getDrawerDevice['config']['dwin_version_new'] }}</small>
               </div>
             </div>
 
             <div class="d-block d-sm-none text-left pa-3 mb-5">
               <small>Текущая версия: {{ getDrawerDevice['config']['version'] }}</small>
               <div class="white--text">
-                {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                <small>
+                  {{ getDrawerDevice['config']['version_new'] ? 'Доступна версия ' + getDrawerDevice['config']['version_new'] : 'Нет доступных обновлений' }}
+                </small>
               </div>
               <div class="white--text">
-                ID чипа: {{ getDrawerDevice['id'] }}
+                <small>ID чипа: {{ getDrawerDevice['id'] }}</small>
+              </div>
+              <div v-if="getDrawerDevice['config']['dwin_version_new']" class="white--text">
+                <small>Доступно обновление экрана: {{ getDrawerDevice['config']['dwin_version_new'] }}</small>
               </div>
             </div>
 
@@ -125,6 +139,9 @@
           </v-col>
           <v-col v-if="getDrawerDevice['config']['version_new']">
             <BtnBg text="Обновить" :fw="true" @click.native="onUpgrade"/>
+          </v-col>
+          <v-col cols="12" v-if="getDrawerDevice['config']['dwin_link'] === 'stub'">
+            <BtnBg text="Обновить экран" :fw="true" @click.native="onUpgradeDwin"/>
           </v-col>
         </v-row>
       </div>
@@ -651,6 +668,9 @@
       onUpgrade() {
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}'})
       },
+      onUpgradeDwin() {
+        this.socketSend({id: this.getDrawerDevice['id'], mess: '{"files":{"dwin_link":"' + this.getDrawerDevice['config']['dwin_link'] + '"}}'})
+      },
       onClearHK() {
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"clear_homekit":1}'})
         setTimeout(() => {
@@ -687,9 +707,15 @@
         if (this.mqtt.server.length && this.mqtt.port.length) {
           this.rebootPreloader()
           if (this.mqtt.login.length && this.mqtt.pass.length) {
-            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}'})
+            this.socketSend({
+              id: this.getDrawerDevice['id'],
+              mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"' + this.mqtt.login + '","mqtt_password":"' + this.mqtt.pass + '"}}'
+            })
           } else {
-            this.socketSend({id: this.getDrawerDevice['id'], mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}'})
+            this.socketSend({
+              id: this.getDrawerDevice['id'],
+              mess: '{"mqtt_connect": {"mqtt_server":"' + this.mqtt.server + '","mqtt_port":"' + this.mqtt.port + '","mqtt_login":"","mqtt_password":""}}'
+            })
           }
         } else {
           this.setSnackbar('Заполните все поля')
@@ -701,7 +727,10 @@
       },
       onConnectAlice() {
         if (this.getDrawerDevice['config']['homekit'] != '0') {
-          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}'})
+          this.socketSend({
+            id: this.getDrawerDevice['id'],
+            mess: '{"alice_connect":{"alice_login":"' + this.mqttAlice.login + '","alice_password":"' + this.mqttAlice.pass + '"}}'
+          })
           this.setSnackbar('Алиса подключена')
         }
       },
