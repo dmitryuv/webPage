@@ -8,9 +8,9 @@
             <div>{{ getDrawerTitle }}</div>
           </div>
           <v-spacer/>
-<!--          <template v-if="getDrawerDevice && getDrawerDevice['type'] === 'esp32_panel_4inch'">-->
-<!--            <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="panelConfig = true" class="mx-3">mdi-dots-grid</v-icon>-->
-<!--          </template>-->
+          <template v-if="getDrawerDevice && getDrawerDevice['type'] === 'esp32_panel_4inch'">
+            <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="panelConfig = true" class="mx-3">mdi-dots-grid</v-icon>
+          </template>
           <v-icon v-if="getDrawerDialog === 0" color="#249fff" @click="changeDrawerDialog([1, 'Настройки'])" class="float-right">mdi-cog</v-icon>
         </div>
 
@@ -30,7 +30,7 @@
             <v-toolbar-title>Конфигурация панели</v-toolbar-title>
             <v-spacer/>
             <v-toolbar-items>
-              <v-btn dark text @click="panelConfig = false">Сохранить</v-btn>
+              <v-btn dark text @click="onSave">Сохранить</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-card-text>
@@ -113,6 +113,8 @@
         'getDrawerDevice',
         'getDrawerDialog',
         'getDrawerWfsn',
+        'getPanelGrid',
+        'getFormattedPanelGrid',
       ]),
       devicesLength() {
         return Object.keys(this.getSensors).length + Object.keys(this.getThermostats).length
@@ -199,6 +201,10 @@
             console.log(event.data);
           }
         }
+      },
+      onSave() {
+        console.log(this.getPanelGrid)
+        console.log(JSON.stringify(this.getFormattedPanelGrid))
       },
       /**
        * @return {boolean}

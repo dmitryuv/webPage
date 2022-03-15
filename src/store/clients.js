@@ -36,6 +36,9 @@ const type_params = {
 export default {
   state: {
     ssdp: null,
+    // ssdp: [
+    //   {'id': '123123', 'ip': '192.168.1.111:9103', 'type': 'esp32_panel_4inch'}
+    // ],
 
     current_client: null,
     clients: {},
@@ -70,6 +73,7 @@ export default {
       let client = {
         ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
         ['id']: payload['id'],
+        ['dev_id']: payload['id'],
         ['type']: payload['type'],
         ['ip']: payload['ip']
       }
@@ -268,6 +272,7 @@ export default {
             for (let i in dev['type']) {
               sensors.push({
                 'id': dev['ShotAddr'] + '_' + i,
+                'dev_id': dev['ShotAddr'],
                 'type': dev['type'][i],
                 'value': dev['data'][i],
                 'unit': dev['unit'][i],
@@ -287,6 +292,7 @@ export default {
             if (state.clients[id]['config_1ch']['type'] === 'thermostat') {
               devices.push({
                 'id': id + '_1ch',
+                'dev_id': id,
                 'ch': '_1ch',
                 'client': state.clients[id]['client'],
                 'type': state.clients[id]['type'],
@@ -310,6 +316,7 @@ export default {
             if (state.clients[id]['config_2ch']['type'] === 'thermostat') {
               devices.push({
                 'id': id + '_2ch',
+                'dev_id': id,
                 'ch': '_2ch',
                 'client': state.clients[id]['client'],
                 'type': state.clients[id]['type'],

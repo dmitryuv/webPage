@@ -18,7 +18,7 @@
                   @click="preset_selected = index">
                 <div class="preset_grid">
                   <grid-layout
-                      :layout="preset"
+                      :layout="preset.grid"
                       :is-draggable="false"
                       :is-resizable="false"
                       :is-mirrored="false"
@@ -28,7 +28,7 @@
                       :max-rows="3"
                       :row-height="15">
                     <grid-item
-                        v-for="item in preset"
+                        v-for="item in preset.grid"
                         :x="item.x"
                         :y="item.y"
                         :w="item.w"
@@ -59,7 +59,7 @@
           <div class="preset_grid relative">
             <v-icon class="preset_del_icon absolute pointer" color="white" @click="onPresetDel(index)">mdi-close</v-icon>
             <grid-layout
-                :layout="panel"
+                :layout="panel.grid"
                 :is-draggable="false"
                 :is-resizable="false"
                 :is-mirrored="false"
@@ -69,7 +69,7 @@
                 :max-rows="3"
                 :row-height="15">
               <grid-item
-                  v-for="item in panel"
+                  v-for="item in panel.grid"
                   :x="item.x"
                   :y="item.y"
                   :w="item.w"
@@ -112,7 +112,7 @@
           <div id="screen_grid" class="grid" ref="gridlayout">
             <grid-layout
                 v-if="panels.length && selected_panel != null"
-                :layout.sync="panels[selected_panel]"
+                :layout.sync="panels[selected_panel].grid"
                 :is-draggable="false"
                 :is-resizable="false"
                 :is-mirrored="false"
@@ -121,7 +121,7 @@
                 :max-rows="3"
                 :row-height="120">
               <grid-item
-                  v-for="item in panels[selected_panel]"
+                  v-for="item in panels[selected_panel].grid"
                   :x="item.x"
                   :y="item.y"
                   :w="item.w"
@@ -132,12 +132,12 @@
                 <div class="del_cont relation hw100">
                   <template v-if="item.device != null">
                     <v-icon class="del_icon absolute pointer" color="white" @click="onDel(item.i)">mdi-close</v-icon>
-                    <Sensor :gridItem="item" v-if="item.type === 'sensor'"/>
-                    <Switcher :gridItem="item" v-if="item.type === 'switcher'"/>
-                    <Thermostat :gridItem="item" v-if="item.device.type === 'esp8266_thermostat'"/>
-                    <Thermostat :gridItem="item" v-if="item.device.type === 'esp8266_thermostat_plus'"/>
-                    <Thermostat :gridItem="item" v-if="item.device.type === 'esp32_panel_4inch'"/>
-                    <Conditioner :gridItem="item" v-if="item.device.type === 'esp8266_air'"/>
+                    <Sensor :gridItem="item" :device="item.device" v-if="item.type === 'sensor'"/>
+                    <Switcher :gridItem="item" :device="item.device" v-if="item.type === 'switcher'"/>
+                    <Thermostat :gridItem="item" :device="item.device" v-if="item.device.type === 'esp8266_thermostat'"/>
+                    <Thermostat :gridItem="item" :device="item.device" v-if="item.device.type === 'esp8266_thermostat_plus'"/>
+                    <Thermostat :gridItem="item" :device="item.device" v-if="item.device.type === 'esp32_panel_4inch'"/>
+                    <Conditioner :gridItem="item" :device="item.device" v-if="item.device.type === 'esp8266_air'"/>
                   </template>
                 </div>
               </grid-item>
@@ -166,6 +166,9 @@
             :i="item.i"
             :key="item.i">
           <template v-if="uniqDev(item.device.id)">
+            <div v-if="item.type === 'sensor'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
+              <Sensor :device="item.device"/>
+            </div>
             <div v-if="item.type === 'switcher'" @dragend="dragend(item)" class="droppable-element" draggable="true" unselectable="on">
               <Switcher :device="item.device"/>
             </div>
@@ -183,7 +186,7 @@
 </template>
 
 <script>
-  import {mapGetters, mapActions} from 'vuex'
+  import {mapGetters, mapActions, mapMutations} from 'vuex'
   import {GridLayout, GridItem} from "vue-grid-layout"
 
   import Types from "./Types";
@@ -235,8 +238,12 @@
         'setSize',
         'addDevicesGridItem',
       ]),
+      ...mapMutations([
+        'update_grid'
+      ]),
       onAddPanel() {
         this.panels.push(this.getPanelPresets[this.preset_selected])
+        this.update_grid(this.panels)
 
         this.preset_dialog = false
       },
@@ -262,11 +269,14 @@
               }
 
               if (dropped_cel_index !== null) {
-                let available_types = this.panels[this.selected_panel][dropped_cel_index].devices
+                let available_types = this.panels[this.selected_panel].grid[dropped_cel_index].devices
                 if (available_types.indexOf(device.type) >= 0) {
-                  this.panels[this.selected_panel][dropped_cel_index].device = device.device
+                  this.panels[this.selected_panel].grid[dropped_cel_index].device = device.device
+                  if (['sensor', 'switcher'].indexOf(device.type) >= 0) {
+                    this.panels[this.selected_panel].grid[dropped_cel_index].type = device.type
+                    this.update_grid(this.panels)
+                  }
                   this.$forceUpdate();
-                  console.log(this.panels)
                 }
               }
             }
@@ -275,15 +285,17 @@
       },
       onPresetDel(i) {
         this.panels.splice(i, 1);
+        this.update_grid(this.panels)
       },
       onDel(i) {
         this.panels[this.selected_panel][i - 1].device = null
+        this.update_grid(this.panels)
         this.$forceUpdate();
       },
       uniqDev(id) {
         if (this.panels.length && this.selected_panel != null) {
           for (let panel of this.panels) {
-            for (let item of panel) {
+            for (let item of panel.grid) {
               if (item.device && item.device.id === id) {
                 return false
               }

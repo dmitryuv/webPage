@@ -10,11 +10,11 @@
       </v-col>
     </v-row>
     <div class="text-center white--text">
-      <div class="current_temp">23.5&deg;</div>
+      <div class="current_temp">{{ device ? device['update']['temp'] : '23.5' }}&deg;</div>
       <div class="chevron">
         <v-icon color="white">mdi-chevron-up</v-icon>
       </div>
-      <div class="target_temp">28.5&deg;</div>
+      <div class="target_temp">{{ device ? device['update']['target_temp'] : '23.5' }}&deg;</div>
     </div>
   </div>
 </template>
@@ -22,8 +22,7 @@
 <script>
   export default {
     name: "Conditioner",
-    props: ['size', 'selected'],
-
+    props: ['size', 'selected', 'device'],
   }
 </script>
 

@@ -1,9 +1,9 @@
 <template>
   <div id="types" class="text-left">
     <div class="grid_sensors">
-      <h3>Датчик</h3>
+      <h3>Типы устройств</h3>
       <grid-layout
-          :layout="getTypesGrid.sensors"
+          :layout="getTypesGrid"
           :is-draggable="false"
           :is-resizable="false"
           :is-mirrored="false"
@@ -11,65 +11,27 @@
           :max-rows="3"
           :row-height="65">
         <grid-item
-            v-for="item in getTypesGrid.sensors"
+            v-for="item in getTypesGrid"
             :x="item.x"
             :y="item.y"
             :w="item.w"
             :h="item.h"
             :i="item.i"
             :key="item.i">
-          <Sensor :selected="selected == `${item.type}_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
-        </grid-item>
-      </grid-layout>
-    </div>
-
-    <div class="grid_sensors mt-2">
-      <h3>Выключатель</h3>
-      <grid-layout
-          :layout="getTypesGrid.switchers"
-          :is-draggable="false"
-          :is-resizable="false"
-          :is-mirrored="false"
-          :col-num="3"
-          :max-rows="3"
-          :row-height="65">
-        <grid-item
-            v-for="item in getTypesGrid.switchers"
-            :x="item.x"
-            :y="item.y"
-            :w="item.w"
-            :h="item.h"
-            :i="item.i"
-            :key="item.i">
-          <Switcher :selected="selected == `${item.type}_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
-        </grid-item>
-      </grid-layout>
-    </div>
-
-    <div class="grid_switchers mt-2">
-      <h3>Термостат</h3>
-      <grid-layout
-          :layout="getTypesGrid.thermostats"
-          :is-draggable="false"
-          :is-resizable="false"
-          :is-mirrored="false"
-          :col-num="3"
-          :max-rows="3"
-          :row-height="65">
-        <grid-item
-            v-for="item in getTypesGrid.thermostats"
-            :x="item.x"
-            :y="item.y"
-            :w="item.w"
-            :h="item.h"
-            :i="item.i"
-            :key="item.i">
-          <template v-if="item.type === 'thermostat'">
-            <Thermostat :size="item.h" :selected="selected == `${item.type}_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
-          </template>
-          <template v-if="item.type === 'conditioner'">
-            <Conditioner :size="item.w" :selected="selected == `${item.type}_${item.w}_${item.h}`" @click.native="onSelect(item)"/>
-          </template>
+          <Sensor v-if="item.type === 'sensor'"
+                  :selected="selected == `${item.type}_${item.w}_${item.h}`"
+                  @click.native="onSelect(item)"/>
+          <Switcher v-if="item.type === 'switcher'"
+                    :selected="selected == `${item.type}_${item.w}_${item.h}`"
+                    @click.native="onSelect(item)"/>
+          <Thermostat v-if="item.type === 'thermostat'"
+                      :size="item.h"
+                      :selected="selected == `${item.type}_${item.w}_${item.h}`"
+                      @click.native="onSelect(item)"/>
+          <Conditioner v-if="item.type === 'conditioner'"
+                       :size="item.w"
+                       :selected="selected == `${item.type}_${item.w}_${item.h}`"
+                       @click.native="onSelect(item)"/>
         </grid-item>
       </grid-layout>
     </div>

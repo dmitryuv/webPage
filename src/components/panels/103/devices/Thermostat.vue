@@ -1,14 +1,14 @@
 <template>
   <div id="thermostat" class="text-center" :class="['device relative', 'size'+size, selected?'selected':null]">
-    <div class="target_temp">28.5&deg;</div>
-    <div class="current_temp">Сейчас 23.5&deg;</div>
+    <div class="target_temp">{{ device ? device['update']['target_temp'] : '23.5' }}&deg;</div>
+    <div class="current_temp">Сейчас {{ device ? device['update']['temp'] : '22' }}&deg;</div>
   </div>
 </template>
 
 <script>
   export default {
     name: "Thermostat",
-    props: ['size', 'selected'],
+    props: ['size', 'selected', 'device'],
   }
 </script>
 
