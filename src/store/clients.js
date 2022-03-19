@@ -88,6 +88,9 @@ export default {
     },
     updateClient(state, payload) {
       state.clients[payload['id']][payload['param']] = payload['value']
+      if (payload['param'] === 'update_ststus' && payload['value'] === '100') {
+        location.reload()
+      }
     },
     deleteClient(state, id) {
       delete state.clients[id]

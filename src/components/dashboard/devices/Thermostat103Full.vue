@@ -491,7 +491,7 @@
             v-for="item in timeZones"
             :key="item.k"
             :text="item.v"
-            :active="getDrawerDevice['config']['time_zones'] == item.k"
+            :active="getDrawerDevice['config']['time_zone'] == item.k"
             @click.native="onChangeTimezone(item.k)"
         />
       </div>
