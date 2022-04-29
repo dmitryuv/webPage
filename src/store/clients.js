@@ -1,5 +1,5 @@
 const devmode = location.hostname === 'localhost';
-const current_ip = devmode ? '192.168.1.218' : location.host;
+const current_ip = devmode ? '192.168.1.91' : location.host;
 
 const available_types = [
   'esp8266_thermostat',
@@ -36,10 +36,6 @@ const type_params = {
 export default {
   state: {
     ssdp: null,
-    // ssdp: [
-    //   {'id': '123123', 'ip': '192.168.1.111:9103', 'type': 'esp32_panel_4inch'}
-    // ],
-
     current_client: null,
     clients: {},
     error: null,

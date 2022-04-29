@@ -75,6 +75,10 @@
     border: 1px solid #0455bf;
   }
 
+  .border_bottom {
+    border-bottom: 1px solid #333;
+  }
+
   .color_lytko2 {
     color: #464E70;
   }
