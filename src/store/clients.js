@@ -71,7 +71,8 @@ export default {
         ['id']: payload['id'],
         ['dev_id']: payload['id'],
         ['type']: payload['type'],
-        ['ip']: payload['ip']
+        ['ip']: payload['ip'],
+        ['last_data']: Math.round(new Date().getTime()/1000)
       }
       for (let param of type_params[payload['type']]) {
         client[param] = null
@@ -158,6 +159,12 @@ export default {
       state.clients[id]['client'].onopen = function () {
         commit('updateClient', {id: id, param: 'status', value: true})
         console.log('Соединение с ' + id + ' установлено.');
+
+        setInterval(function () {
+          if (state.clients[id]['last_data'] < Math.round(new Date().getTime()/1000) - 60) {
+            commit('deleteClient', id)
+          }
+        }, 1000)
       };
 
       state.clients[id]['client'].onclose = function (event) {
@@ -176,6 +183,8 @@ export default {
       };
 
       state.clients[id]['client'].onmessage = function (event) {
+        state.clients[id]['last_data'] = Math.round(new Date().getTime()/1000)
+
         if (IsJsonString(event.data)) {
           let mess = JSON.parse(event.data);
           let param = Object.keys(mess)[0]
