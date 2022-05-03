@@ -106,7 +106,7 @@ export default {
         axios.get('http://' + current_ip + '/ssdp.json')
           .then(function (response) {
             console.log(response);
-            commit('setSsdp', response)
+            commit('setSsdp', response.data.ssdp)
           })
           .catch(function (error) {
             console.log(error);
