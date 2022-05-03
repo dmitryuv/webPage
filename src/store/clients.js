@@ -1,3 +1,4 @@
+const axios = require('axios').default;
 const devmode = location.hostname === 'localhost';
 const current_ip = devmode ? '192.168.1.91' : location.host;
 
@@ -94,56 +95,69 @@ export default {
     }
   },
   actions: {
-    startConnect({dispatch}) {
-      dispatch('socket_current_connect');
+    startConnect({dispatch, commit}) {
+      // dispatch('socket_current_connect');
+
+      axios.get('http://' + current_ip + '/ssdp.json').then(response => (
+        console.log(response)
+      ));
       setInterval(() => {
-        dispatch('socket_current_connect');
+        // dispatch('socket_current_connect');
+        axios.get('http://' + current_ip + '/ssdp.json')
+          .then(function (response) {
+            console.log(response);
+            commit('setSsdp', response)
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+
       }, 3000);
     },
-    socket_current_connect({state, commit, dispatch}) {
-      if (state.current_client === null) {
-        dispatch('setPreloader', true)
-
-        state.current_client = {};
-        state.current_client['client'] = null;
-        state.current_client['ip'] = current_ip;
-        state.current_client['client'] = new WebSocket('ws://' + current_ip + '/ws');
-
-        state.current_client['client'].onopen = function () {
-          dispatch('setPreloader', false)
-          console.log('Соединение с ' + current_ip + ' установлено.');
-          state.current_client['status'] = true;
-        };
-
-        state.current_client['client'].onclose = function (event) {
-          if (event.wasClean) {
-            console.log('Контроллер ' + current_ip + '  отключился');
-            dispatch('setSnackbar', 'Контроллер ' + current_ip + '  отключился')
-          } else {
-            console.log('Обрыв соединения с ' + current_ip);
-            dispatch('setSnackbar', 'Обрыв соединения с ' + current_ip)
-          }
-          state.current_client = null
-        };
-
-        state.current_client['client'].onerror = function (error) {
-          console.log('Ошибка соединения с ' + current_ip + ' | ' + error);
-          dispatch('setSnackbar', 'Ошибка соединения с ' + current_ip)
-          state.current_client = null
-        };
-
-        state.current_client['client'].onmessage = function (event) {
-          if (IsJsonString(event.data)) {
-            let mess = JSON.parse(event.data);
-            let param = Object.keys(mess)[0]
-            if (param === 'ssdp') {
-              commit('setSsdp', mess[param])
-              dispatch('clients_connect')
-            }
-          }
-        }
-      }
-    },
+    // socket_current_connect({state, commit, dispatch}) {
+    //   if (state.current_client === null) {
+    //     dispatch('setPreloader', true)
+    //
+    //     state.current_client = {};
+    //     state.current_client['client'] = null;
+    //     state.current_client['ip'] = current_ip;
+    //     state.current_client['client'] = new WebSocket('ws://' + current_ip + '/ws');
+    //
+    //     state.current_client['client'].onopen = function () {
+    //       dispatch('setPreloader', false)
+    //       console.log('Соединение с ' + current_ip + ' установлено.');
+    //       state.current_client['status'] = true;
+    //     };
+    //
+    //     state.current_client['client'].onclose = function (event) {
+    //       if (event.wasClean) {
+    //         console.log('Контроллер ' + current_ip + '  отключился');
+    //         dispatch('setSnackbar', 'Контроллер ' + current_ip + '  отключился')
+    //       } else {
+    //         console.log('Обрыв соединения с ' + current_ip);
+    //         dispatch('setSnackbar', 'Обрыв соединения с ' + current_ip)
+    //       }
+    //       state.current_client = null
+    //     };
+    //
+    //     state.current_client['client'].onerror = function (error) {
+    //       console.log('Ошибка соединения с ' + current_ip + ' | ' + error);
+    //       dispatch('setSnackbar', 'Ошибка соединения с ' + current_ip)
+    //       state.current_client = null
+    //     };
+    //
+    //     state.current_client['client'].onmessage = function (event) {
+    //       if (IsJsonString(event.data)) {
+    //         let mess = JSON.parse(event.data);
+    //         let param = Object.keys(mess)[0]
+    //         if (param === 'ssdp') {
+    //           commit('setSsdp', mess[param])
+    //           dispatch('clients_connect')
+    //         }
+    //       }
+    //     }
+    //   }
+    // },
     clients_connect({state, dispatch}) {
       setInterval(() => state.ssdp.forEach(function (val) {
         dispatch('socket_connect', val);
