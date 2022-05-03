@@ -102,6 +102,7 @@ export default {
         .then(function (response) {
           console.log(response.data.ssdp);
           commit('setSsdp', response.data.ssdp)
+          dispatch('clients_connect')
         })
         .catch(function (error) {
           console.log(error);
