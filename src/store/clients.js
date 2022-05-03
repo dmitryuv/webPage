@@ -105,6 +105,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
+          dispatch('socket_current_connect')
         })
       setInterval(() => {
         // dispatch('socket_current_connect');
@@ -117,50 +118,50 @@ export default {
           })
       }, 3000);
     },
-    // socket_current_connect({state, commit, dispatch}) {
-    //   if (state.current_client === null) {
-    //     dispatch('setPreloader', true)
-    //
-    //     state.current_client = {};
-    //     state.current_client['client'] = null;
-    //     state.current_client['ip'] = current_ip;
-    //     state.current_client['client'] = new WebSocket('ws://' + current_ip + '/ws');
-    //
-    //     state.current_client['client'].onopen = function () {
-    //       dispatch('setPreloader', false)
-    //       console.log('Соединение с ' + current_ip + ' установлено.');
-    //       state.current_client['status'] = true;
-    //     };
-    //
-    //     state.current_client['client'].onclose = function (event) {
-    //       if (event.wasClean) {
-    //         console.log('Контроллер ' + current_ip + '  отключился');
-    //         dispatch('setSnackbar', 'Контроллер ' + current_ip + '  отключился')
-    //       } else {
-    //         console.log('Обрыв соединения с ' + current_ip);
-    //         dispatch('setSnackbar', 'Обрыв соединения с ' + current_ip)
-    //       }
-    //       state.current_client = null
-    //     };
-    //
-    //     state.current_client['client'].onerror = function (error) {
-    //       console.log('Ошибка соединения с ' + current_ip + ' | ' + error);
-    //       dispatch('setSnackbar', 'Ошибка соединения с ' + current_ip)
-    //       state.current_client = null
-    //     };
-    //
-    //     state.current_client['client'].onmessage = function (event) {
-    //       if (IsJsonString(event.data)) {
-    //         let mess = JSON.parse(event.data);
-    //         let param = Object.keys(mess)[0]
-    //         if (param === 'ssdp') {
-    //           commit('setSsdp', mess[param])
-    //           dispatch('clients_connect')
-    //         }
-    //       }
-    //     }
-    //   }
-    // },
+    socket_current_connect({state, commit, dispatch}) {
+      if (state.current_client === null) {
+        dispatch('setPreloader', true)
+
+        state.current_client = {};
+        state.current_client['client'] = null;
+        state.current_client['ip'] = current_ip;
+        state.current_client['client'] = new WebSocket('ws://' + current_ip + '/ws');
+
+        state.current_client['client'].onopen = function () {
+          dispatch('setPreloader', false)
+          console.log('Соединение с ' + current_ip + ' установлено.');
+          state.current_client['status'] = true;
+        };
+
+        state.current_client['client'].onclose = function (event) {
+          if (event.wasClean) {
+            console.log('Контроллер ' + current_ip + '  отключился');
+            dispatch('setSnackbar', 'Контроллер ' + current_ip + '  отключился')
+          } else {
+            console.log('Обрыв соединения с ' + current_ip);
+            dispatch('setSnackbar', 'Обрыв соединения с ' + current_ip)
+          }
+          state.current_client = null
+        };
+
+        state.current_client['client'].onerror = function (error) {
+          console.log('Ошибка соединения с ' + current_ip + ' | ' + error);
+          dispatch('setSnackbar', 'Ошибка соединения с ' + current_ip)
+          state.current_client = null
+        };
+
+        state.current_client['client'].onmessage = function (event) {
+          if (IsJsonString(event.data)) {
+            let mess = JSON.parse(event.data);
+            let param = Object.keys(mess)[0]
+            if (param === 'ssdp') {
+              commit('setSsdp', mess[param])
+              dispatch('clients_connect')
+            }
+          }
+        }
+      }
+    },
     clients_connect({state, dispatch}) {
       state.ssdp.forEach(function (val) {
         dispatch('socket_connect', val);
