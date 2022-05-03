@@ -100,7 +100,6 @@ export default {
 
       axios.get('http://' + current_ip + '/ssdp.json')
         .then(function (response) {
-          console.log(response.data.ssdp);
           commit('setSsdp', response.data.ssdp)
           dispatch('clients_connect')
         })
@@ -111,7 +110,6 @@ export default {
         // dispatch('socket_current_connect');
         axios.get('http://' + current_ip + '/ssdp.json')
           .then(function (response) {
-            console.log(response.data.ssdp);
             commit('setSsdp', response.data.ssdp)
           })
           .catch(function (error) {
