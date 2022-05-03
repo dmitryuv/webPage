@@ -162,6 +162,9 @@ export default {
     //   }
     // },
     clients_connect({state, dispatch}) {
+      state.ssdp.forEach(function (val) {
+        dispatch('socket_connect', val);
+      })
       setInterval(() => state.ssdp.forEach(function (val) {
         dispatch('socket_connect', val);
       }), 5000);
