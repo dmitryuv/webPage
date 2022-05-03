@@ -98,20 +98,24 @@ export default {
     startConnect({dispatch, commit}) {
       // dispatch('socket_current_connect');
 
-      axios.get('http://' + current_ip + '/ssdp.json').then(response => (
-        console.log(response)
-      ));
+      axios.get('http://' + current_ip + '/ssdp.json')
+        .then(function (response) {
+          console.log(response.data.ssdp);
+          commit('setSsdp', response.data.ssdp)
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
       setInterval(() => {
         // dispatch('socket_current_connect');
         axios.get('http://' + current_ip + '/ssdp.json')
           .then(function (response) {
-            console.log(response);
+            console.log(response.data.ssdp);
             commit('setSsdp', response.data.ssdp)
           })
           .catch(function (error) {
             console.log(error);
           })
-
       }, 3000);
     },
     // socket_current_connect({state, commit, dispatch}) {
