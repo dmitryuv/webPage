@@ -107,16 +107,16 @@ export default {
           console.log(error);
           dispatch('socket_current_connect')
         })
-      setInterval(() => {
-        // dispatch('socket_current_connect');
-        axios.get('http://' + current_ip + '/ssdp.json')
-          .then(function (response) {
-            commit('setSsdp', response.data.ssdp)
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-      }, 3000);
+      // setInterval(() => {
+      //   // dispatch('socket_current_connect');
+      //   axios.get('http://' + current_ip + '/ssdp.json')
+      //     .then(function (response) {
+      //       commit('setSsdp', response.data.ssdp)
+      //     })
+      //     .catch(function (error) {
+      //       console.log(error);
+      //     })
+      // }, 3000);
     },
     socket_current_connect({state, commit, dispatch}) {
       if (state.current_client === null) {

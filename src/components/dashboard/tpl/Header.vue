@@ -38,11 +38,11 @@
         <v-card-text>
           <v-row v-for="(device, id) in getClients" :key="id" class="border_bottom">
             <v-col v-if="device.config">
-              <div><b>ID:</b> {{ id }}</div>
+              <div><b>ID:</b> {{ id }} ({{ device.config.name }})</div>
               <div>Версия: {{ device.config.version }}</div>
             </v-col>
             <v-col v-if="device.config">
-              <div class="font-weight-bold">Кинтроллер</div>
+              <div class="font-weight-bold">Контроллер</div>
               <div v-if="device.config.version_new">{{'Доступна версия: ' + device.config.version_new }}
                 <v-icon class="pointer" @click="onUpgrade(device)">mdi-download</v-icon>
               </div>
