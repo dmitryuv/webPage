@@ -2,7 +2,7 @@
   <div id="header">
     <v-row class="d-flex d-sm-none ma-0">
       <v-col cols="3">
-        <v-icon color="#249fff" @click="inDevelop">mdi-account-circle</v-icon>
+        <v-icon color="#249fff" @click="profile_dialog = true">mdi-account-circle</v-icon>
       </v-col>
       <v-col cols="6" class="text-center">
         <span class="white--text px-3">Моя квартира</span>
@@ -13,7 +13,7 @@
     <v-row class="d-none d-sm-flex ma-0">
       <v-col cols="5">
         <div class="d-flex align-center">
-          <v-icon color="#249fff" @click="inDevelop">mdi-account-circle</v-icon>
+          <v-icon color="#249fff" @click="profile_dialog = true">mdi-account-circle</v-icon>
           <span class="white--text px-3">Моя квартира</span>
         </div>
       </v-col>
@@ -70,6 +70,33 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="profile_dialog" max-width="300" dark>
+      <v-card>
+        <v-card-title class="text-h5">
+          Профиль
+        </v-card-title>
+
+        <v-card-text>
+          <div class="mb-3">
+            <v-btn>
+              <a href="https://oauth.lytko.com/reg" target="_blank">Регистрация</a>
+            </v-btn>
+          </div>
+          <div>
+            <v-btn>
+              <a href="https://oauth.lytko.com/restore" target="_blank">Восстановление пароля</a>
+            </v-btn>
+          </div>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="green darken-1" text @click="profile_dialog = false">
+            Закрыть
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -80,7 +107,8 @@
     name: "Header",
     data: () => ({
       panelConfig: false,
-      upgrade_dialog: false
+      upgrade_dialog: false,
+      profile_dialog: false
     }),
     computed: {
       ...mapGetters([
