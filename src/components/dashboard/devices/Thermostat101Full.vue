@@ -794,7 +794,7 @@
 <style lang="scss">
   #Thermostat101Full {
     width: 100%;
-    padding-bottom: 50px;
+    padding-bottom: 70px;
 
     .temperature {
       background: #2c3041;
