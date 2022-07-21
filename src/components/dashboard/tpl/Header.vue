@@ -8,6 +8,9 @@
         <span class="white--text px-3">Моя квартира</span>
       </v-col>
       <v-col cols="3">
+        <div class="text-right">
+          <v-icon color="#249fff" size="26" class="mr-4" @click="onUpgradeModal">mdi-update</v-icon>
+        </div>
       </v-col>
     </v-row>
     <v-row class="d-none d-sm-flex ma-0">
@@ -73,9 +76,7 @@
 
     <v-dialog v-model="profile_dialog" max-width="300" dark>
       <v-card>
-        <v-card-title class="text-h5">
-          Профиль
-        </v-card-title>
+        <v-card-title class="text-h5">Профиль</v-card-title>
 
         <v-card-text>
           <div class="mb-3">

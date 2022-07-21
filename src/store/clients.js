@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 const devmode = location.hostname === 'localhost';
-const current_ip = devmode ? '192.168.1.91' : location.host;
+const current_ip = devmode ? '192.168.0.21' : location.host;
 
 const available_types = [
   'esp8266_thermostat',
