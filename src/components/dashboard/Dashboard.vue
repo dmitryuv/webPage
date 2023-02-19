@@ -151,7 +151,7 @@
           if (this.getDrawerDialog === 0) {
             this.hideDrawer()
           } else if (this.getDrawerDialog === 1) {
-            this.changeDrawerDialog([0, this.getDrawerDevice['config']['name']])
+            this.changeDrawerDialog([0, (this.type === "esp32_panel_4inch") ? this.getDrawerDevice["config_ch"]["name"] : this.getDrawerDevice["config"]["name"]])
           } else {
             this.changeDrawerDialog([1, 'Настройки'])
           }

@@ -133,7 +133,7 @@ export default {
         state.current_client = {};
         state.current_client['client'] = null;
         state.current_client['ip'] = current_ip;
-        state.current_client['client'] = new WebSocket('ws://' + current_ip + '/ws');
+        state.current_client['client'] = new WebSocket('ws://' + current_ip + ':81/ws');
 
         state.current_client['client'].onopen = function () {
           dispatch('setPreloader', false)

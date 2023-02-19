@@ -605,8 +605,8 @@
     },
     watch: {
       name(val) {
-        if (this.getDrawerDevice['config']['name'] != val) {
-          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config":{"name":"' + val + '"}}'})
+        if (this.getDrawerDevice['config_ch']['name'] != val) {
+          this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '":{"name":"' + val + '"}}'})
         }
       },
       drawerWfsn() {
@@ -614,7 +614,7 @@
       }
     },
     mounted() {
-      this.name = this.getDrawerDevice['config']['name']
+      this.name = this.getDrawerDevice['config_ch']['name']
       this.mqtt.server = this.getDrawerDevice['config']['mqtt_server']
       this.mqtt.port = this.getDrawerDevice['config']['mqtt_port']
       this.mqtt.login = this.getDrawerDevice['config']['mqtt_login']
@@ -685,7 +685,7 @@
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"sensor_corr":"' + new_val + '" }}'})
       },
       onUpgradeFile() {
-        window.open(`http://${this.getDrawerDevice['ip']}/manual_update`, '_blank');
+        window.open("http://".concat(this.getDrawerDevice["ip"].replace(':81', ''), "/manual_update"), "_blank")
       },
       onUpgrade() {
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"files":{"ino_bin":"' + this.getDrawerDevice['config']['link'] + '"}}'})

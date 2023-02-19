@@ -1,6 +1,6 @@
 <template>
   <div id="Thermostat103" class="text-center">
-    <div class="thermostat_title thermostat_title_overflow color_lytko pointer" @click="toggleDrawer(device)">{{ device['config']['name'] }}</div>
+    <div class="thermostat_title thermostat_title_overflow color_lytko pointer" @click="toggleDrawer(device)">{{ device['config_ch']['name'] }}</div>
     <div class="temperature white--text temperature-text pointer" @click="toggleDrawer(device)">
       {{ device['update']['temp'] }}&deg;C
     </div>
