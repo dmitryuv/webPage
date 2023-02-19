@@ -33,6 +33,10 @@ const type_params = {
     'refresh',
   ],
 }
+const available_sensors = [
+  'sensor_temp',
+  'sensor_hum'
+]
 
 export default {
   state: {
@@ -299,13 +303,15 @@ export default {
           for (let item in state.clients[id]['zigbee_data']) {
             let dev = state.clients[id]['zigbee_data'][item]
             for (let i in dev['type']) {
-              sensors.push({
-                'id': dev['ShotAddr'] + '_' + i,
-                'dev_id': dev['ShotAddr'],
-                'type': dev['type'][i],
-                'value': dev['data'][i],
-                'unit': dev['unit'][i],
-              })
+              if(available_sensors.indexOf(dev['type'][i]) >= 0) {
+                sensors.push({
+                  'id': dev['ShotAddr'] + '_' + i,
+                  'dev_id': dev['ShotAddr'],
+                  'type': dev['type'][i],
+                  'value': dev['data'][i],
+                  'unit': dev['unit'][i],
+                })
+              }
             }
           }
         }
