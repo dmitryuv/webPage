@@ -57,10 +57,6 @@
       </v-dialog>
 
       <div class="devices">
-        <div class="filters my-4 text-sm-center pr-8">
-          <v-icon color="#249fff" @click="inDevelop">mdi-tune</v-icon>
-          <v-chip class="ml-2" color="#2c3041" text-color="white" @click="inDevelop">Все устройства</v-chip>
-        </div>
         <div class="room_title d-flex align-center">
           <div class="room_name">КОМНАТА</div>
           <v-icon color="white">mdi-chevron-right</v-icon>
