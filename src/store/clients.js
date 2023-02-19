@@ -72,7 +72,8 @@ export default {
 
     createClient(state, payload) {
       let client_ip = payload['ip']
-      if(client_ip.indexOf(':') < 0) client_ip += ':81'
+      if(payload['type']=='esp32_panel_4inch' && client_ip.indexOf(':') < 0) 
+        client_ip += ':81'
 
       let client = {
         ['client']: new WebSocket('ws://' + client_ip + '/ws'),
