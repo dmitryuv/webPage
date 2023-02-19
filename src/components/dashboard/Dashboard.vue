@@ -64,7 +64,7 @@
           <v-icon v-if="!devicesLength" color="white" @click="scanDialog = true">mdi-plus</v-icon>
         </div>
 
-        <div class="sensors d-flex" v-if="Object.keys(getSensors).length">
+        <div class="sensors d-flex flex-wrap" v-if="Object.keys(getSensors).length">
           <Sensor v-for="sensor in getSensors" :key="sensor.id" :sensor="sensor"/>
         </div>
         <div class="thermostats d-flex flex-wrap" v-if="Object.keys(getThermostats).length">
