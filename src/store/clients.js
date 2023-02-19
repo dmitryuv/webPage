@@ -303,7 +303,7 @@ export default {
           for (let item in state.clients[id]['zigbee_data']) {
             let dev = state.clients[id]['zigbee_data'][item]
             for (let i in dev['type']) {
-              if(available_sensors.indexOf(dev['type'][i]) >= 0) {
+              if(available_sensors.indexOf(dev['type'][i]) >= 0 && dev['data'][i] != 0) {
                 sensors.push({
                   'id': dev['ShotAddr'] + '_' + i,
                   'dev_id': dev['ShotAddr'],
