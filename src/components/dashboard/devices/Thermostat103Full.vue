@@ -665,7 +665,7 @@
       },
       onHysteresisDown() {
         let new_val = parseFloat(this.getDrawerDevice['config_ch']['hysteresis'])
-        if (new_val > 1) {
+        if (new_val > 0) {
           new_val -= 0.5
         }
         this.socketSend({id: this.getDrawerDevice['id'], mess: '{"config' + this.getDrawerDevice['ch'] + '": {"hysteresis":"' + new_val + '" }}'})
