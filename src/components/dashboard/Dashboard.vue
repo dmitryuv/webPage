@@ -193,7 +193,7 @@
               self.scanIp = null
             }
           } else {
-            console.log('Не правильный JSON');
+            console.log('Неправильный JSON');
             console.log(event.data);
           }
         }
