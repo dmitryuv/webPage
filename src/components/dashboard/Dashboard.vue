@@ -1,7 +1,7 @@
 <template>
   <div id="dashboard">
     <v-sheet class="vsheet v">
-      <v-navigation-drawer :value="getDrawerStatus" absolute right overlay-opacity="0.4" class="drawer">
+      <v-navigation-drawer :value="getDrawerStatus" absolute right overlay-opacity="0.4" class="drawer" v-model="drawerStatus">
         <div class="d-flex align-center justify-space-between drawer_title white--text">
           <div class="d-flex align-center">
             <v-icon color="#249fff" @click="back()" class="mr-2">mdi-arrow-left</v-icon>
@@ -128,6 +128,14 @@
             return this.devicesLength + ' УСТРОЙСТВА'
           default:
             return this.devicesLength + ' УСТРОЙСТВ'
+        }
+      },
+      drawerStatus: {
+        set: function(val) {
+          if(!val) this.hideDrawer();
+        },
+        get: function() {
+          return this.getDrawerStatus
         }
       }
     },
