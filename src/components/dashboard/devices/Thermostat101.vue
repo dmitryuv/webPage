@@ -1,6 +1,6 @@
 <template>
   <div id="Thermostat101" class="text-center">
-    <div class="thermostat_title color_lytko pointer" @click="toggleDrawer(device)">{{ device['config']['name'] }}</div>
+    <div class="thermostat_title thermostat_title_overflow color_lytko pointer" @click="toggleDrawer(device)">{{ device['config']['name'] }}</div>
     <div class="temperature white--text temperature-text pointer" @click="toggleDrawer(device)">
       {{ device['update']['temp'] }}&deg;C
     </div>
@@ -48,6 +48,7 @@
       .thermostat_title {
         font-size: calc(var(--percent-width) * 1.3);
         line-height: calc(var(--percent-width) * 1.3);
+        padding: 0 calc(var(--percent-width) * 1.3);
       }
 
       .temperature {
@@ -79,6 +80,7 @@
       .thermostat_title {
         font-size: calc(var(--percent-width) * 1.5);
         line-height: calc(var(--percent-width) * 1.5);
+        padding: 0 calc(var(--percent-width) * 1.5);
       }
 
       .temperature {
@@ -110,6 +112,7 @@
       .thermostat_title {
         font-size: calc(var(--percent-width) * 1.9);
         line-height: calc(var(--percent-width) * 1.9);
+        padding: 0 calc(var(--percent-width) * 1.9);
       }
 
       .temperature {
@@ -140,6 +143,7 @@
       .thermostat_title {
         font-size: calc(var(--percent-width) * 2);
         line-height: calc(var(--percent-width) * 2);
+        padding: 0 calc(var(--percent-width) * 2);
       }
 
       .temperature {
@@ -158,6 +162,12 @@
           }
         }
       }
+    }
+
+    .thermostat_title_overflow {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     .thermostat_buttons {

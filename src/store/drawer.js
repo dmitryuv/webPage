@@ -9,7 +9,7 @@ export default {
   mutations: {
     showDrawer(state, device) {
       state.device = device
-      state.title = device['config']['name']
+      state.title = (device["type"]==="esp32_panel_4inch") ? device["config_ch"]["name"] : device["config"]["name"],
       state.status = true
       state.dialog = 0
       state.wifi_selected_network = null

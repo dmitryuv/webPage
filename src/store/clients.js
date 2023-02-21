@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 const devmode = location.hostname === 'localhost';
-const current_ip = devmode ? '192.168.0.21' : location.host;
+const current_ip = location.host; //devmode ? '192.168.0.21' : location.host;
 
 const available_types = [
   'esp8266_thermostat',
@@ -33,6 +33,10 @@ const type_params = {
     'refresh',
   ],
 }
+const available_sensors = [
+  'sensor_temp',
+  'sensor_hum'
+]
 
 export default {
   state: {
@@ -67,12 +71,16 @@ export default {
     },
 
     createClient(state, payload) {
+      let client_ip = payload['ip']
+      if(payload['type']=='esp32_panel_4inch' && client_ip.indexOf(':') < 0) 
+        client_ip += ':81'
+
       let client = {
-        ['client']: new WebSocket('ws://' + payload['ip'] + '/ws'),
+        ['client']: new WebSocket('ws://' + client_ip + '/ws'),
         ['id']: payload['id'],
         ['dev_id']: payload['id'],
         ['type']: payload['type'],
-        ['ip']: payload['ip'],
+        ['ip']: client_ip,
         ['last_data']: Math.round(new Date().getTime()/1000)
       }
       for (let param of type_params[payload['type']]) {
@@ -125,7 +133,7 @@ export default {
         state.current_client = {};
         state.current_client['client'] = null;
         state.current_client['ip'] = current_ip;
-        state.current_client['client'] = new WebSocket('ws://' + current_ip + '/ws');
+        state.current_client['client'] = new WebSocket('ws://' + current_ip + ':81/ws');
 
         state.current_client['client'].onopen = function () {
           dispatch('setPreloader', false)
@@ -299,13 +307,15 @@ export default {
           for (let item in state.clients[id]['zigbee_data']) {
             let dev = state.clients[id]['zigbee_data'][item]
             for (let i in dev['type']) {
-              sensors.push({
-                'id': dev['ShotAddr'] + '_' + i,
-                'dev_id': dev['ShotAddr'],
-                'type': dev['type'][i],
-                'value': dev['data'][i],
-                'unit': dev['unit'][i],
-              })
+              if(available_sensors.indexOf(dev['type'][i]) >= 0 && dev['data'][i] != 0) {
+                sensors.push({
+                  'id': dev['ShotAddr'] + '_' + i,
+                  'dev_id': dev['ShotAddr'],
+                  'type': dev['type'][i],
+                  'value': dev['data'][i],
+                  'unit': dev['unit'][i],
+                })
+              }
             }
           }
         }

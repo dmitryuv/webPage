@@ -7,9 +7,9 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-document.documentElement.style.setProperty('--percent-width', (document.documentElement.clientWidth / 100) + 'px');
+document.documentElement.style.setProperty('--percent-width', Math.max((document.documentElement.clientWidth / 100), 4) + 'px');
 window.addEventListener('resize', function() {
-  document.documentElement.style.setProperty('--percent-width', (document.documentElement.clientWidth / 100) + 'px');
+  document.documentElement.style.setProperty('--percent-width', Math.max((document.documentElement.clientWidth / 100), 4) + 'px');
 }, true);
 
 new Vue({

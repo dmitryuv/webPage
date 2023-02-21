@@ -57,10 +57,6 @@
       </v-dialog>
 
       <div class="devices">
-        <div class="filters my-4 text-sm-center pr-8">
-          <v-icon color="#249fff" @click="inDevelop">mdi-tune</v-icon>
-          <v-chip class="ml-2" color="#2c3041" text-color="white" @click="inDevelop">Все устройства</v-chip>
-        </div>
         <div class="room_title d-flex align-center">
           <div class="room_name">КОМНАТА</div>
           <v-icon color="white">mdi-chevron-right</v-icon>
@@ -68,7 +64,7 @@
           <v-icon v-if="!devicesLength" color="white" @click="scanDialog = true">mdi-plus</v-icon>
         </div>
 
-        <div class="sensors d-flex" v-if="Object.keys(getSensors).length">
+        <div class="sensors d-flex flex-wrap" v-if="Object.keys(getSensors).length">
           <Sensor v-for="sensor in getSensors" :key="sensor.id" :sensor="sensor"/>
         </div>
         <div class="thermostats d-flex flex-wrap" v-if="Object.keys(getThermostats).length">
@@ -155,7 +151,7 @@
           if (this.getDrawerDialog === 0) {
             this.hideDrawer()
           } else if (this.getDrawerDialog === 1) {
-            this.changeDrawerDialog([0, this.getDrawerDevice['config']['name']])
+            this.changeDrawerDialog([0, (this.type === "esp32_panel_4inch") ? this.getDrawerDevice["config_ch"]["name"] : this.getDrawerDevice["config"]["name"]])
           } else {
             this.changeDrawerDialog([1, 'Настройки'])
           }
@@ -197,7 +193,7 @@
               self.scanIp = null
             }
           } else {
-            console.log('Не правильный JSON');
+            console.log('Неправильный JSON');
             console.log(event.data);
           }
         }
