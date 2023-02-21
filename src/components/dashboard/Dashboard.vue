@@ -18,8 +18,13 @@
           <DeviceFull/>
         </div>
       </v-navigation-drawer>
+  
+      <v-navigation-drawer absolute left overlay-opacity="0.4" class="drawer" v-model="settingsStatus">
+        <Settings />
+      </v-navigation-drawer>
 
-      <Header/>
+
+      <Header @settings-open="showSettings()"/>
 
       <v-dialog v-model="panelConfig" fullscreen hide-overlay transition="dialog-bottom-transition" dark>
         <v-card v-if="getDrawerDevice">
@@ -82,6 +87,7 @@
   import Header from "./tpl/Header";
   import Device from "./devices/Device";
   import DeviceFull from "./devices/DeviceFull";
+  import Settings from "./tpl/Settings";
 
   import {mapGetters, mapActions, mapMutations} from 'vuex'
   import Sensor from "./sensors/Sensor";
@@ -90,7 +96,7 @@
 
   export default {
     name: "Dashboard",
-    components: {Screen, TextInput, Header, Device, DeviceFull, Sensor},
+    components: {Screen, TextInput, Header, Device, DeviceFull, Sensor, Settings},
     data() {
       return {
         panelConfig: false,
@@ -111,6 +117,7 @@
         'getDrawerWfsn',
         'getPanelGrid',
         'getFormattedPanelGrid',
+        'getSettingsVisible'
       ]),
       devicesLength() {
         return Object.keys(this.getSensors).length + Object.keys(this.getThermostats).length
@@ -137,6 +144,14 @@
         get: function() {
           return this.getDrawerStatus
         }
+      },
+      settingsStatus: {
+        set: function(val) {
+          if(!val) this.hideSettings();
+        },
+        get: function() {
+          return this.getSettingsVisible
+        }
       }
     },
     methods: {
@@ -148,6 +163,8 @@
         'changeDrawerWfsn',
         'setPreloader',
         'startConnect',
+        'showSettings',
+        'hideSettings'
       ]),
       ...mapMutations([
         'UPDATE_SSDP'

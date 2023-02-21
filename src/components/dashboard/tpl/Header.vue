@@ -2,7 +2,7 @@
   <div id="header">
     <v-row class="d-flex d-sm-none ma-0">
       <v-col cols="3">
-        <v-icon color="#249fff" @click="profile_dialog = true">mdi-account-circle</v-icon>
+        <v-icon color="#249fff" @click="$emit('settings-open')">mdi-menu</v-icon>
       </v-col>
       <v-col cols="6" class="text-center">
         <span class="white--text px-3">Моя квартира</span>
@@ -16,7 +16,7 @@
     <v-row class="d-none d-sm-flex ma-0">
       <v-col cols="5">
         <div class="d-flex align-center">
-          <v-icon color="#249fff" @click="profile_dialog = true">mdi-account-circle</v-icon>
+          <v-icon color="#249fff" @click="$emit('settings-open')">mdi-menu</v-icon>
           <span class="white--text px-3">Моя квартира</span>
         </div>
       </v-col>
@@ -109,7 +109,8 @@
     data: () => ({
       panelConfig: false,
       upgrade_dialog: false,
-      profile_dialog: false
+      profile_dialog: false,
+      settingsStatus: false
     }),
     computed: {
       ...mapGetters([
